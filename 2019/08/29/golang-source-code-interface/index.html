@@ -79,14 +79,17 @@
 
 
 
+<meta name="description" content="听说过鸭子类型(Duck typing)吗？没听过也不要紧，通俗来讲，就是任何一个物体，只要它走路像鸭子且能嘎嘎叫，就可以称之为鸭子。学过Python面试时肯定常被问及什么是迭代器，这里的迭代器就可以称为一种“鸭子”，因为只要实现了签名符合要求的__next__和__iter__方法则可称为迭代器。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="golang-source-code-interface">
+<meta property="og:title" content="跟着源码学Golang: Inerface">
 <meta property="og:url" content="http://yoursite.com/2019/08/29/golang-source-code-interface/index.html">
 <meta property="og:site_name" content="Eren with you">
+<meta property="og:description" content="听说过鸭子类型(Duck typing)吗？没听过也不要紧，通俗来讲，就是任何一个物体，只要它走路像鸭子且能嘎嘎叫，就可以称之为鸭子。学过Python面试时肯定常被问及什么是迭代器，这里的迭代器就可以称为一种“鸭子”，因为只要实现了签名符合要求的__next__和__iter__方法则可称为迭代器。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-08-29T08:33:09.332Z">
+<meta property="og:updated_time" content="2019-08-30T02:12:23.749Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="golang-source-code-interface">
+<meta name="twitter:title" content="跟着源码学Golang: Inerface">
+<meta name="twitter:description" content="听说过鸭子类型(Duck typing)吗？没听过也不要紧，通俗来讲，就是任何一个物体，只要它走路像鸭子且能嘎嘎叫，就可以称之为鸭子。学过Python面试时肯定常被问及什么是迭代器，这里的迭代器就可以称为一种“鸭子”，因为只要实现了签名符合要求的__next__和__iter__方法则可称为迭代器。">
 
 
 
@@ -122,7 +125,7 @@
 
 
 
-  <title>golang-source-code-interface | Eren with you</title>
+  <title>跟着源码学Golang: Inerface | Eren with you</title>
   
 
 
@@ -276,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">golang-source-code-interface</h1>
+          <h1 class="post-title" itemprop="name headline">跟着源码学Golang: Inerface</h1>
         
 
         <div class="post-meta">
@@ -298,6 +301,28 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -326,7 +351,38 @@
       
 
       
-        
+        <p>听说过鸭子类型(Duck typing)吗？没听过也不要紧，通俗来讲，就是任何一个物体，只要它走路像鸭子且能嘎嘎叫，就可以称之为鸭子。学过Python面试时肯定常被问及什么是迭代器，这里的迭代器就可以称为一种“鸭子”，因为只要实现了签名符合要求的<code>__next__</code>和<code>__iter__</code>方法则可称为迭代器。</p>
+<a id="more"></a>
+<p>为什么我要提及鸭子类型，这明明是动态语言里的东西啊。因为Go也使用类似的思想作为它的类型系统，称之为结构类型系统(Structural type systems)，它是在编译时决定类型的兼容性和等效性，而鸭子类型则是在运行判断的。相较于Java这种基于名字的类型系统，它不用显示地定义继承于哪些父类，更加灵活方便</p>
+<p>利用这种思想，我们可以做许多有趣的事情，Go使用Interface实现相关用法</p>
+<p>现在让我们来Go标准库里的<code>sort</code>包里是如何利用Interface来优雅地解决对不同类型数据的排序的</p>
+<ol>
+<li><p>首先，要让一个容器对象可排序，它需要什么特征(方法)呢？</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可排序容器对象接口</span></span><br><span class="line"><span class="keyword">type</span> Interface <span class="keyword">interface</span> &#123;</span><br><span class="line">	Len() <span class="keyword">int</span></span><br><span class="line">	Less(i, j <span class="keyword">int</span>) <span class="keyword">bool</span></span><br><span class="line">	Swap(i, j <span class="keyword">int</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 针对Interface进行排序</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Sort</span><span class="params">(data Interface)</span></span> &#123;</span><br><span class="line">	n := data.Len()</span><br><span class="line">	quickSort(data, <span class="number">0</span>, n, maxDepth(n))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过分析，我们仅需下述3个方法则可以满足所有排序算法所需</li>
+<li><code>Len() int</code>, 返回容器中的元素个数</li>
+<li><code>Less(i, j int) bool</code>, 元素比较功能</li>
+<li><code>Swap(i, j int)</code>, 元素位置交换功能</li>
+</ul>
+</li>
+<li><p>现在如果我们需要排序一个类型为int的slice，应该怎么办呢？源码中已给出代码</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// IntSlice attaches the methods of Interface to []int, sorting in increasing order.</span></span><br><span class="line"><span class="comment">// IntSlice 此时就可以称之为一个可排序容器</span></span><br><span class="line"><span class="keyword">type</span> IntSlice []<span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现Len()方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p IntSlice)</span> <span class="title">Len</span><span class="params">()</span> <span class="title">int</span></span>           &#123; <span class="keyword">return</span> <span class="built_in">len</span>(p) &#125;</span><br><span class="line"><span class="comment">// 实现Less()方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p IntSlice)</span> <span class="title">Less</span><span class="params">(i, j <span class="keyword">int</span>)</span> <span class="title">bool</span></span> &#123; <span class="keyword">return</span> p[i] &lt; p[j] &#125;</span><br><span class="line"><span class="comment">// 实现Swap()方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p IntSlice)</span> <span class="title">Swap</span><span class="params">(i, j <span class="keyword">int</span>)</span></span>      &#123; p[i], p[j] = p[j], p[i] &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Sort is a convenience method.</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p IntSlice)</span> <span class="title">Sort</span><span class="params">()</span></span> &#123; Sort(p) &#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>实际编程中，我们应该注意些什么呢？</p>
+<ul>
+<li>接口尽量小，Go推崇小接口，例如<code>io.Writer</code>接口就只需要一个<code>Write(p []byte) (n int, err error)</code>方法</li>
+<li>对于大接口，我们可以用多个小接口拼接而成</li>
+</ul>
+</li>
+</ol>
+<hr>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
+<li><a href="https://en.wikipedia.org/wiki/Structural_type_system" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Structural_type_system</a></li>
+<li><a href="https://medium.com/@matryer/golang-advent-calendar-day-one-duck-typing-a513aaed544d" target="_blank" rel="noopener">https://medium.com/@matryer/golang-advent-calendar-day-one-duck-typing-a513aaed544d</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Duck_typing" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Duck_typing</a></li>
+</ul>
+
       
     </div>
     
@@ -394,8 +450,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -416,6 +481,15 @@
               </div>
             
 
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
             
 
             
@@ -439,12 +513,6 @@
                         <i class="fa fa-fw fa-envelope"></i>E-Mail</a>
                   </span>
                 
-                  <span class="links-of-author-item">
-                    <a href="https://instagram.com/erenming233" target="_blank" title="Instagram">
-                      
-                        <i class="fa fa-fw fa-instagram"></i>Instagram</a>
-                  </span>
-                
             </div>
           
 
@@ -459,6 +527,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">1.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
