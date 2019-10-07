@@ -339,27 +339,20 @@
 
       
         
-          
-            <h2 id="什么是嵌套结构-Embedded-Struct"><a href="#什么是嵌套结构-Embedded-Struct" class="headerlink" title="什么是嵌套结构(Embedded Struct)"></a>什么是嵌套结构(Embedded Struct)</h2><p>我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)</p>
-<p>嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> B <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span> <span class="comment">// specified explicitly field name</span></span><br><span class="line">    A  <span class="comment">// embedded field A</span></span><br><span class="line">    C  <span class="comment">// embedded field C</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>组合类型：形如上述，将类型A，C组合成一个新的类型B</p>
-<h2 id="为什么要使用嵌套结构来组合类型"><a href="#为什么要使用嵌套结构来组合类型" class="headerlink" title="为什么要使用嵌套结构来组合类型"></a>为什么要使用嵌套结构来组合类型</h2><p>我们都知道Golang舍弃了基于继承的面向对象编程范式(广泛应用于Java，C++等)，而使用基于Interface的<a href="https://en.wikipedia.org/wiki/Structural_type_system" target="_blank" rel="noopener">结构类型系统</a>以及类型组合的方式来替代。对于这两者的区别与优劣，这里不是重点，故不继续讨论，感兴趣的话可以查阅相关资料。</p>
-<p>基于这种组合的这种编程范式，即使对于复杂的大型系统，我们依然能写出设计良好的API。当然，设计之初，我们声明并实现的类型必须具有单一的功能，其次应该时刻牢记程序是通过类型组合的方式来满足不断增加的需求。接下来我们将通过这种模式，来实现一个名为<code>car</code>的package</p>
-<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
-<li>结构中，字段名必须是唯一的(也包括提升了的(promoted)方法与字段)</li>
-</ul>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
-<li><a href="https://travix.io/type-embedding-in-go-ba40dd4264df" target="_blank" rel="noopener">https://travix.io/type-embedding-in-go-ba40dd4264df</a></li>
-<li><a href="https://golangbot.com/inheritance/" target="_blank" rel="noopener">https://golangbot.com/inheritance/</a></li>
-<li><a href="https://golang.org/ref/spec#Struct_types" target="_blank" rel="noopener">https://golang.org/ref/spec#Struct_types</a></li>
-<li><a href="https://golang.org/doc/faq#Is_Go_an_object-oriented_language" target="_blank" rel="noopener">https://golang.org/doc/faq#Is_Go_an_object-oriented_language</a></li>
-</ul>
-
-          
+          <h2 id="什么是嵌套结构-Embedded-Struct"><a href="#什么是嵌套结构-Embedded-Struct" class="headerlink" title="什么是嵌套结构(Embedded Struct)"></a>什么是嵌套结构(Embedded Struct)</h2><p>我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)。<br>其他术语：</p>
+<ul>
+<li>嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段</li>
+<li>组合类型：一个类型由将多个类型组合而成
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/10/03/composinge-types-with-struct-embedding/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
-    </div>
+    </li></ul></div>
     
     
     

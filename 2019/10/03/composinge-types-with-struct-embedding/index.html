@@ -79,17 +79,17 @@
 
 
 
-<meta name="description" content="什么是嵌套结构(Embedded Struct)我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术) 嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段 12345struct B struct &amp;#12">
+<meta name="description" content="什么是嵌套结构(Embedded Struct)我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)。其他术语：  嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段 组合类型：一个类型由将多个类型组合而">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用嵌套结构来实现类型组合">
 <meta property="og:url" content="http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/index.html">
 <meta property="og:site_name" content="Eren with you">
-<meta property="og:description" content="什么是嵌套结构(Embedded Struct)我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术) 嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段 12345struct B struct &amp;#12">
+<meta property="og:description" content="什么是嵌套结构(Embedded Struct)我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)。其他术语：  嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段 组合类型：一个类型由将多个类型组合而">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-10-03T04:55:19.862Z">
+<meta property="og:updated_time" content="2019-10-07T06:13:47.692Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用嵌套结构来实现类型组合">
-<meta name="twitter:description" content="什么是嵌套结构(Embedded Struct)我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术) 嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段 12345struct B struct &amp;#12">
+<meta name="twitter:description" content="什么是嵌套结构(Embedded Struct)我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)。其他术语：  嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段 组合类型：一个类型由将多个类型组合而">
 
 
 
@@ -339,20 +339,43 @@
       
 
       
-        <h2 id="什么是嵌套结构-Embedded-Struct"><a href="#什么是嵌套结构-Embedded-Struct" class="headerlink" title="什么是嵌套结构(Embedded Struct)"></a>什么是嵌套结构(Embedded Struct)</h2><p>我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)</p>
-<p>嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段</p>
-<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> B <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span> <span class="comment">// specified explicitly field name</span></span><br><span class="line">    A  <span class="comment">// embedded field A</span></span><br><span class="line">    C  <span class="comment">// embedded field C</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>组合类型：形如上述，将类型A，C组合成一个新的类型B</p>
-<h2 id="为什么要使用嵌套结构来组合类型"><a href="#为什么要使用嵌套结构来组合类型" class="headerlink" title="为什么要使用嵌套结构来组合类型"></a>为什么要使用嵌套结构来组合类型</h2><p>我们都知道Golang舍弃了基于继承的面向对象编程范式(广泛应用于Java，C++等)，而使用基于Interface的<a href="https://en.wikipedia.org/wiki/Structural_type_system" target="_blank" rel="noopener">结构类型系统</a>以及类型组合的方式来替代。对于这两者的区别与优劣，这里不是重点，故不继续讨论，感兴趣的话可以查阅相关资料。</p>
-<p>基于这种组合的这种编程范式，即使对于复杂的大型系统，我们依然能写出设计良好的API。当然，设计之初，我们声明并实现的类型必须具有单一的功能，其次应该时刻牢记程序是通过类型组合的方式来满足不断增加的需求。接下来我们将通过这种模式，来实现一个名为<code>car</code>的package</p>
-<h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
-<li>结构中，字段名必须是唯一的(也包括提升了的(promoted)方法与字段)</li>
+        <h2 id="什么是嵌套结构-Embedded-Struct"><a href="#什么是嵌套结构-Embedded-Struct" class="headerlink" title="什么是嵌套结构(Embedded Struct)"></a>什么是嵌套结构(Embedded Struct)</h2><p>我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)。<br>其他术语：</p>
+<ul>
+<li>嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段</li>
+<li>组合类型：一个类型由将多个类型组合而成<a id="more"></a>
+代码举例：</li>
 </ul>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> A <span class="keyword">struct</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(a *A)</span> <span class="title">Hello</span><span class="params">()</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"hello, A %+v\n"</span>, a)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> C <span class="keyword">struct</span> &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">struct</span> B <span class="keyword">struct</span> &#123;</span><br><span class="line">    name <span class="keyword">string</span> <span class="comment">// specified explicitly field name</span></span><br><span class="line">    A  <span class="comment">// embedded field A</span></span><br><span class="line">    C  <span class="comment">// embedded field C</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	b := &amp;B&#123;A&#123;&#125;, C&#123;&#125;&#125;</span><br><span class="line">	b.Hello() <span class="comment">// 输出 hello, A &amp;&#123;&#125;</span></span><br><span class="line">	b.A.Hello() <span class="comment">// 输出 hello, A &amp;&#123;&#125;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里，我们调用<code>b.Hello()</code>实际上就是调用<code>b.A.Hello()</code>, 这里就是之前我们说过的<code>promotion</code>技术的体现。</p>
+<h2 id="为什么要使用嵌套结构"><a href="#为什么要使用嵌套结构" class="headerlink" title="为什么要使用嵌套结构"></a>为什么要使用嵌套结构</h2><p>我们都知道Golang舍弃了基于继承的面向对象编程范式(广泛应用于Java，C++等)，而使用基于Interface的<a href="https://en.wikipedia.org/wiki/Structural_type_system" target="_blank" rel="noopener">结构类型系统</a>以及类型组合的方式来替代。</p>
+<p>为什么要抛弃基于继承的方式呢，简而言之，因为后者不用显示定义继承，不受父类影响，耦合性更低。对于这两者的区别与优劣，这里不是重点，故不继续讨论，感兴趣的话可以查阅相关资料。</p>
+<p>基于这种组合的编程范式，即使对于复杂的大型系统来说，我们依然能设计出优美的API。当然，设计之初，我们声明并实现的类型必须满足具有单一功能的特点，其次应该时刻牢记程序是通过类型组合的方式来满足不断增加的需求。</p>
+<h2 id="如何使用"><a href="#如何使用" class="headerlink" title="如何使用"></a>如何使用</h2><ol>
+<li><p>首先我们定义一个类型<code>Paper</code>代表纸张</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Paper <span class="keyword">struct</span> &#123;</span><br><span class="line">	thickness <span class="keyword">uint</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(p *Paper)</span> <span class="title">Thickness</span><span class="params">()</span> <span class="title">uint</span></span>  &#123;</span><br><span class="line">	<span class="keyword">return</span> p.thickness</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>然后我们定义一个类型<code>Color</code>代表颜色</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Color <span class="keyword">struct</span> &#123;</span><br><span class="line">	color <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里我们为了方便，只定义了一个ColorString方法用以代表具体的颜色</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Color)</span> <span class="title">ColorString</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> c.color</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>这时候，我们想让我们的<code>Paper</code>类型拥有颜色，那该怎么办呢？很简单，我们只需要将<code>Color</code>类型嵌入<code>Paper</code>类型。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Paper <span class="keyword">struct</span> &#123;</span><br><span class="line">	thickness <span class="keyword">uint</span></span><br><span class="line">	Color</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	redPaper := Paper&#123;<span class="number">10</span>, Color&#123;<span class="string">"red"</span>&#125;&#125;</span><br><span class="line">	fmt.Println(redPaper.ColorString())</span><br><span class="line">	fmt.Println(redPaper.Thickness())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>此时，我们的<code>Paper</code>则拥有了颜色，我们可以打印出具体实例的颜色</p>
+<pre><code>画外音：更多场景下，我们通常是定义多个小Interface，然后使用嵌套结构(类型组合)组合成新的Interface。
+例如标准库`io`包里，将`Reader`、`Writer`和`Closer`组合成了`ReadWriteCloser`
+</code></pre><h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
+<li>结构中，字段名必须是唯一的(也包括提升了的(promoted)方法与字段)，否则报错</li>
+</ul>
+<h2 id="小剧场"><a href="#小剧场" class="headerlink" title="小剧场"></a>小剧场</h2><p>很高兴你能看完我的文章，相信你也有了自己的理解，或者对于发现了文中的纰漏，欢迎你在评论区分享或指出意见。</p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="https://travix.io/type-embedding-in-go-ba40dd4264df" target="_blank" rel="noopener">https://travix.io/type-embedding-in-go-ba40dd4264df</a></li>
 <li><a href="https://golangbot.com/inheritance/" target="_blank" rel="noopener">https://golangbot.com/inheritance/</a></li>
 <li><a href="https://golang.org/ref/spec#Struct_types" target="_blank" rel="noopener">https://golang.org/ref/spec#Struct_types</a></li>
 <li><a href="https://golang.org/doc/faq#Is_Go_an_object-oriented_language" target="_blank" rel="noopener">https://golang.org/doc/faq#Is_Go_an_object-oriented_language</a></li>
+<li><a href="https://www.ardanlabs.com/blog/2015/09/composition-with-go.html" target="_blank" rel="noopener">https://www.ardanlabs.com/blog/2015/09/composition-with-go.html</a></li>
+<li><a href="https://en.wikipedia.org/wiki/Structural_type_system" target="_blank" rel="noopener">https://en.wikipedia.org/wiki/Structural_type_system</a></li>
+<li><a href="https://medium.com/@simplyianm/why-gos-structs-are-superior-to-class-based-inheritance-b661ba897c67" target="_blank" rel="noopener">https://medium.com/@simplyianm/why-gos-structs-are-superior-to-class-based-inheritance-b661ba897c67</a></li>
 </ul>
 
       
@@ -510,7 +533,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是嵌套结构-Embedded-Struct"><span class="nav-number">1.</span> <span class="nav-text">什么是嵌套结构(Embedded Struct)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要使用嵌套结构来组合类型"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用嵌套结构来组合类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意点"><span class="nav-number">3.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">4.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是嵌套结构-Embedded-Struct"><span class="nav-number">1.</span> <span class="nav-text">什么是嵌套结构(Embedded Struct)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要使用嵌套结构"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用嵌套结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用"><span class="nav-number">3.</span> <span class="nav-text">如何使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意点"><span class="nav-number">4.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小剧场"><span class="nav-number">5.</span> <span class="nav-text">小剧场</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>
