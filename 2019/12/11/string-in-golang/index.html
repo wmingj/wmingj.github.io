@@ -88,7 +88,7 @@
 <meta property="og:description" content="说到string类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/string-in-golang/nihao.png">
-<meta property="og:updated_time" content="2019-12-12T09:20:00.498Z">
+<meta property="og:updated_time" content="2019-12-12T15:33:38.220Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解Golang中的string">
 <meta name="twitter:description" content="说到string类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟">
@@ -351,7 +351,7 @@
 <p>得到运行结果<code>char is 你</code>。</p>
 <p>虽然字符串并非切片，但是支持切片操作。对于同一字面量，不同的字符串变量指向相同的底层数组，这是因为字符串是只读的，为了节省内存，相同字面量的字符串通常对应于同一字符串常量。例如：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">s := <span class="string">"hello, world"</span></span><br><span class="line">s1 := <span class="string">"hello, world"</span></span><br><span class="line">s2 := <span class="string">"hello, world"</span>[<span class="number">7</span>:]</span><br><span class="line">fmt.Printf(<span class="string">"%d \n"</span>, (*reflect.StringHeader)(unsafe.Pointer(&amp;s)).Data) <span class="comment">// 17598361</span></span><br><span class="line">fmt.Printf(<span class="string">"%d \n"</span>, (*reflect.StringHeader)(unsafe.Pointer(&amp;s1)).Data) <span class="comment">// 17598361</span></span><br><span class="line">fmt.Printf(<span class="string">"%d \n"</span>, (*reflect.StringHeader)(unsafe.Pointer(&amp;s2)).Data) <span class="comment">// 17598368</span></span><br></pre></td></tr></table></figure>
-<p>可以看到，三者均指向同一个底层数组。对于s1, s2由于是同一字符串常量，故指向一个底层数组，以<code>h</code>为起始位置)；而s2也是指向同一字节切片，不过是以<code>w</code>为起始位置。</p>
+<p>可以看到，三者均指向同一个底层数组。对于s1, s2由于是同一字符串常量<code>hello, world</code>，故指向一个底层数组，以<code>h</code>为起始位置；而s2是字面量<code>hello, world</code>的切片操作后生成的字符串，也指向同一字节底层数组，不过是以<code>w</code>为起始位置。</p>
 <h2 id="迭代字符串"><a href="#迭代字符串" class="headerlink" title="迭代字符串"></a>迭代字符串</h2><p>当我们使用<code>for range</code>迭代字符串时，每次迭代Go都会用UTF-8解码出一个<code>rune</code>类型的字符，且索引为当前<code>rune</code>的起始位置(以字节为最下单位)。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> index, char := <span class="keyword">range</span> <span class="string">"你好"</span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"start at %d, Unicode = %U, char = %c\n"</span>, index, char, char)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>得到运行结果</p>
