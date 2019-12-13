@@ -88,7 +88,7 @@
 <meta property="og:description" content="说到string类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/string-in-golang/nihao.png">
-<meta property="og:updated_time" content="2019-12-12T15:33:38.220Z">
+<meta property="og:updated_time" content="2019-12-13T01:28:35.747Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解Golang中的string">
 <meta name="twitter:description" content="说到string类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟">
@@ -365,8 +365,8 @@
 <p>字符：字符的概念比较模糊，在Unicode中通常用<a href="https://en.wikipedia.org/wiki/Code_point" target="_blank" rel="noopener">code point</a>来表示。在我的理解里，是一种信息单元(例如一个符号、字母等)</p>
 <p>rune：其实际上是<code>int32</code>的别名，但是为了方便将字符与整数值区分开，从而新增了rune类型代表一个字符。</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
-<li>通过下标访问字符串时，返回的是一个字节，这与我们的直觉相背。所以，如果你一定要通过下标访问字符串，可以先将其转换为<code>[]run</code>类型</li>
-<li>由于字符串可以看做是一个<strong>只读字节切片</strong>, 支持切片操作。</li>
+<li>通过下标访问字符串时，返回的是一个字节，这往往与我们的直觉相背。所以，如果你一定要通过下标访问字符串，可以先将其转换为<code>[]rune</code>类型</li>
+<li>字符串可以看做是一个<strong>只读字节切片</strong>, 支持切片操作。</li>
 </ul>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><a href="https://chorer.github.io/2019/09/16/CB-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9Fcp1/" target="_blank" rel="noopener">https://chorer.github.io/2019/09/16/CB-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9Fcp1/</a></li>
