@@ -1,0 +1,2 @@
+http://yoursite.com/2019/12/11/string-in-golang/
+http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/
