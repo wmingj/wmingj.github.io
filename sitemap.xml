@@ -2,9 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2019/12/20/understand-middleware/</loc>
+    
+    <lastmod>2019-12-21T11:48:41.672Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2019/12/11/string-in-golang/</loc>
     
-    <lastmod>2019-12-13T01:28:35.747Z</lastmod>
+    <lastmod>2019-12-21T09:44:54.225Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/about/index.html</loc>
+    
+    <lastmod>2019-12-19T07:09:45.141Z</lastmod>
     
   </url>
   
@@ -12,13 +26,6 @@
     <loc>http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/</loc>
     
     <lastmod>2019-12-12T09:11:09.533Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/about/index.html</loc>
-    
-    <lastmod>2019-08-30T05:34:42.385Z</lastmod>
     
   </url>
   
