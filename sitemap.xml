@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://yoursite.com/2019/10/03/slice-in-go/</loc>
+    
+    <lastmod>2020-01-29T15:21:25.753Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://yoursite.com/2019/12/11/string-in-golang/</loc>
     
     <lastmod>2019-12-21T12:07:20.854Z</lastmod>
