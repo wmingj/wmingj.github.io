@@ -607,64 +607,17 @@
 
       
         
-          
-            <p>最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。</p>
-<h4 id="数组-vs-切片"><a href="#数组-vs-切片" class="headerlink" title="数组 vs 切片"></a>数组 vs 切片</h4><p>对于初学者来说，我们必须分清楚数组与切片的区别。</p>
-<p>在Go中，数组与其他语言并无太大区别，都是一段指定长度的连续内存空间。例如如下代码，我们声明一个长度为4，类型为<code>int</code>的数组<code>a</code>。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a [<span class="number">4</span>]<span class="keyword">int</span></span><br></pre></td></tr></table></figure>
-<p>此时，Go会调用<code>mallocgc</code>函数为我们申请一段连续的内存空间，如下图所示。</p>
-<p><img src="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/array.png" alt></p>
-<p>而对于slice，其实际上是一种结构体，基于数组的一种抽象，相当于其他语言中的动态数组。</p>
-<h4 id="切片的表示"><a href="#切片的表示" class="headerlink" title="切片的表示"></a>切片的表示</h4><p>在<code>runtime</code>包中，切片的定义如下。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> slice <span class="keyword">struct</span> &#123;</span><br><span class="line">	array unsafe.Pointer <span class="comment">// 底层数组</span></span><br><span class="line">	<span class="built_in">len</span>   <span class="keyword">int</span> <span class="comment">// 切片长度</span></span><br><span class="line">	<span class="built_in">cap</span>   <span class="keyword">int</span> <span class="comment">// 切片容量</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>array</code>属性指向一个底层数组，实际数据存储在其中，对于同一个底层数组，其可以被多个切片引用。</p>
-<p><code>len</code>属性限制了切片的长度，通过<code>array</code>与<code>len</code>属性，我们就能划分出数组上的一段数据。</p>
-<p><code>cap</code>属性表示切片的容量，其以<code>array</code>所指向的地址为起始位置，数组末尾为结束位置。两者之间的跨度即为<code>cap</code>的大小。</p>
-<p>举例说明，这里我们创建一个切片。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">s1 := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4</span>, <span class="number">6</span>)</span><br><span class="line">s1[<span class="number">0</span>] = <span class="string">'a'</span></span><br><span class="line">s1[<span class="number">1</span>] = <span class="string">'b'</span></span><br><span class="line">s1[<span class="number">2</span>] = <span class="string">'c'</span></span><br><span class="line">s1[<span class="number">3</span>] = <span class="string">'d'</span></span><br></pre></td></tr></table></figure>
-<p>其在内存中表示如下所示。</p>
-<p><img src="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-2.png" alt></p>
-<p>此时，我们再创建一个切片<code>s2 := s1[1:3]</code>。其表示如下所示。</p>
-<p><img src="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-3.png" alt></p>
-<p>由于s2是基于s1传建的，因此其指向了同一底层数组，不同的是，s2的<code>array</code>指向的是<code>b</code>元素的起始内存地址。显而易见，当我们执行<code>s1[1] = &#39;x&#39;</code>语句时，<code>s2[0]</code>的值也会被改变为<code>x</code>。</p>
-<h4 id="空切片-vs-nil切片"><a href="#空切片-vs-nil切片" class="headerlink" title="空切片 vs nil切片"></a>空切片 vs nil切片</h4><p>nil切片<code>var s []byte</code>，如下图所示。</p>
-<p><img src="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-4.png" alt></p>
-<p>空切片<code>s := make([]byte, 0)</code>，如下图所示。</p>
-<p><img src="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-5.png" alt></p>
-<p>nil切片<code>array</code>属性为nil，而空切片<code>array</code>属性为空数组的地址。</p>
-<h4 id="切片的扩容"><a href="#切片的扩容" class="headerlink" title="切片的扩容"></a>切片的扩容</h4><p>当我们执行<code>append</code>语句时，Go会对切片进行动态扩容。那么其大致策略是怎样的呢？</p>
-<p><strong>首先，要明确，扩容针对的是切片的容量而非底层数组的实际长度！</strong></p>
-<p>情况1，当执行<code>s1 = append(s1, &#39;e&#39;, &#39;f&#39;, &#39;g&#39;)</code>语句时，由于总的元素个数超过<code>cap</code>，需要进行扩容。对于扩容，Go会根据实际情况使用一个合适新容量来创建一个新的底层数组，然后将原数组的数据copy到新数组中，最后再返回一个新的切片（详情可查看<code>runtime</code>包中的<code>growslice</code>函数）。</p>
-<p>情况2，当执行<code>s2 = append(s2, &#39;e&#39;)</code>语句时，由于<code>len+1</code>依然小于<code>cap</code>故其并未扩容，只是将底层数组上的元素<code>d</code>覆盖为了<code>e</code>。</p>
-<p><img src="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-6.png" alt></p>
-<p>显然，<code>s1[4]</code>的值也会因此而被改变为<code>e</code>。</p>
-<h4 id="切片代码编写建议"><a href="#切片代码编写建议" class="headerlink" title="切片代码编写建议"></a>切片代码编写建议</h4><p>在实际工作中，针对切片操作，我们应该注意哪些呢？</p>
-<ol>
-<li><p>及时释放大切片。例如下述代码</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">3</span>; i++ &#123;</span><br><span class="line">	tmp := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">100000000</span>)</span><br><span class="line">   headers = <span class="built_in">append</span>(headers, small[:<span class="number">10</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>虽然我们只使用了tmp的前10个字节，但是其指向的底层数组依然是原来tmp指向的大数组，因此GC不会回收该大数组，从而导致内存占用过大。为了避免此问题，我们可以创建一个小切片，然后将前10个字节复制过去，如下代码所示。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">3</span>; i++ &#123;</span><br><span class="line">	tmp := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">100000000</span>)</span><br><span class="line">	small := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">10</span>)</span><br><span class="line">	<span class="built_in">copy</span>(small, tmp[:<span class="number">10</span>])</span><br><span class="line">	headers = <span class="built_in">append</span>(headers, small)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<ol start="2">
-<li><p><code>append</code>操作时，需要特别小心，避免因为使用同一底层数组而导致Bug。必要时，可采用<code>append([]int{}, s...)</code>的形式来创建一个新的切片。</p>
-</li>
-<li><p>使用<code>for range</code>语句时，例如</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i, name := <span class="keyword">range</span> names &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>其中<code>name</code>变量是值拷贝，每一次迭代都将对应<code>i</code>位置上的值拷贝到变量<code>name</code>上，因此你无法通过改变<code>name</code>的值来改变切片<code>names</code>对应位置上的值。当然，我们都知道在迭代中修改原切片是十分不好的编程习惯。</p>
-</li>
-</ol>
-<h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
-<li><a href="https://blog.golang.org/go-slices-usage-and-internals" target="_blank" rel="noopener">https://blog.golang.org/go-slices-usage-and-internals</a></li>
-<li><a href="https://golang.org/ref/spec#Slice_types" target="_blank" rel="noopener">https://golang.org/ref/spec#Slice_types</a></li>
-<li><a href="https://i6448038.github.io/2018/08/11/array-and-slice-principle/" target="_blank" rel="noopener">https://i6448038.github.io/2018/08/11/array-and-slice-principle/</a></li>
-<li><a href="https://halfrost.com/go_slice/" target="_blank" rel="noopener">https://halfrost.com/go_slice/</a></li>
-</ul>
-
-          
+          <p>最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。<br>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2019/10/03/slice-in-go/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
-    </div>
+    </p></div>
     
     
     

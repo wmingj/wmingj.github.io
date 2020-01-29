@@ -79,13 +79,13 @@
 
 
 
-<meta name="description" content="最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。 数组 vs 切片对于初学者来说，我们必须分清楚数组与切片的区别。 在Go中，数组与其他语言并无太大区别，都是一段指定长度的连续内存空间。例如如下代码，我们声明一个长度为4，类型为int的数组a。 1var a">
+<meta name="description" content="最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。">
 <meta name="keywords" content="Golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="理解Golang中的slice">
 <meta property="og:url" content="http://yoursite.com/2019/10/03/slice-in-go/index.html">
 <meta property="og:site_name" content="Eren with you">
-<meta property="og:description" content="最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。 数组 vs 切片对于初学者来说，我们必须分清楚数组与切片的区别。 在Go中，数组与其他语言并无太大区别，都是一段指定长度的连续内存空间。例如如下代码，我们声明一个长度为4，类型为int的数组a。 1var a">
+<meta property="og:description" content="最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/array.png">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-2.png">
@@ -93,10 +93,10 @@
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-4.png">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-5.png">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-6.png">
-<meta property="og:updated_time" content="2020-01-29T15:21:25.753Z">
+<meta property="og:updated_time" content="2020-01-29T15:27:47.751Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="理解Golang中的slice">
-<meta name="twitter:description" content="最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。 数组 vs 切片对于初学者来说，我们必须分清楚数组与切片的区别。 在Go中，数组与其他语言并无太大区别，都是一段指定长度的连续内存空间。例如如下代码，我们声明一个长度为4，类型为int的数组a。 1var a">
+<meta name="twitter:description" content="最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。">
 <meta name="twitter:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/array.png">
 
 
@@ -347,7 +347,7 @@
       
 
       
-        <p>最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。</p>
+        <p>最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。<br><a id="more"></a></p>
 <h4 id="数组-vs-切片"><a href="#数组-vs-切片" class="headerlink" title="数组 vs 切片"></a>数组 vs 切片</h4><p>对于初学者来说，我们必须分清楚数组与切片的区别。</p>
 <p>在Go中，数组与其他语言并无太大区别，都是一段指定长度的连续内存空间。例如如下代码，我们声明一个长度为4，类型为<code>int</code>的数组<code>a</code>。</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a [<span class="number">4</span>]<span class="keyword">int</span></span><br></pre></td></tr></table></figure>
