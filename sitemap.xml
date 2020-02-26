@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2020/02/01/map-in-go/</loc>
-    
-    <lastmod>2020-02-26T08:52:25.381Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://yoursite.com/2019/12/11/string-in-golang/</loc>
     
-    <lastmod>2020-02-24T11:55:31.672Z</lastmod>
+    <lastmod>2020-02-26T09:06:52.193Z</lastmod>
     
   </url>
   
   <url>
     <loc>http://yoursite.com/2019/10/03/slice-in-go/</loc>
     
-    <lastmod>2020-02-24T11:55:23.103Z</lastmod>
+    <lastmod>2020-02-26T09:06:32.763Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://yoursite.com/2020/02/01/map-in-go/</loc>
+    
+    <lastmod>2020-02-26T09:05:54.686Z</lastmod>
     
   </url>
   
