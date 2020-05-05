@@ -1,5 +1,5 @@
-http://yoursite.com/2020/02/01/map-in-go/
-http://yoursite.com/2019/12/20/understand-middleware/
-http://yoursite.com/2019/12/11/string-in-golang/
-http://yoursite.com/2019/10/03/slice-in-go/
-http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/
+https://erenming.com/2020/04/08/go-reflec-usage-guide/
+https://erenming.com/2020/02/01/map-in-go/
+https://erenming.com/2019/12/20/understand-middleware/
+https://erenming.com/2019/12/11/string-in-golang/
+https://erenming.com/2019/10/03/slice-in-go/

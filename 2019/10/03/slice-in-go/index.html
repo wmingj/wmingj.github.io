@@ -83,7 +83,7 @@
 <meta name="keywords" content="Golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Golang中的slice实现">
-<meta property="og:url" content="http://yoursite.com/2019/10/03/slice-in-go/index.html">
+<meta property="og:url" content="https://erenming.com/2019/10/03/slice-in-go/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。">
 <meta property="og:locale" content="zh-Hans">
@@ -93,7 +93,7 @@
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-4.png">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-5.png">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/img/slice-6.png">
-<meta property="og:updated_time" content="2020-02-26T09:06:32.763Z">
+<meta property="og:updated_time" content="2020-05-05T04:56:56.158Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Golang中的slice实现">
 <meta name="twitter:description" content="最近闲来无事，深入研究了slice在Golang中的实现并简要阅读了其相关的底层实现代码后，对于实际工作中的一些slice相关代码的写法与Bug有了一种豁然开朗的感觉。故记录下来，与君分享。">
@@ -127,7 +127,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/10/03/slice-in-go/">
+  <link rel="canonical" href="https://erenming.com/2019/10/03/slice-in-go/">
 
 
 
@@ -270,7 +270,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/03/slice-in-go/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/10/03/slice-in-go/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -322,8 +322,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/源码学习/" itemprop="url" rel="index">
-                    <span itemprop="name">源码学习</span>
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
                   </a>
                 </span>
 
@@ -415,6 +415,7 @@
 <p>其中<code>name</code>变量是值拷贝，每一次迭代都将对应<code>i</code>位置上的值拷贝到变量<code>name</code>上，因此你无法通过改变<code>name</code>的值来改变切片<code>names</code>对应位置上的值。当然，我们都知道在迭代中修改原切片是十分不好的编程习惯。</p>
 </li>
 </ol>
+<p><em>本人才疏学浅，文章难免有些不足之处，非常欢迎大家评论指出。</em></p>
 <h4 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h4><ul>
 <li><a href="https://blog.golang.org/go-slices-usage-and-internals" target="_blank" rel="noopener">https://blog.golang.org/go-slices-usage-and-internals</a></li>
 <li><a href="https://golang.org/ref/spec#Slice_types" target="_blank" rel="noopener">https://golang.org/ref/spec#Slice_types</a></li>
@@ -550,7 +551,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -561,7 +562,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -792,7 +793,7 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2019/10/03/slice-in-go/';
+          this.page.url = 'https://erenming.com/2019/10/03/slice-in-go/';
           this.page.identifier = '2019/10/03/slice-in-go/';
           this.page.title = 'Golang中的slice实现';
         };

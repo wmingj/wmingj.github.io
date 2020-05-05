@@ -83,11 +83,11 @@
 <meta name="keywords" content="Golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用嵌套结构来实现类型组合">
-<meta property="og:url" content="http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/index.html">
+<meta property="og:url" content="https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="什么是嵌套结构(Embedded Struct)我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)。其他术语：  嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段 组合类型：一个类型由将多个类型组合而">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-12-12T09:11:09.533Z">
+<meta property="og:updated_time" content="2020-05-05T04:40:34.769Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用嵌套结构来实现类型组合">
 <meta name="twitter:description" content="什么是嵌套结构(Embedded Struct)我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)。其他术语：  嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段 组合类型：一个类型由将多个类型组合而">
@@ -120,7 +120,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/">
+  <link rel="canonical" href="https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/">
 
 
 
@@ -263,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -368,7 +368,7 @@
 </code></pre><h2 id="注意点"><a href="#注意点" class="headerlink" title="注意点"></a>注意点</h2><ul>
 <li>结构中，字段名必须是唯一的(也包括提升了的(promoted)方法与字段)，否则报错</li>
 </ul>
-<h2 id="小剧场"><a href="#小剧场" class="headerlink" title="小剧场"></a>小剧场</h2><p>很高兴你能看完我的文章，相信你也有了自己的理解，或者对于发现了文中的纰漏，欢迎你在评论区分享或指出意见。</p>
+<p><em>本人才疏学浅，文章难免有些不足之处，非常欢迎大家评论指出。</em></p>
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><ul>
 <li><a href="https://travix.io/type-embedding-in-go-ba40dd4264df" target="_blank" rel="noopener">https://travix.io/type-embedding-in-go-ba40dd4264df</a></li>
 <li><a href="https://golangbot.com/inheritance/" target="_blank" rel="noopener">https://golangbot.com/inheritance/</a></li>
@@ -503,7 +503,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -514,7 +514,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -574,7 +574,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是嵌套结构-Embedded-Struct"><span class="nav-number">1.</span> <span class="nav-text">什么是嵌套结构(Embedded Struct)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要使用嵌套结构"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用嵌套结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用"><span class="nav-number">3.</span> <span class="nav-text">如何使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意点"><span class="nav-number">4.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#小剧场"><span class="nav-number">5.</span> <span class="nav-text">小剧场</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">6.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是嵌套结构-Embedded-Struct"><span class="nav-number">1.</span> <span class="nav-text">什么是嵌套结构(Embedded Struct)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#为什么要使用嵌套结构"><span class="nav-number">2.</span> <span class="nav-text">为什么要使用嵌套结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#如何使用"><span class="nav-number">3.</span> <span class="nav-text">如何使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#注意点"><span class="nav-number">4.</span> <span class="nav-text">注意点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
             
 
           </div>
@@ -745,7 +745,7 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/';
+          this.page.url = 'https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/';
           this.page.identifier = '2019/10/03/composinge-types-with-struct-embedding/';
           this.page.title = '用嵌套结构来实现类型组合';
         };

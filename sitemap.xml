@@ -2,56 +2,63 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2020/02/01/map-in-go/</loc>
+    <loc>https://erenming.com/2019/10/03/slice-in-go/</loc>
+    
+    <lastmod>2020-05-05T04:56:56.158Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://erenming.com/2020/04/08/go-reflec-usage-guide/</loc>
+    
+    <lastmod>2020-05-05T04:50:34.736Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://erenming.com/2019/12/20/understand-middleware/</loc>
+    
+    <lastmod>2020-05-05T04:41:17.335Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://erenming.com/2019/12/11/string-in-golang/</loc>
+    
+    <lastmod>2020-05-05T04:41:06.242Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/</loc>
+    
+    <lastmod>2020-05-05T04:40:34.769Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://erenming.com/2020/02/01/map-in-go/</loc>
     
     <lastmod>2020-02-27T02:10:24.803Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/2019/12/11/string-in-golang/</loc>
-    
-    <lastmod>2020-02-26T09:06:52.193Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2019/10/03/slice-in-go/</loc>
-    
-    <lastmod>2020-02-26T09:06:32.763Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/2019/12/20/understand-middleware/</loc>
-    
-    <lastmod>2019-12-21T12:07:15.347Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/about/index.html</loc>
+    <loc>https://erenming.com/about/index.html</loc>
     
     <lastmod>2019-12-19T07:09:45.141Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/</loc>
-    
-    <lastmod>2019-12-12T09:11:09.533Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://yoursite.com/tags/index.html</loc>
+    <loc>https://erenming.com/tags/index.html</loc>
     
     <lastmod>2019-08-30T05:32:24.692Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://yoursite.com/categories/index.html</loc>
+    <loc>https://erenming.com/categories/index.html</loc>
     
     <lastmod>2019-08-30T05:32:21.456Z</lastmod>
     

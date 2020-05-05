@@ -83,13 +83,13 @@
 <meta name="keywords" content="Golang,Backend">
 <meta property="og:type" content="article">
 <meta property="og:title" content="用Golang实现并理解Web中间件">
-<meta property="og:url" content="http://yoursite.com/2019/12/20/understand-middleware/index.html">
+<meta property="og:url" content="https://erenming.com/2019/12/20/understand-middleware/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="在编写web应用中，我们常常会遇到这样的需求，比如，我们需要上报每个API的运行时间到运维监控系统。这时候你可以像下述代码一样将统计的逻辑写到每个路由函数中。">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/middleware/req-flow.jpg">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/middleware/func-chain.jpg">
-<meta property="og:updated_time" content="2019-12-21T12:07:15.347Z">
+<meta property="og:updated_time" content="2020-05-05T04:41:17.335Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用Golang实现并理解Web中间件">
 <meta name="twitter:description" content="在编写web应用中，我们常常会遇到这样的需求，比如，我们需要上报每个API的运行时间到运维监控系统。这时候你可以像下述代码一样将统计的逻辑写到每个路由函数中。">
@@ -123,7 +123,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/12/20/understand-middleware/">
+  <link rel="canonical" href="https://erenming.com/2019/12/20/understand-middleware/">
 
 
 
@@ -266,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/20/understand-middleware/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/12/20/understand-middleware/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -369,6 +369,7 @@
 <li>对于Web框架而言，类似于<code>Flask</code>里面的<code>before_request</code>和<code>after_request</code>钩子函数，<code>next.ServeHTTP</code>之前逻辑的等同于<code>before_request</code>里的逻辑、之后的等同于于<code>after_request</code>里的逻辑。</li>
 <li>在业务开发中，我们应尽量将非业务逻辑抽象到中间件中，实现代码的松耦合与易扩展。</li>
 </ol>
+<p><em>本人才疏学浅，文章难免有些不足之处，非常欢迎大家评论指出。</em></p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
 <li><a href="https://github.com/chai2010/advanced-go-programming-book/blob/master/ch5-web/ch5-03-middleware.md" target="_blank" rel="noopener">https://github.com/chai2010/advanced-go-programming-book/blob/master/ch5-web/ch5-03-middleware.md</a></li>
 <li><a href="https://www.alexedwards.net/blog/making-and-using-middleware" target="_blank" rel="noopener">https://www.alexedwards.net/blog/making-and-using-middleware</a></li>
@@ -505,7 +506,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -516,7 +517,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -747,7 +748,7 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2019/12/20/understand-middleware/';
+          this.page.url = 'https://erenming.com/2019/12/20/understand-middleware/';
           this.page.identifier = '2019/12/20/understand-middleware/';
           this.page.title = '用Golang实现并理解Web中间件';
         };

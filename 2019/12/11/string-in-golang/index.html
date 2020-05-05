@@ -83,12 +83,12 @@
 <meta name="keywords" content="Golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Golang中的string实现">
-<meta property="og:url" content="http://yoursite.com/2019/12/11/string-in-golang/index.html">
+<meta property="og:url" content="https://erenming.com/2019/12/11/string-in-golang/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="说到string类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://blog-1300816757.cos.ap-shanghai.myqcloud.com/string-in-golang/nihao.png">
-<meta property="og:updated_time" content="2020-02-26T09:06:52.193Z">
+<meta property="og:updated_time" content="2020-05-05T04:41:06.242Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Golang中的string实现">
 <meta name="twitter:description" content="说到string类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟">
@@ -122,7 +122,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/12/11/string-in-golang/">
+  <link rel="canonical" href="https://erenming.com/2019/12/11/string-in-golang/">
 
 
 
@@ -265,7 +265,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/11/string-in-golang/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/12/11/string-in-golang/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -390,6 +390,7 @@
 <li>通过下标访问字符串时，返回的是一个字节，这往往与我们的直觉相背。所以，如果你一定要通过下标访问字符串，可以先将其转换为<code>[]rune</code>类型</li>
 <li>字符串可以看做是一个<strong>只读字节切片</strong>, 支持切片操作。</li>
 </ul>
+<p><em>本人才疏学浅，文章难免有些不足之处，非常欢迎大家评论指出。</em></p>
 <h3 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h3><ul>
 <li><a href="https://chorer.github.io/2019/09/16/CB-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9Fcp1/" target="_blank" rel="noopener">https://chorer.github.io/2019/09/16/CB-%E6%B7%B1%E5%85%A5%E7%90%86%E8%A7%A3%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%B3%BB%E7%BB%9Fcp1/</a></li>
 <li><a href="https://draveness.me/golang/datastructure/golang-string.html" target="_blank" rel="noopener">https://draveness.me/golang/datastructure/golang-string.html</a></li>
@@ -526,7 +527,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -537,7 +538,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -768,7 +769,7 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'http://yoursite.com/2019/12/11/string-in-golang/';
+          this.page.url = 'https://erenming.com/2019/12/11/string-in-golang/';
           this.page.identifier = '2019/12/11/string-in-golang/';
           this.page.title = 'Golang中的string实现';
         };

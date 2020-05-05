@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>http://yoursite.com/2020/02/01/map-in-go/</loc>
+    <loc>https://erenming.com/2019/10/03/slice-in-go/</loc>
+    <lastmod>2020-05-05</lastmod>
+  </url>  <url>
+    <loc>https://erenming.com/2020/04/08/go-reflec-usage-guide/</loc>
+    <lastmod>2020-05-05</lastmod>
+  </url>  <url>
+    <loc>https://erenming.com/2019/12/20/understand-middleware/</loc>
+    <lastmod>2020-05-05</lastmod>
+  </url>  <url>
+    <loc>https://erenming.com/2019/12/11/string-in-golang/</loc>
+    <lastmod>2020-05-05</lastmod>
+  </url>  <url>
+    <loc>https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/</loc>
+    <lastmod>2020-05-05</lastmod>
+  </url>  <url>
+    <loc>https://erenming.com/2020/02/01/map-in-go/</loc>
     <lastmod>2020-02-27</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2019/12/11/string-in-golang/</loc>
-    <lastmod>2020-02-26</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2019/10/03/slice-in-go/</loc>
-    <lastmod>2020-02-26</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2019/12/20/understand-middleware/</loc>
-    <lastmod>2019-12-21</lastmod>
-  </url>  <url>
-    <loc>http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/</loc>
-    <lastmod>2019-12-12</lastmod>
   </url>
 </urlset>

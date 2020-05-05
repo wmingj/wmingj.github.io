@@ -81,7 +81,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Eren with you">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="https://erenming.com/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
@@ -115,7 +115,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="https://erenming.com/">
 
 
 
@@ -259,7 +259,184 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/01/map-in-go/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/04/08/go-reflec-usage-guide/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Eren Ming">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eren with you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/04/08/go-reflec-usage-guide/" itemprop="url">Golang reflect使用指南</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-04-08T00:04:13+08:00">
+                2020-04-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/04/08/go-reflec-usage-guide/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/04/08/go-reflec-usage-guide/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>Go提供了各种变量、切片、结构体等等特性，我们可以非常方便的定义与使用它们。例如，当你想定义一个结构体的类型，只需要简单地定义：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> A <span class="keyword">struct</span> &#123;</span><br><span class="line">  Name <span class="keyword">string</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然而，当需要处理处理动态数据结构时，我们无法在编译阶段就知道未知数据的结构，其中一个非常经典的使用情景就是对Json串的Marshal。此时，就该<code>reflect</code>包出场了，它提供了在运行时创建、更新某种类型以及获取该类型的各种信息的能力，有了它，我们不仅能有效处理动态数据类型，还可以大大提高代码的复用性、可读性。</p>
+<h2 id="Type"><a href="#Type" class="headerlink" title="Type"></a>Type</h2><p>在reflect包中，是用<code>Type</code>来描述Go中某个对象的类型，并提供了一系列方法，来获取类型的相关信息，一般通过调用<code>TypeOf</code>来获取一个任意变量的类型<code>Type</code>。</p>
+<p>例如，<code>Name()</code>返回的就是该类型的具体名称，<code>String()</code>返回类型的字符串表示。</p>
+<p>值得注意的是<code>Kind()</code>方法，它返回的是该类型的类别，这似乎有点拗口，但其实十分好理解，举个例子，<code>type A struct{}</code> ，它的类型是A而类别是struct。通常，在开始阶段，我们会先判断传入的interface的类别，从而避免panic。因为有些方法只适用于某种类别，随意使用的话代码很容易panic，例如<code>NumField()</code>方法，只能用以获取Kind为结构体的字段数量。</p>
+<p>还有一个方法<code>Elem()</code>，返回Type的子元素的Type。举个例子，若Type为指针，那么<code>Elem()</code>返回指针所指向的Type，若为切片，则<code>Elem()</code>返回切片元素的类型Type。例如<code>*[]int</code>，它的<code>Elem()</code>方法返回<code>[]int</code>的Type。而<code>[]int</code>的<code>Elem()</code>方法返回<code>int</code>的Type。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> A []<span class="keyword">int</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">printInfo</span><span class="params">(t reflect.Type)</span></span> &#123;</span><br><span class="line">	fmt.Printf(<span class="string">"Kind = %s\tName = %s\n"</span>, t.Kind(), t.Name())</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	a := &amp;A&#123;&#125;</span><br><span class="line">	printInfo(reflect.TypeOf(a))</span><br><span class="line">	printInfo(reflect.TypeOf(a).Elem())</span><br><span class="line">	printInfo(reflect.TypeOf(a).Elem().Elem())</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Kind = ptr      Name = </span><br><span class="line">Kind = slice    Name = A</span><br><span class="line">Kind = int      Name = int</span><br></pre></td></tr></table></figure>
+<h2 id="Value"><a href="#Value" class="headerlink" title="Value"></a>Value</h2><p>而<code>Value</code>描述了在Go运行时某个对象的值，我们可以针对它进行增删改查之类的操作，一般通过<code>ValueOf</code>方法来获取对象的<code>Value</code>。</p>
+<p>通常情况下，我们可以通过<code>Set()</code>方法来修改变量的值。例如下述代码</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> a = <span class="number">1</span></span><br><span class="line">val := reflect.ValueOf(&amp;a)</span><br><span class="line">val.Elem().Set(reflect.ValueOf(<span class="number">2</span>))</span><br><span class="line">fmt.Printf(<span class="string">"a = %d"</span>, a)</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a = 2</span><br></pre></td></tr></table></figure>
+<p>可以看到，变量a的值由1被修改为2了。</p>
+<h2 id="使用举例"><a href="#使用举例" class="headerlink" title="使用举例"></a>使用举例</h2><h4 id="动态初始化结构体"><a href="#动态初始化结构体" class="headerlink" title="动态初始化结构体"></a>动态初始化结构体</h4><p>实际工作中，<code>struct</code>通常用来表示某种数据结构(或对象)，是十分简洁易懂的。然而，缺点也很明显，即其表达能力很有限，比如，你想指定某个字段的默认值，你不得不在构造函数中手动指定。这种方式虽然可行，但是不够优雅，可读性也很差。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> DS <span class="keyword">struct</span> &#123;</span><br><span class="line">	FieldOne <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewDS</span><span class="params">()</span> *<span class="title">DS</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;DS&#123;</span><br><span class="line">		FieldOne: <span class="string">"something"</span>,</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>那么该如何优化呢？很简单，即利用字段的tag信息。例如，下述代码，我在tag中设置了默认值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> DS <span class="keyword">struct</span> &#123;</span><br><span class="line">	FieldOne <span class="keyword">string</span> <span class="string">`default:"something"`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，我使用一个初始化函数<code>initStruct()</code>来读取tag并设置字段默认值。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewDS</span><span class="params">()</span> *<span class="title">DS</span></span> &#123;</span><br><span class="line">	ds := &amp;DS&#123;&#125;</span><br><span class="line">	initStruct(ds)</span><br><span class="line">	fmt.Printf(<span class="string">"FieldOne = %s"</span>, ds.FieldOne)</span><br><span class="line">	<span class="keyword">return</span> ds</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">initStruct</span><span class="params">(v <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   e := reflect.Indirect(reflect.ValueOf(v))</span><br><span class="line">   <span class="keyword">if</span> e.Kind() != reflect.Struct &#123;</span><br><span class="line">      <span class="keyword">return</span> errors.New(<span class="string">"v must be struct"</span>)</span><br><span class="line">   &#125;</span><br><span class="line">   et, ev := e.Type(), e</span><br><span class="line">   <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; et.NumField(); i++ &#123;</span><br><span class="line">      field, val := et.Field(i), ev.Field(i)</span><br><span class="line">      defaultValue, ok := field.Tag.Lookup(<span class="string">"default"</span>)</span><br><span class="line">      <span class="keyword">if</span> !ok &#123;</span><br><span class="line">         <span class="keyword">continue</span></span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">switch</span> field.Type.Kind() &#123;</span><br><span class="line">      <span class="keyword">case</span> reflect.String:</span><br><span class="line">         val.SetString(defaultValue)</span><br><span class="line">      <span class="keyword">case</span> reflect.Int:</span><br><span class="line">         <span class="keyword">if</span> x, err := strconv.ParseInt(defaultValue, <span class="number">10</span>, <span class="number">64</span>); err != <span class="literal">nil</span> &#123;</span><br><span class="line">            val.SetInt(x)</span><br><span class="line">         &#125;</span><br><span class="line">      <span class="comment">// 针对不同Kind，将defaultValue转换为对应类型并赋值</span></span><br><span class="line">      ...</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>至此，我们就可以既方便又优雅地给结构体设置默认值了，当然，你还可以在tag中设置其他动态属性来动态更改结构体。</p>
+<h4 id="动态创建Map"><a href="#动态创建Map" class="headerlink" title="动态创建Map"></a>动态创建Map</h4><p>通常情况下，我们是通过<code>make</code>来创建一个map，而有了<code>reflect</code>包后，我们也可以通过<code>reflet</code>包来动态地创建一个map。</p>
+<p>这里，我们有个需求，需要将一个代表长方形的结构体转换为一个map，并且存在额外要求，例如浮点字段只保留两位小数且转换为字符串。</p>
+<p>首先，定义一个名为<code>Rectangle</code>的结构体来代表一个长方形</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">type</span> Rectangle <span class="keyword">struct</span> &#123;</span><br><span class="line">	Name   <span class="keyword">string</span></span><br><span class="line">	Unit   <span class="keyword">string</span></span><br><span class="line">	Length <span class="keyword">float64</span></span><br><span class="line">	Width  <span class="keyword">float64</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后，使用一个<code>convert</code>函数，将其转换为map。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">convert</span><span class="params">(rectangle *Rectangle)</span> <span class="params">(res <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>, err error)</span></span> &#123;</span><br><span class="line">	e := reflect.Indirect(reflect.ValueOf(rectangle))</span><br><span class="line">	<span class="keyword">if</span> e.Kind() != reflect.Struct &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, errors.New(<span class="string">"v must be struct"</span>)</span><br><span class="line">	&#125;</span><br><span class="line">	et, ev := e.Type(), e</span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> mapStringType = reflect.TypeOf(<span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>))</span><br><span class="line">	mapReflect := reflect.MakeMap(mapStringType)</span><br><span class="line">	<span class="keyword">for</span> i := <span class="number">0</span>; i &lt; et.NumField(); i++ &#123;</span><br><span class="line">		field, val := et.Field(i), ev.Field(i)</span><br><span class="line">		<span class="keyword">switch</span> field.Type.Kind() &#123;</span><br><span class="line">		<span class="keyword">case</span> reflect.String:</span><br><span class="line">			mapReflect.SetMapIndex(reflect.ValueOf(field.Name), reflect.ValueOf(val.String()))</span><br><span class="line">		<span class="keyword">case</span> reflect.Float64:</span><br><span class="line">			s := strconv.FormatFloat(val.Float(), <span class="string">'f'</span>, <span class="number">2</span>, <span class="number">64</span>)</span><br><span class="line">			mapReflect.SetMapIndex(reflect.ValueOf(field.Name), reflect.ValueOf(s))</span><br><span class="line">		<span class="comment">// other cases</span></span><br><span class="line">		...</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> mapReflect.Interface().(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，我们可以打印出转换后的map。</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	res, _ := convert(&amp;Rectangle&#123;</span><br><span class="line">		Name: <span class="string">"rec-1"</span>,</span><br><span class="line">		Unit: <span class="string">"cm"</span>,</span><br><span class="line">		Length: <span class="number">12.121764</span>,</span><br><span class="line">		Width: <span class="number">5.989681</span>,</span><br><span class="line">	&#125;)</span><br><span class="line">	fmt.Printf(<span class="string">"res = %+v"</span>, res)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">res = map[Length:12.12 Name:rec-1 Unit:cm Width:5.99]</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>至此，对于<code>reflect</code>的简单介绍已完毕，相信你已经有了一个大概的认知了。是不是觉得这个包很强大，想跃跃欲试呢？但是，在此之前，还是要提醒你要铭记以下注意点。</p>
+<ol>
+<li><code>reflect</code>大多只能适用于动态数据类型的场景，且较为危险，因此能使用原生类型尽量使用原生类型。</li>
+<li>书写要小心，错误使用reflect很容易panic，你需要确保你的类型使用了正确的相关方法，并提前返回错误。</li>
+<li>编程界没有银弹，因此<code>reflect</code>也不是万能，例如你无法动态创建结构体的方法。</li>
+</ol>
+<p><em>本人才疏学浅，文章难免有些不足之处，非常欢迎大家评论指出。</em></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://medium.com/capital-one-tech/learning-to-use-go-reflection-822a0aed74b7" target="_blank" rel="noopener">Learning to Use Go Reflection - Capital One Tech - Medium</a></li>
+<li><p><a href="https://blog.golang.org/laws-of-reflection" target="_blank" rel="noopener">The Laws of Reflection - The Go Blog - Golang</a></p>
+</li>
+<li><p><a href="https://golangbot.com/reflection/" target="_blank" rel="noopener">Reflection in Golang - golangbot.com</a></p>
+</li>
+<li><a href="https://draveness.me/golang-reflect/" target="_blank" rel="noopener">Go 语言反射的实现原理| Go 语言设计与实现 - 面向信仰编程</a></li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/02/01/map-in-go/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -444,7 +621,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/20/understand-middleware/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/12/20/understand-middleware/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -578,7 +755,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/11/string-in-golang/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/12/11/string-in-golang/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -734,7 +911,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/03/slice-in-go/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/10/03/slice-in-go/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -788,8 +965,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/源码学习/" itemprop="url" rel="index">
-                    <span itemprop="name">源码学习</span>
+                  <a href="/categories/Golang/" itemprop="url" rel="index">
+                    <span itemprop="name">Golang</span>
                   </a>
                 </span>
 
@@ -890,7 +1067,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/03/composinge-types-with-struct-embedding/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -1060,7 +1237,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1071,7 +1248,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
