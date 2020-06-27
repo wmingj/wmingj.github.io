@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://erenming.com/2020/06/27/record-a-goroutine-leak/</loc>
+    
+    <lastmod>2020-06-27T07:55:56.459Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://erenming.com/2019/10/03/slice-in-go/</loc>
     
     <lastmod>2020-05-05T04:56:56.158Z</lastmod>
