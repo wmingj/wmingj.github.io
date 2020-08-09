@@ -259,6 +259,189 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Eren Ming">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eren with you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/08/08/【读书笔记】设计数据密集型应用/" itemprop="url">【读书笔记】设计数据密集型应用</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-08T11:28:27+08:00">
+                2020-08-08
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/读万卷书/" itemprop="url" rel="index">
+                    <span itemprop="name">读万卷书</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/08/08/【读书笔记】设计数据密集型应用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/08/08/【读书笔记】设计数据密集型应用/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h1><h2 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h2><p>针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure</p>
+<h4 id="硬件错误"><a href="#硬件错误" class="headerlink" title="硬件错误"></a>硬件错误</h4><ol>
+<li>硬件自身容许设计</li>
+<li>软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统</li>
+</ol>
+<h4 id="软件错误"><a href="#软件错误" class="headerlink" title="软件错误"></a>软件错误</h4><ol>
+<li>影响范围大，连锁反应，排查难。bug，依赖服务错误等</li>
+<li>避免：考虑全面，全面测试，处理隔离，监控</li>
+</ol>
+<h4 id="人类错误"><a href="#人类错误" class="headerlink" title="人类错误"></a>人类错误</h4><ol>
+<li>最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控</li>
+</ol>
+<h2 id="Scaliability-可扩展性"><a href="#Scaliability-可扩展性" class="headerlink" title="Scaliability(可扩展性)"></a>Scaliability(可扩展性)</h2><ol>
+<li>Load描述，又称load parameters：CPU， 内存，网络等因素，这取决于系统的设计</li>
+<li>性能描述：通常使用percentiles(百分位数)，99th, 98th等。<ul>
+<li>监控度量percentiles: 使用计算窗口，即保存窗口时间内的数据，并计算排序。其他算法，forwar decay、t-digits等也可</li>
+</ul>
+</li>
+<li><p>应对Load: </p>
+<ul>
+<li>纵向扩展：升级到更高性能的机器</li>
+<li>水平扩展：将Load分摊到多台相似的虚拟机上</li>
+</ul>
+</li>
+<li><p>扩展性是针对特定的假设来设计的，而假设可能是错误的。因此在应用初期，应该采取功能快速迭代的方式，而非基于假设的去支持扩展</p>
+</li>
+</ol>
+<h2 id="Maintainability-可维护性"><a href="#Maintainability-可维护性" class="headerlink" title="Maintainability(可维护性)"></a>Maintainability(可维护性)</h2><ol>
+<li>Operability，可操作&amp;运维性：提供监控指标、文档、好的默认配置、好的工具等</li>
+<li>Simplicity，Managing Complexity：通过抽象降低复杂度</li>
+<li>Evolvability，Making Change Easy：敏捷的工作模式，TDD，重构</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/08/02/【踩坑日记】一次抓包排查实战/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1608,7 +1791,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-count">9</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1619,7 +1802,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>

@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Golang,Linux,">
+  <meta name="keywords" content="Hexo, NexT">
 
 
 
@@ -79,21 +79,17 @@
 
 
 
-<meta name="description" content="问题的发现前段时间，我们一个基于libbeat开发的日志采集服务经常发生OOM的告警，OOM的排查大都比较简单，直接查看目标容器的内存变化情况即可。如图所示  从上图可以看出，内存随着时间呈线增长的趋势，然后在到达阈值之后瞬间降为0，实际上就是OOM了。 相信稍微有点经验的同学，应该都能大致断定这是个内存泄露的问题了。而Go程序的内存泄露大部分则都是goroutine泄露导致的。 画外音  这里，">
-<meta name="keywords" content="Golang,Linux">
+<meta name="description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【踩坑日记】一次goroutine泄露问题的排查定位">
-<meta property="og:url" content="https://erenming.com/2020/06/27/record-a-goroutine-leak/index.html">
+<meta property="og:title" content="【读书笔记】设计数据密集型应用">
+<meta property="og:url" content="https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/index.html">
 <meta property="og:site_name" content="Eren with you">
-<meta property="og:description" content="问题的发现前段时间，我们一个基于libbeat开发的日志采集服务经常发生OOM的告警，OOM的排查大都比较简单，直接查看目标容器的内存变化情况即可。如图所示  从上图可以看出，内存随着时间呈线增长的趋势，然后在到达阈值之后瞬间降为0，实际上就是OOM了。 相信稍微有点经验的同学，应该都能大致断定这是个内存泄露的问题了。而Go程序的内存泄露大部分则都是goroutine泄露导致的。 画外音  这里，">
+<meta property="og:description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/WechatIMG25.jpeg">
-<meta property="og:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/leak1.png">
-<meta property="og:updated_time" content="2020-08-02T03:03:21.417Z">
+<meta property="og:updated_time" content="2020-08-09T04:24:34.081Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【踩坑日记】一次goroutine泄露问题的排查定位">
-<meta name="twitter:description" content="问题的发现前段时间，我们一个基于libbeat开发的日志采集服务经常发生OOM的告警，OOM的排查大都比较简单，直接查看目标容器的内存变化情况即可。如图所示  从上图可以看出，内存随着时间呈线增长的趋势，然后在到达阈值之后瞬间降为0，实际上就是OOM了。 相信稍微有点经验的同学，应该都能大致断定这是个内存泄露的问题了。而Go程序的内存泄露大部分则都是goroutine泄露导致的。 画外音  这里，">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/WechatIMG25.jpeg">
+<meta name="twitter:title" content="【读书笔记】设计数据密集型应用">
+<meta name="twitter:description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
 
 
 
@@ -123,13 +119,13 @@
 
 
 
-  <link rel="canonical" href="https://erenming.com/2020/06/27/record-a-goroutine-leak/">
+  <link rel="canonical" href="https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/">
 
 
 
 
 
-  <title>【踩坑日记】一次goroutine泄露问题的排查定位 | Eren with you</title>
+  <title>【读书笔记】设计数据密集型应用 | Eren with you</title>
   
 
 
@@ -266,7 +262,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/06/27/record-a-goroutine-leak/">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -283,7 +279,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">【踩坑日记】一次goroutine泄露问题的排查定位</h1>
+          <h1 class="post-title" itemprop="name headline">【读书笔记】设计数据密集型应用</h1>
         
 
         <div class="post-meta">
@@ -295,8 +291,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-06-27T12:59:45+08:00">
-                2020-06-27
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-08-08T11:28:27+08:00">
+                2020-08-08
               </time>
             
 
@@ -318,8 +314,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/踩坑日记/" itemprop="url" rel="index">
-                    <span itemprop="name">踩坑日记</span>
+                  <a href="/categories/读万卷书/" itemprop="url" rel="index">
+                    <span itemprop="name">读万卷书</span>
                   </a>
                 </span>
 
@@ -336,8 +332,8 @@
                 <span class="post-meta-item-icon">
                   <i class="fa fa-comment-o"></i>
                 </span>
-                <a href="/2020/06/27/record-a-goroutine-leak/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/06/27/record-a-goroutine-leak/" itemprop="commentCount"></span>
+                <a href="/2020/08/08/【读书笔记】设计数据密集型应用/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/08/08/【读书笔记】设计数据密集型应用/" itemprop="commentCount"></span>
                 </a>
               </span>
             
@@ -365,42 +361,38 @@
       
 
       
-        <h2 id="问题的发现"><a href="#问题的发现" class="headerlink" title="问题的发现"></a>问题的发现</h2><p>前段时间，我们一个基于libbeat开发的日志采集服务经常发生OOM的告警，OOM的排查大都比较简单，直接查看目标容器的内存变化情况即可。如图所示</p>
-<p><img src="https://raw.githubusercontent.com/erenming/image-pool/master/blog/WechatIMG25.jpeg" style="float:center; width:600px;height:500 px"></p>
-<p>从上图可以看出，内存随着时间呈线增长的趋势，然后在到达阈值之后瞬间降为0，实际上就是OOM了。</p>
-<p>相信稍微有点经验的同学，应该都能大致断定这是个内存泄露的问题了。而Go程序的内存泄露大部分则都是goroutine泄露导致的。</p>
-<p>画外音</p>
-<blockquote>
-<p>这里，若你的程序并没有接入监控，那么也可以通过vmstat工具来人工观察内存的变化情况。不管怎样，我们需要的是能观察到内存随时间的变化情况。</p>
-</blockquote>
-<h2 id="问题代码段定位"><a href="#问题代码段定位" class="headerlink" title="问题代码段定位"></a>问题代码段定位</h2><p>既然知道了问题的大致方向，那自然也就有了排查思路了。</p>
-<p>首先，既然是用Go编写的应用程序，那么很自然，我们就应该想到<code>pprof</code>工具，它会动态跟踪记录程序运行过程中的各项参数，并提供各种工具图表来帮助你定位问题，功能强大又好用。这里，如果你对<code>pprof</code>工具还不熟悉的，建议先行阅读<a href="https://golang.org/pkg/net/http/pprof/" target="_blank" rel="noopener">官方文档</a>或者Google一些入门教程。</p>
-<p>接着，我通过添加启动参数<code>--pprof</code>，来激活预置的pprof端口服务。通常，我们会预置类似下面代码块，以便在出现问题的时候，激活pprof功能。</p>
-<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> _ <span class="string">"net/http/pprof"</span></span><br><span class="line">...</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">if</span> cfg.Pprof &#123;</span><br><span class="line">    http.ListenAndServe(<span class="string">":6060"</span>, <span class="literal">nil</span>)</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>修改完成后，我重启了docker容器。并在容器中执行<code>curl http://localhost:6060/debug/pprof/heap &gt; h1.out</code>以及<code>curl http://localhost:6060/debug/pprof/goroutine &gt; g1.out</code>命令获取heap和goroutine的信息。这里由于是排查内存问题，我就取了heap和goroutine的数据。</p>
-<p>在间隔30分钟后（这个取决于内存的增长速率），我再次执行<code>curl http://localhost:6060/debug/pprof/heap &gt; h2.out</code>以及<code>curl http://localhost:6060/debug/pprof/goroutine &gt; g2.out</code>命令。</p>
-<p>这里，我为什么要间隔30分钟取两次样本数据呢？还是因为我们需要的是变化情况，而非当前状态，这很关键。</p>
-<p>内存泄露的原因有很多，比如http body未Close，channel阻塞导致goroutine泄露等等。</p>
-<p>因此，首先需要排查一下是不是其他非goroutine泄露的原因导致内存泄露，我首先执行<code>go tool pprof --base h1.out h2.out</code>，进入交互界面，然后执行<code>top10</code>、<code>web</code>等命令。很不幸，我并没有发现什么异常。</p>
-<p>随后，就是需要排查goroutine泄露了，执行<code>go tool pprof --base g1.out g2.out</code>，接着我执行<code>top5</code>命令，发现<code>runtime.gopark</code>积累了很多，然后我使用了<code>traces</code>命令，发现是<code>Next.func1</code>goroutine异常地多，使用<code>list Next.func1</code>发现，在71行有1315个goroutine阻塞了，在通过<code>web</code>检查也是同样的情况。很显然是这快代码有问题。那么究竟是什么原因导致的呢？</p>
-<p><img src="https://raw.githubusercontent.com/erenming/image-pool/master/blog/leak1.png"></p>
-<p>PS</p>
-<blockquote>
-<p>上图是我后面在本地压测复现时的图，当时排查生产环境时未截图记录，因此后续大家排查的时候一定要记录好。方便后续复盘、回顾所用。</p>
-</blockquote>
-<h2 id="根因探究"><a href="#根因探究" class="headerlink" title="根因探究"></a>根因探究</h2><p>看似，我们的重点都在<strong>问题的发现</strong>以及<strong>问题代码段定位</strong>上了，然而在我看来熟悉了上面排查思路以及<code>pprof</code>等工具的使用后，还是相对比较容易定位的。</p>
-<p>而根因的探究，则需要你对应用程序的源码很熟悉才行，网上的教程由于用的都是很简单的demo，因此看起来似乎很容易就解决了，然而实际代码往往非常的庞大而复杂。因此这一步，需要你对应用程序的源码比较熟悉，这样才能快速准确的找到问题背后的原因。</p>
-<p>实际上，由于我才接手这一块，在这一步上也卡了很久。最终，通过反复阅读源码和设计文档，并且与社区深度讨论之后，定位到了原因。</p>
-<p>简单来说，这是由于这里的goroutine是依赖于第70行返回的<code>err</code>来判断并退出的，然而，由于在日志采集相关goroutine在执行关闭操作的过程中，有新的message被采集并发送到<code>r.ch</code>上，而此时从<code>r.ch</code>上消费的逻辑已暂停，从而即便后续关闭操作执行完成，<code>r.reader.Next()</code>返回错误，也会阻塞在第71行。具体想了解的可以查阅这个<a href="https://github.com/elastic/beats/issues/19193" target="_blank" rel="noopener">issue</a>。</p>
-<p>可以看出，有效可靠地关闭goroutine是多么的重要，稍不留神就泄露了。</p>
-<p><em>文章主要是记录了一次实际goroutine泄露的发现-排查-根因定位的全过程。对工具的介绍和使用，基本不涉及，你可以通过查阅其他资料学习</em></p>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
-<li><a href="https://golang.org/pkg/net/http/pprof/" target="_blank" rel="noopener">https://golang.org/pkg/net/http/pprof/</a></li>
-<li><a href="https://blog.detectify.com/2019/09/05/how-we-tracked-down-a-memory-leak-in-one-of-our-go-microservices/" target="_blank" rel="noopener">https://blog.detectify.com/2019/09/05/how-we-tracked-down-a-memory-leak-in-one-of-our-go-microservices/</a></li>
-<li><a href="https://blog.wolfogre.com/posts/go-ppof-practice/#排查协程泄露" target="_blank" rel="noopener">https://blog.wolfogre.com/posts/go-ppof-practice/#%E6%8E%92%E6%9F%A5%E5%8D%8F%E7%A8%8B%E6%B3%84%E9%9C%B2</a></li>
-<li><a href="https://link.zhihu.com/?target=https%3A//segmentfault.com/a/1190000016412013" target="_blank" rel="noopener">煎鱼 pprof实战</a></li>
-<li><a href="https://link.zhihu.com/?target=https%3A//dave.cheney.net/high-performance-go-workshop/dotgo-paris.html" target="_blank" rel="noopener">dave.cheney</a></li>
+        <h1 id="第一章"><a href="#第一章" class="headerlink" title="第一章"></a>第一章</h1><h2 id="可靠性"><a href="#可靠性" class="headerlink" title="可靠性"></a>可靠性</h2><p>针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure</p>
+<h4 id="硬件错误"><a href="#硬件错误" class="headerlink" title="硬件错误"></a>硬件错误</h4><ol>
+<li>硬件自身容许设计</li>
+<li>软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统</li>
+</ol>
+<h4 id="软件错误"><a href="#软件错误" class="headerlink" title="软件错误"></a>软件错误</h4><ol>
+<li>影响范围大，连锁反应，排查难。bug，依赖服务错误等</li>
+<li>避免：考虑全面，全面测试，处理隔离，监控</li>
+</ol>
+<h4 id="人类错误"><a href="#人类错误" class="headerlink" title="人类错误"></a>人类错误</h4><ol>
+<li>最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控</li>
+</ol>
+<h2 id="Scaliability-可扩展性"><a href="#Scaliability-可扩展性" class="headerlink" title="Scaliability(可扩展性)"></a>Scaliability(可扩展性)</h2><ol>
+<li>Load描述，又称load parameters：CPU， 内存，网络等因素，这取决于系统的设计</li>
+<li>性能描述：通常使用percentiles(百分位数)，99th, 98th等。<ul>
+<li>监控度量percentiles: 使用计算窗口，即保存窗口时间内的数据，并计算排序。其他算法，forwar decay、t-digits等也可</li>
 </ul>
+</li>
+<li><p>应对Load: </p>
+<ul>
+<li>纵向扩展：升级到更高性能的机器</li>
+<li>水平扩展：将Load分摊到多台相似的虚拟机上</li>
+</ul>
+</li>
+<li><p>扩展性是针对特定的假设来设计的，而假设可能是错误的。因此在应用初期，应该采取功能快速迭代的方式，而非基于假设的去支持扩展</p>
+</li>
+</ol>
+<h2 id="Maintainability-可维护性"><a href="#Maintainability-可维护性" class="headerlink" title="Maintainability(可维护性)"></a>Maintainability(可维护性)</h2><ol>
+<li>Operability，可操作&amp;运维性：提供监控指标、文档、好的默认配置、好的工具等</li>
+<li>Simplicity，Managing Complexity：通过抽象降低复杂度</li>
+<li>Evolvability，Making Change Easy：敏捷的工作模式，TDD，重构</li>
+</ol>
 
       
     </div>
@@ -416,14 +408,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/Golang/" rel="tag"># Golang</a>
-          
-            <a href="/tags/Linux/" rel="tag"># Linux</a>
-          
-        </div>
-      
 
       
       
@@ -433,8 +417,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2020/04/08/go-reflec-usage-guide/" rel="next" title="Golang reflect使用指南">
-                <i class="fa fa-chevron-left"></i> Golang reflect使用指南
+              <a href="/2020/08/02/【踩坑日记】一次抓包排查实战/" rel="next" title="【踩坑日记】一次抓包排查实战">
+                <i class="fa fa-chevron-left"></i> 【踩坑日记】一次抓包排查实战
               </a>
             
           </div>
@@ -442,10 +426,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2020/08/02/【踩坑日记】一次抓包排查实战/" rel="prev" title="【踩坑日记】一次抓包排查实战">
-                【踩坑日记】一次抓包排查实战 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -603,7 +583,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题的发现"><span class="nav-number">1.</span> <span class="nav-text">问题的发现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#问题代码段定位"><span class="nav-number">2.</span> <span class="nav-text">问题代码段定位</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#根因探究"><span class="nav-number">3.</span> <span class="nav-text">根因探究</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章"><span class="nav-number">1.</span> <span class="nav-text">第一章</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#可靠性"><span class="nav-number">1.1.</span> <span class="nav-text">可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#硬件错误"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">硬件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软件错误"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">软件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#人类错误"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">人类错误</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scaliability-可扩展性"><span class="nav-number">1.2.</span> <span class="nav-text">Scaliability(可扩展性)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maintainability-可维护性"><span class="nav-number">1.3.</span> <span class="nav-text">Maintainability(可维护性)</span></a></li></ol></div>
             
 
           </div>
@@ -774,9 +754,9 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://erenming.com/2020/06/27/record-a-goroutine-leak/';
-          this.page.identifier = '2020/06/27/record-a-goroutine-leak/';
-          this.page.title = '【踩坑日记】一次goroutine泄露问题的排查定位';
+          this.page.url = 'https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/';
+          this.page.identifier = '2020/08/08/【读书笔记】设计数据密集型应用/';
+          this.page.title = '【读书笔记】设计数据密集型应用';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://erenming.disqus.com/embed.js';
