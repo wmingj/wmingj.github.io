@@ -81,15 +81,17 @@
 
 <meta name="description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【读书笔记】设计数据密集型应用">
+<meta property="og:title" content="【读书笔记】设计数据密集型应用(1-3)">
 <meta property="og:url" content="https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-08-09T04:24:34.081Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/image-20200823212136999.png">
+<meta property="og:updated_time" content="2020-08-23T14:26:23.473Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【读书笔记】设计数据密集型应用">
+<meta name="twitter:title" content="【读书笔记】设计数据密集型应用(1-3)">
 <meta name="twitter:description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/image-20200823212136999.png">
 
 
 
@@ -125,7 +127,7 @@
 
 
 
-  <title>【读书笔记】设计数据密集型应用 | Eren with you</title>
+  <title>【读书笔记】设计数据密集型应用(1-3) | Eren with you</title>
   
 
 
@@ -279,7 +281,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">【读书笔记】设计数据密集型应用</h1>
+          <h1 class="post-title" itemprop="name headline">【读书笔记】设计数据密集型应用(1-3)</h1>
         
 
         <div class="post-meta">
@@ -393,6 +395,139 @@
 <li>Simplicity，Managing Complexity：通过抽象降低复杂度</li>
 <li>Evolvability，Making Change Easy：敏捷的工作模式，TDD，重构</li>
 </ol>
+<hr>
+<h1 id="第二章：数据模型和查询语言"><a href="#第二章：数据模型和查询语言" class="headerlink" title="第二章：数据模型和查询语言"></a>第二章：数据模型和查询语言</h1><h2 id="关系型模型VS文档型模型"><a href="#关系型模型VS文档型模型" class="headerlink" title="关系型模型VS文档型模型"></a>关系型模型VS文档型模型</h2><ul>
+<li>一对多关系：关系型使用外键；而文档型使用JSON-LIKE来表示树状结构(更方便)</li>
+<li>多对一、多对多：两者并无区别，都是使用<code>relation model</code>(a relation(table) is simply a collection of tuples(rows))而非<code>network)(hierachical) model</code>(with access path)</li>
+<li>对比：<ul>
+<li>shcema灵活度：文档型更佳(schema-on-read)，数据结构是隐式的，只有读取时才会翻译出来。于关系型（write-on-read）</li>
+<li>查询局部性优化：文档型更佳。关系型也能支持</li>
+</ul>
+</li>
+</ul>
+<h2 id="数据的查询语言"><a href="#数据的查询语言" class="headerlink" title="数据的查询语言"></a>数据的查询语言</h2><ul>
+<li>声明式，例如SQL(database)、CSS&amp;HTML(web)，MapReduce(分组聚合，例如mongDB中的aggregate)。</li>
+<li>命令式，例如通过函数查询。<strong>声明式更为推荐</strong></li>
+</ul>
+<h2 id="图数据模型"><a href="#图数据模型" class="headerlink" title="图数据模型"></a>图数据模型</h2><p>对于多对多较多，我们一般使用关系型模型，然而随着数据之间联系变得复杂，数据模型为<strong>图模型</strong>则更佳</p>
+<h3 id="属性图"><a href="#属性图" class="headerlink" title="属性图"></a>属性图</h3><p>在属性图模型中，每个<strong>顶点（vertex）</strong>包括：</p>
+<ul>
+<li>唯一的标识符</li>
+<li>一组 <strong>出边（outgoing edges）</strong></li>
+<li>一组 <strong>入边（ingoing edges）</strong></li>
+<li>一组属性（键值对）</li>
+</ul>
+<p>每条 <strong>边（edge）</strong> 包括：</p>
+<ul>
+<li>唯一标识符</li>
+<li><strong>边的起点/尾部顶点（tail vertex）</strong></li>
+<li><strong>边的终点/头部顶点（head vertex）</strong></li>
+<li>描述两个顶点之间关系类型的标签</li>
+<li>一组属性（键值对）</li>
+</ul>
+<p>Cypher声明式查询语言，语法方便简洁。举例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">MATCH</span><br><span class="line">	(person) -[:BORN_IN]-&gt;  () -[:WITHIN*0..]-&gt; (us:Location &#123;name:&apos;United States&apos;&#125;),</span><br><span class="line">	(person) -[:LIVES_IN]-&gt; () -[:WITHIN*0..]-&gt; (eu:Location &#123;name:&apos;Europe&apos;&#125;)</span><br><span class="line">RETURN person.name</span><br></pre></td></tr></table></figure>
+<h3 id="Triple-Stores-and-SPARQL"><a href="#Triple-Stores-and-SPARQL" class="headerlink" title="Triple-Stores and SPARQL"></a>Triple-Stores and SPARQL</h3><p>三元组模型：(subject, predicate, object)，(主，谓，宾)结构。例如(Jim, likes, bananas)</p>
+<h3 id="DataLog"><a href="#DataLog" class="headerlink" title="DataLog"></a>DataLog</h3><p>是上述Cypher以及SPARQL之类查询语言的基础。通过在查询中组合以及递归重用相同的规则来实现查询，尤其针对复杂查询</p>
+<h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ul>
+<li>演化：one big tree(hierarchical) -&gt; relation-model(because of many-to-many) -&gt; NoSQL -&gt; Graph</li>
+<li>文档数据库通常应用于one-many或者无关系的数据场景</li>
+<li>而图数据库，则应用于任何数据都可能与其他数据有关系（与文档数据库都是schema less）</li>
+<li>尽管一种模型可以模拟另外一种模型，但是实际用起来往往很糟糕。因此要选择合适的</li>
+</ul>
+<h1 id="第三章-存储与检索"><a href="#第三章-存储与检索" class="headerlink" title="第三章 存储与检索"></a>第三章 存储与检索</h1><p>常见存储模型：log-structured, page-oriented</p>
+<p>使用append-only data file的模式，可快速实现一个数据库，很多数据库都使用这一原理。</p>
+<ul>
+<li>更新或者添加记录，都会在文件末尾append一条log。写入性能优</li>
+<li>然而查询时，需要遍历所有记录。读取性能差</li>
+<li>因此不得不引入索引，索引是一种取自原始数据（一般是元信息）额外的数据结构。</li>
+<li>但是维护索引需要额外性能，尤其是写入时。因此需要根据查询模式，构建索引，达到权衡</li>
+</ul>
+<h2 id="HASH-Index"><a href="#HASH-Index" class="headerlink" title="HASH Index"></a>HASH Index</h2><p>使用hash表来存储索引(in-memory)，其中键为实际key， 值为文件中实际记录的offset。</p>
+<p>如何处理磁盘空间不足？将log文件划分为多个指定长度文件段(segment)，当达到长度阈值时，则起一个后台线程进行压缩，并同时合并不同的segment</p>
+<h3 id="其他实践细节"><a href="#其他实践细节" class="headerlink" title="其他实践细节"></a>其他实践细节</h3><ul>
+<li>文件格式。使用2进制</li>
+<li>删除记录。删除时，标记为tombstore(假删除)，在合并压缩过程进行实际删除</li>
+<li>crash recovery。通过保存索引的快照，实现快速重启。</li>
+<li>Partially written records。支持checksum，可检测并忽略异常部分</li>
+<li>并发控制。写操作保持同步，只允许一个线程进行写操作</li>
+</ul>
+<h3 id="Why-append-only-file-而不是直接更改文件"><a href="#Why-append-only-file-而不是直接更改文件" class="headerlink" title="Why append-only file 而不是直接更改文件"></a>Why append-only file 而不是直接更改文件</h3><ul>
+<li>写操作总是有序的，可避免乱序写，从而提升性能（磁盘硬件原因，磁道扫描等）</li>
+<li>并发和异常崩溃更简单</li>
+<li>压缩合并机制可避免存储容量问题</li>
+</ul>
+<h3 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h3><ul>
+<li>Hash table 必须in memory。因此大量key-value等情况难以适合，尽管能利用磁盘，但是会大大提升复杂度并降低性能</li>
+<li>range queries 效率低</li>
+</ul>
+<h2 id="SSTables-and-LSM-Trees"><a href="#SSTables-and-LSM-Trees" class="headerlink" title="SSTables and LSM-Trees"></a>SSTables and LSM-Trees</h2><p>更改文件格式，将所有segments中的键值对按照键进行排序。从而改进append-only file模式</p>
+<h3 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h3><ol>
+<li>合并segments非常简单且高效。使用归并排序的算法实现，且当存在同名key，我们保留最近segment中的key</li>
+<li>无需将索引的keys都保存在内存中。大可只保留部分key的索引，依然key是有序的，则只需找到目前key前后的两个key的索引，获取offset在期间扫描即可</li>
+<li>提高写入性能。我们可以将记录分组，然后在写入前压缩</li>
+<li>range query 效率很高 </li>
+</ol>
+<h3 id="构建与维护"><a href="#构建与维护" class="headerlink" title="构建与维护"></a>构建与维护</h3><p>我们在内存中维护SSTable，通过使用树管理（红黑树、AVL-Tree）</p>
+<ol>
+<li>在写入时，添加到tree中。in-memory tree called a <em>memtable</em></li>
+<li><p>当memtable大于一定阈值时，则将其作为SStable file保存在磁盘中（期间，我们新起一个memetable实例）</p>
+</li>
+<li><p>在读取时，按照memtable-&gt;recent SSTable file-&gt; older-SSTable file的属性查找</p>
+</li>
+<li>在一定的时机，进行合并与压缩</li>
+</ol>
+<h3 id="缺点-1"><a href="#缺点-1" class="headerlink" title="缺点"></a>缺点</h3><ol>
+<li>意外崩溃时，会造成in-memory memtable内容丢失。可通过额外一个的append-only log file来避免</li>
+</ol>
+<h3 id="性能优化点"><a href="#性能优化点" class="headerlink" title="性能优化点"></a>性能优化点</h3><ol>
+<li>Slow when looking up keys tha do not exist in the database. 可通过Boolm filters来解决</li>
+<li>压缩合并的时机。分为<code>size-tired</code>以及<code>leveled</code>两种策略</li>
+</ol>
+<h2 id="B-Trees"><a href="#B-Trees" class="headerlink" title="B-Trees"></a>B-Trees</h2><p>B-trees break the database into fixed-size blocks or pages. </p>
+<p>Each page can be identified using an address or location。a B-tree with n kesy always has a depth of O(logn)。</p>
+<h3 id="使B-tree更可靠"><a href="#使B-tree更可靠" class="headerlink" title="使B-tree更可靠"></a>使B-tree更可靠</h3><ol>
+<li>由于b-tree在写入时，是直接修改page的，期间发生崩溃容易造成一些异常（例如，孤儿页）。引入redo log</li>
+<li>并发控制，</li>
+</ol>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><ol>
+<li>页中只存储key的摘要，节省空间</li>
+<li>pages能被放置在磁盘任意位置。为避免，会在写入时，重新排布tree。</li>
+<li>添加额外的指针，例如连接叶子页，从而避免过多的跳转</li>
+</ol>
+<h2 id="其他索引"><a href="#其他索引" class="headerlink" title="其他索引"></a>其他索引</h2><ul>
+<li>primary key index。例如标识关系数据库中的row，图数据库中的顶点</li>
+<li>secondary indexes。例如关系数据库中以某列(user_id)作为索引。很容易通过key-value索引构建</li>
+<li>index中存储值。例如聚簇索引（indexed row store in index），覆盖索引(聚簇&amp;非聚簇的折中，存indexed row的部分列)</li>
+<li>多列索引。concatenated index（连接索引）, 将多个列组合而成，只能按照前后顺序生效</li>
+<li>multi-dimensional(多维索引)。更为通用</li>
+<li>全文搜索和模糊索引；内存数据库</li>
+</ul>
+<h2 id="事务处理或分析？"><a href="#事务处理或分析？" class="headerlink" title="事务处理或分析？"></a>事务处理或分析？</h2><p>数据处理模式。</p>
+<ul>
+<li>OLTP(online trasaction processing)。常见于交易、登录等事务，面向用户</li>
+<li>OLAP(online transaction processing)。报表分析、聚合等，面向分析人员</li>
+</ul>
+<h3 id="Data-Warehousing"><a href="#Data-Warehousing" class="headerlink" title="Data Warehousing"></a>Data Warehousing</h3><p>OLTP系统通常需要保持高可用、低延迟，而直接对OLTP所用的数据库查询分析，容易产生不良影响。且OLTP相关数据库的索引也往往不适合OLAP</p>
+<p>ETL(extract-transform-load)：Warehouse将其他系统的数据收集过来，转换analysis-friendly模式，清理并加载导入到data warehouse</p>
+<p><img src="https://raw.githubusercontent.com/erenming/image-pool/master/blog/image-20200823212136999.png" alt="image-20200823212136999"></p>
+<p>小公司业务量小，并不需要整套系统，简单SQL、报表分析工具都可以。</p>
+<h3 id="Schemas-for-Analytics"><a href="#Schemas-for-Analytics" class="headerlink" title="Schemas for Analytics"></a>Schemas for Analytics</h3><ul>
+<li>star schema: 实际的表处于中心，被它不同维度的信息表包围，它们之间的连接就如同星星</li>
+<li>Snowflake schema: star schema的扩展，将周围表划分为更多的子维度表（少用）</li>
+</ul>
+<h3 id="Column-Oriented-Storage"><a href="#Column-Oriented-Storage" class="headerlink" title="Column-Oriented Storage"></a>Column-Oriented Storage</h3><p>将所有的值按照列区分开并各自单独存储在一起，而非将所有列的值合并为行存储。</p>
+<p>因为分析往往只针对个别列，以行为维度存储会读取不必要的列数据</p>
+<p>例如,</p>
+<blockquote>
+<p>column_1_key file contents: 1,2,3</p>
+<p>column_2_key file contents: tom,jerry,john </p>
+</blockquote>
+<h3 id="Column-Comparession"><a href="#Column-Comparession" class="headerlink" title="Column Comparession"></a>Column Comparession</h3><p>使用bitmap encoding技术</p>
+<h3 id="列存储的排序"><a href="#列存储的排序" class="headerlink" title="列存储的排序"></a>列存储的排序</h3><p>排序后，有助于压缩，以及查询</p>
+<h3 id="列存储的写入"><a href="#列存储的写入" class="headerlink" title="列存储的写入"></a>列存储的写入</h3><p>所有的写入，首先会写入内存，添加到一个排序好的结构中，然后准备被写入磁盘（而非像B-Tree一样直接修改pages）</p>
+<h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><p>Materiablized view: 针对sum、count等一类聚合后的结果数据的缓存。</p>
+<p>Data cubes: 多维度的聚合缓存优化（例如商品的名称、购买日期两个维度，构成一个data cubes）。针对特定的查询很快（预先计算好了），例如每年的购买商品量</p>
 
       
     </div>
@@ -583,7 +718,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章"><span class="nav-number">1.</span> <span class="nav-text">第一章</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#可靠性"><span class="nav-number">1.1.</span> <span class="nav-text">可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#硬件错误"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">硬件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软件错误"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">软件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#人类错误"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">人类错误</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scaliability-可扩展性"><span class="nav-number">1.2.</span> <span class="nav-text">Scaliability(可扩展性)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maintainability-可维护性"><span class="nav-number">1.3.</span> <span class="nav-text">Maintainability(可维护性)</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章"><span class="nav-number">1.</span> <span class="nav-text">第一章</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#可靠性"><span class="nav-number">1.1.</span> <span class="nav-text">可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#硬件错误"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">硬件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软件错误"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">软件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#人类错误"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">人类错误</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scaliability-可扩展性"><span class="nav-number">1.2.</span> <span class="nav-text">Scaliability(可扩展性)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maintainability-可维护性"><span class="nav-number">1.3.</span> <span class="nav-text">Maintainability(可维护性)</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#第二章：数据模型和查询语言"><span class="nav-number">2.</span> <span class="nav-text">第二章：数据模型和查询语言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关系型模型VS文档型模型"><span class="nav-number">2.1.</span> <span class="nav-text">关系型模型VS文档型模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据的查询语言"><span class="nav-number">2.2.</span> <span class="nav-text">数据的查询语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图数据模型"><span class="nav-number">2.3.</span> <span class="nav-text">图数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性图"><span class="nav-number">2.3.1.</span> <span class="nav-text">属性图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Triple-Stores-and-SPARQL"><span class="nav-number">2.3.2.</span> <span class="nav-text">Triple-Stores and SPARQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataLog"><span class="nav-number">2.3.3.</span> <span class="nav-text">DataLog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">2.3.4.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第三章-存储与检索"><span class="nav-number">3.</span> <span class="nav-text">第三章 存储与检索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HASH-Index"><span class="nav-number">3.1.</span> <span class="nav-text">HASH Index</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#其他实践细节"><span class="nav-number">3.1.1.</span> <span class="nav-text">其他实践细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-append-only-file-而不是直接更改文件"><span class="nav-number">3.1.2.</span> <span class="nav-text">Why append-only file 而不是直接更改文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">3.1.3.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSTables-and-LSM-Trees"><span class="nav-number">3.2.</span> <span class="nav-text">SSTables and LSM-Trees</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">3.2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建与维护"><span class="nav-number">3.2.2.</span> <span class="nav-text">构建与维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能优化点"><span class="nav-number">3.2.4.</span> <span class="nav-text">性能优化点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Trees"><span class="nav-number">3.3.</span> <span class="nav-text">B-Trees</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使B-tree更可靠"><span class="nav-number">3.3.1.</span> <span class="nav-text">使B-tree更可靠</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-number">3.3.2.</span> <span class="nav-text">优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他索引"><span class="nav-number">3.4.</span> <span class="nav-text">其他索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务处理或分析？"><span class="nav-number">3.5.</span> <span class="nav-text">事务处理或分析？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Warehousing"><span class="nav-number">3.5.1.</span> <span class="nav-text">Data Warehousing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Schemas-for-Analytics"><span class="nav-number">3.5.2.</span> <span class="nav-text">Schemas for Analytics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column-Oriented-Storage"><span class="nav-number">3.5.3.</span> <span class="nav-text">Column-Oriented Storage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column-Comparession"><span class="nav-number">3.5.4.</span> <span class="nav-text">Column Comparession</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列存储的排序"><span class="nav-number">3.5.5.</span> <span class="nav-text">列存储的排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列存储的写入"><span class="nav-number">3.5.6.</span> <span class="nav-text">列存储的写入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合"><span class="nav-number">3.5.7.</span> <span class="nav-text">聚合</span></a></li></ol></li></ol></li></div>
             
 
           </div>
@@ -756,7 +891,7 @@
         var disqus_config = function () {
           this.page.url = 'https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/';
           this.page.identifier = '2020/08/08/【读书笔记】设计数据密集型应用/';
-          this.page.title = '【读书笔记】设计数据密集型应用';
+          this.page.title = '【读书笔记】设计数据密集型应用(1-3)';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://erenming.disqus.com/embed.js';
