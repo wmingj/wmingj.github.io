@@ -81,15 +81,18 @@
 
 <meta name="description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
 <meta property="og:type" content="article">
-<meta property="og:title" content="【读书笔记】设计数据密集型应用(1-3)">
+<meta property="og:title" content="设计数据密集型应用之数据系统基础">
 <meta property="og:url" content="https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/image-20200823212136999.png">
-<meta property="og:updated_time" content="2020-08-23T14:26:23.473Z">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig4-2.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig4-3.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig4-5.png">
+<meta property="og:updated_time" content="2020-08-30T05:44:22.764Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="【读书笔记】设计数据密集型应用(1-3)">
+<meta name="twitter:title" content="设计数据密集型应用之数据系统基础">
 <meta name="twitter:description" content="第一章可靠性针对系统的容错设计，提高系统错误的抛出率，而不是忽略它(除了安全这种不可恢复类型的)，尽量避免failure 硬件错误 硬件自身容许设计 软件系统的灵活性与弹性。即容许整台机器异常，而不影响系统  软件错误 影响范围大，连锁反应，排查难。bug，依赖服务错误等 避免：考虑全面，全面测试，处理隔离，监控  人类错误 最小化犯错机会的方式设计系统，全面测试，允许从错误中恢复，监控  Sca">
 <meta name="twitter:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/image-20200823212136999.png">
 
@@ -127,7 +130,7 @@
 
 
 
-  <title>【读书笔记】设计数据密集型应用(1-3) | Eren with you</title>
+  <title>设计数据密集型应用之数据系统基础 | Eren with you</title>
   
 
 
@@ -281,7 +284,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">【读书笔记】设计数据密集型应用(1-3)</h1>
+          <h1 class="post-title" itemprop="name headline">设计数据密集型应用之数据系统基础</h1>
         
 
         <div class="post-meta">
@@ -528,6 +531,74 @@
 <h3 id="列存储的写入"><a href="#列存储的写入" class="headerlink" title="列存储的写入"></a>列存储的写入</h3><p>所有的写入，首先会写入内存，添加到一个排序好的结构中，然后准备被写入磁盘（而非像B-Tree一样直接修改pages）</p>
 <h3 id="聚合"><a href="#聚合" class="headerlink" title="聚合"></a>聚合</h3><p>Materiablized view: 针对sum、count等一类聚合后的结果数据的缓存。</p>
 <p>Data cubes: 多维度的聚合缓存优化（例如商品的名称、购买日期两个维度，构成一个data cubes）。针对特定的查询很快（预先计算好了），例如每年的购买商品量</p>
+<h1 id="第四章-编码与更新"><a href="#第四章-编码与更新" class="headerlink" title="第四章-编码与更新"></a>第四章-编码与更新</h1><p>应用总是在不断更新的，而相关的数据自然也得不断更新。同样，数据格式的更更新也会导致关联应用代码的更新。而应用代码的更新往往更麻烦。</p>
+<p>为满足<code>making change easy</code>，我们必须让数据的更新满足，向前兼容以及向后兼容。</p>
+<h2 id="数据编码的格式"><a href="#数据编码的格式" class="headerlink" title="数据编码的格式"></a>数据编码的格式</h2><p>编码(encoding)，将数据从内存表示转换为字节序列的过程。反之，称为解码(decoding)</p>
+<h3 id="语言特定格式"><a href="#语言特定格式" class="headerlink" title="语言特定格式"></a>语言特定格式</h3><p>语言内置的编码格式，例如Python中的pickle等。通常不建议</p>
+<h3 id="JSON-XML-and-Binary-Variants"><a href="#JSON-XML-and-Binary-Variants" class="headerlink" title="JSON, XML, and Binary Variants"></a>JSON, XML, and Binary Variants</h3><p>json, xml都是文本编码，且能自解释的，可读行非常高。</p>
+<p>缺点：</p>
+<ul>
+<li>数据类型缺乏，例如JSON不能区分整数、浮点数</li>
+<li>不支持二进制类型，不得不用base64转换，而这将导致增加额外33%的数据大小</li>
+</ul>
+<p>题外话，这跟让不同组织达成一致相比都不是缺点:)</p>
+<p>二进制变体，如BSON, BJSON等</p>
+<h3 id="Trift-and-Protocol-Buffers"><a href="#Trift-and-Protocol-Buffers" class="headerlink" title="Trift and Protocol Buffers"></a>Trift and Protocol Buffers</h3><p>当用于组织内部时，推广二进制编码往往没那么多压力。失去了可读性，但是体积更小，编解码更快</p>
+<h4 id="Thrift-BinaryProtocol"><a href="#Thrift-BinaryProtocol" class="headerlink" title="Thrift BinaryProtocol"></a>Thrift BinaryProtocol</h4><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig4-2.png" alt></p>
+<h4 id="Thrift-CompactProtocol（与Protocol-Buffers基本相同）"><a href="#Thrift-CompactProtocol（与Protocol-Buffers基本相同）" class="headerlink" title="Thrift  CompactProtocol（与Protocol Buffers基本相同）"></a>Thrift  CompactProtocol（与Protocol Buffers基本相同）</h4><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig4-3.png" alt></p>
+<p>两者相对比：</p>
+<ul>
+<li>CompactProtocol体积更小</li>
+<li>使用field tag替换字段名</li>
+<li>使用<code>variable-length</code>表示数字。每个字节的头个位用来表示后续字节是否同属该数字值</li>
+</ul>
+<p>注意，required以及optional标记，只在运行时校验。数据表示均一致。</p>
+<h5 id="字段更新时"><a href="#字段更新时" class="headerlink" title="字段更新时"></a>字段更新时</h5><blockquote>
+<ul>
+<li>可任意更改字段名，而不能更改tag number。</li>
+<li>添加一个字段：<ul>
+<li>向前兼容：老代码会直接忽略该字段</li>
+<li>向后兼容：新字段必须为optional或者有默认值，以便读到老的数据时，可以忽略或取默认</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h5 id="字段类型更新时"><a href="#字段类型更新时" class="headerlink" title="字段类型更新时"></a>字段类型更新时</h5><blockquote>
+<ul>
+<li>会有丢失数据或丧失精度的风险。例如整数，32bit -&gt; 64bit。64读到32位填充0，32读到64无法满足而丢弃置空</li>
+<li>ProtobufProtocol中的repeated标记表示同样的field tag出现若干次，可兼容optional</li>
+</ul>
+</blockquote>
+<h3 id="Avro"><a href="#Avro" class="headerlink" title="Avro"></a>Avro</h3><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig4-5.png" alt></p>
+<p>相较上述Thrift、Protobuf，它没有field tag或者field name，因此必须使用相同的schema来读写。</p>
+<p>写入端&amp;读取端，可拥有不同的schema，对于兼容性，可使用default value以及版本号来解决</p>
+<h4 id="动态生成schema"><a href="#动态生成schema" class="headerlink" title="动态生成schema"></a>动态生成schema</h4><p>Avro可支持动态生成schema，可以方便地通过JSON，数据库表结构等直接生成Acro结构。</p>
+<p>而ProtocolBufferdeng则不得不手动修改field tag与列名的映射</p>
+<h2 id="数据流的模型"><a href="#数据流的模型" class="headerlink" title="数据流的模型"></a>数据流的模型</h2><h3 id="Dataflow-Through-Databases"><a href="#Dataflow-Through-Databases" class="headerlink" title="Dataflow Through Databases"></a>Dataflow Through Databases</h3><p>写入<->未来读取</-></p>
+<p>向后兼容，否则的话未来的代码将不能读取之前的数据</p>
+<p>向前兼容，老的代码可能会使用到新的数据，例如滚动升级</p>
+<h4 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h4><p>数据的写入时间不同，Rewriting(migrationg)的方式，或者填入默认值（使用Avro模型）</p>
+<p>使用归档存储</p>
+<h3 id="Dataflow-Through-Services"><a href="#Dataflow-Through-Services" class="headerlink" title="Dataflow Through Services"></a>Dataflow Through Services</h3><p>请求<->返回</-></p>
+<p>多用于在网络之中的传输，例如web service与client，service与service(SOA, 微服务)。</p>
+<p>SOAP,REST</p>
+<ul>
+<li>REST更为广泛，路径代表资源，HTTP动词代表操作</li>
+<li>SOAP则使用XML来定义</li>
+</ul>
+<p>REST也是源自RPC，不过相较RPC，其不像RPC一样把调用当错内部函数，而更像是个网络协议。</p>
+<p>REST用于OPENAPI, 而RPC往往只能用在组织内部。</p>
+<h4 id="兼容性-1"><a href="#兼容性-1" class="headerlink" title="兼容性"></a>兼容性</h4><p>服务端只需要针对request做向后兼容，对response做向前兼容。</p>
+<ul>
+<li>gRPC之类的使用内置的编码格式做兼容</li>
+<li>SOAP使用XML schema做兼容</li>
+<li>RESTful API使用增加可选请求参数，在返回体中添加新字段。最终可使用版本号</li>
+</ul>
+<h3 id="Message-Passing-Dataflow"><a href="#Message-Passing-Dataflow" class="headerlink" title="Message-Passing Dataflow"></a>Message-Passing Dataflow</h3><p>可以看做为异步消息传递系统</p>
+<p>相较于RPC拥有BUffer作为缓存，提高可靠性。自动重传消息等等</p>
+<h4 id="message-broker"><a href="#message-broker" class="headerlink" title="message broker"></a>message broker</h4><p>RabbitMQ, Kafka等等。消息传递给<code>query</code>或<code>topic</code>，broker确保消息传递给了<code>consumers</code>或<code>subscribers</code>。</p>
+<p>数据格式：字节序列即可，JSON, ProtoBuf均可。</p>
+<h4 id="分布式actor框架"><a href="#分布式actor框架" class="headerlink" title="分布式actor框架"></a>分布式actor框架</h4><p>以message broker作为桥梁，连接各个actor，从而提升扩展性，降低复杂性，避免线程、锁等</p>
 
       
     </div>
@@ -718,7 +789,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章"><span class="nav-number">1.</span> <span class="nav-text">第一章</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#可靠性"><span class="nav-number">1.1.</span> <span class="nav-text">可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#硬件错误"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">硬件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软件错误"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">软件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#人类错误"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">人类错误</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scaliability-可扩展性"><span class="nav-number">1.2.</span> <span class="nav-text">Scaliability(可扩展性)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maintainability-可维护性"><span class="nav-number">1.3.</span> <span class="nav-text">Maintainability(可维护性)</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#第二章：数据模型和查询语言"><span class="nav-number">2.</span> <span class="nav-text">第二章：数据模型和查询语言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关系型模型VS文档型模型"><span class="nav-number">2.1.</span> <span class="nav-text">关系型模型VS文档型模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据的查询语言"><span class="nav-number">2.2.</span> <span class="nav-text">数据的查询语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图数据模型"><span class="nav-number">2.3.</span> <span class="nav-text">图数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性图"><span class="nav-number">2.3.1.</span> <span class="nav-text">属性图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Triple-Stores-and-SPARQL"><span class="nav-number">2.3.2.</span> <span class="nav-text">Triple-Stores and SPARQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataLog"><span class="nav-number">2.3.3.</span> <span class="nav-text">DataLog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">2.3.4.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第三章-存储与检索"><span class="nav-number">3.</span> <span class="nav-text">第三章 存储与检索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HASH-Index"><span class="nav-number">3.1.</span> <span class="nav-text">HASH Index</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#其他实践细节"><span class="nav-number">3.1.1.</span> <span class="nav-text">其他实践细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-append-only-file-而不是直接更改文件"><span class="nav-number">3.1.2.</span> <span class="nav-text">Why append-only file 而不是直接更改文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">3.1.3.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSTables-and-LSM-Trees"><span class="nav-number">3.2.</span> <span class="nav-text">SSTables and LSM-Trees</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">3.2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建与维护"><span class="nav-number">3.2.2.</span> <span class="nav-text">构建与维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能优化点"><span class="nav-number">3.2.4.</span> <span class="nav-text">性能优化点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Trees"><span class="nav-number">3.3.</span> <span class="nav-text">B-Trees</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使B-tree更可靠"><span class="nav-number">3.3.1.</span> <span class="nav-text">使B-tree更可靠</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-number">3.3.2.</span> <span class="nav-text">优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他索引"><span class="nav-number">3.4.</span> <span class="nav-text">其他索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务处理或分析？"><span class="nav-number">3.5.</span> <span class="nav-text">事务处理或分析？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Warehousing"><span class="nav-number">3.5.1.</span> <span class="nav-text">Data Warehousing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Schemas-for-Analytics"><span class="nav-number">3.5.2.</span> <span class="nav-text">Schemas for Analytics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column-Oriented-Storage"><span class="nav-number">3.5.3.</span> <span class="nav-text">Column-Oriented Storage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column-Comparession"><span class="nav-number">3.5.4.</span> <span class="nav-text">Column Comparession</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列存储的排序"><span class="nav-number">3.5.5.</span> <span class="nav-text">列存储的排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列存储的写入"><span class="nav-number">3.5.6.</span> <span class="nav-text">列存储的写入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合"><span class="nav-number">3.5.7.</span> <span class="nav-text">聚合</span></a></li></ol></li></ol></li></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一章"><span class="nav-number">1.</span> <span class="nav-text">第一章</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#可靠性"><span class="nav-number">1.1.</span> <span class="nav-text">可靠性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#硬件错误"><span class="nav-number">1.1.0.1.</span> <span class="nav-text">硬件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#软件错误"><span class="nav-number">1.1.0.2.</span> <span class="nav-text">软件错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#人类错误"><span class="nav-number">1.1.0.3.</span> <span class="nav-text">人类错误</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Scaliability-可扩展性"><span class="nav-number">1.2.</span> <span class="nav-text">Scaliability(可扩展性)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Maintainability-可维护性"><span class="nav-number">1.3.</span> <span class="nav-text">Maintainability(可维护性)</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#第二章：数据模型和查询语言"><span class="nav-number">2.</span> <span class="nav-text">第二章：数据模型和查询语言</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#关系型模型VS文档型模型"><span class="nav-number">2.1.</span> <span class="nav-text">关系型模型VS文档型模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据的查询语言"><span class="nav-number">2.2.</span> <span class="nav-text">数据的查询语言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#图数据模型"><span class="nav-number">2.3.</span> <span class="nav-text">图数据模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性图"><span class="nav-number">2.3.1.</span> <span class="nav-text">属性图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Triple-Stores-and-SPARQL"><span class="nav-number">2.3.2.</span> <span class="nav-text">Triple-Stores and SPARQL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DataLog"><span class="nav-number">2.3.3.</span> <span class="nav-text">DataLog</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#小结"><span class="nav-number">2.3.4.</span> <span class="nav-text">小结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第三章-存储与检索"><span class="nav-number">3.</span> <span class="nav-text">第三章 存储与检索</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#HASH-Index"><span class="nav-number">3.1.</span> <span class="nav-text">HASH Index</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#其他实践细节"><span class="nav-number">3.1.1.</span> <span class="nav-text">其他实践细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Why-append-only-file-而不是直接更改文件"><span class="nav-number">3.1.2.</span> <span class="nav-text">Why append-only file 而不是直接更改文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点"><span class="nav-number">3.1.3.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSTables-and-LSM-Trees"><span class="nav-number">3.2.</span> <span class="nav-text">SSTables and LSM-Trees</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#优点"><span class="nav-number">3.2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#构建与维护"><span class="nav-number">3.2.2.</span> <span class="nav-text">构建与维护</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缺点-1"><span class="nav-number">3.2.3.</span> <span class="nav-text">缺点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#性能优化点"><span class="nav-number">3.2.4.</span> <span class="nav-text">性能优化点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Trees"><span class="nav-number">3.3.</span> <span class="nav-text">B-Trees</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使B-tree更可靠"><span class="nav-number">3.3.1.</span> <span class="nav-text">使B-tree更可靠</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#优化"><span class="nav-number">3.3.2.</span> <span class="nav-text">优化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他索引"><span class="nav-number">3.4.</span> <span class="nav-text">其他索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#事务处理或分析？"><span class="nav-number">3.5.</span> <span class="nav-text">事务处理或分析？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-Warehousing"><span class="nav-number">3.5.1.</span> <span class="nav-text">Data Warehousing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Schemas-for-Analytics"><span class="nav-number">3.5.2.</span> <span class="nav-text">Schemas for Analytics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column-Oriented-Storage"><span class="nav-number">3.5.3.</span> <span class="nav-text">Column-Oriented Storage</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Column-Comparession"><span class="nav-number">3.5.4.</span> <span class="nav-text">Column Comparession</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列存储的排序"><span class="nav-number">3.5.5.</span> <span class="nav-text">列存储的排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#列存储的写入"><span class="nav-number">3.5.6.</span> <span class="nav-text">列存储的写入</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合"><span class="nav-number">3.5.7.</span> <span class="nav-text">聚合</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第四章-编码与更新"><span class="nav-number">4.</span> <span class="nav-text">第四章-编码与更新</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#数据编码的格式"><span class="nav-number">4.1.</span> <span class="nav-text">数据编码的格式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#语言特定格式"><span class="nav-number">4.1.1.</span> <span class="nav-text">语言特定格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JSON-XML-and-Binary-Variants"><span class="nav-number">4.1.2.</span> <span class="nav-text">JSON, XML, and Binary Variants</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trift-and-Protocol-Buffers"><span class="nav-number">4.1.3.</span> <span class="nav-text">Trift and Protocol Buffers</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Thrift-BinaryProtocol"><span class="nav-number">4.1.3.1.</span> <span class="nav-text">Thrift BinaryProtocol</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Thrift-CompactProtocol（与Protocol-Buffers基本相同）"><span class="nav-number">4.1.3.2.</span> <span class="nav-text">Thrift  CompactProtocol（与Protocol Buffers基本相同）</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#字段更新时"><span class="nav-number">4.1.3.2.1.</span> <span class="nav-text">字段更新时</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#字段类型更新时"><span class="nav-number">4.1.3.2.2.</span> <span class="nav-text">字段类型更新时</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Avro"><span class="nav-number">4.1.4.</span> <span class="nav-text">Avro</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#动态生成schema"><span class="nav-number">4.1.4.1.</span> <span class="nav-text">动态生成schema</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据流的模型"><span class="nav-number">4.2.</span> <span class="nav-text">数据流的模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dataflow-Through-Databases"><span class="nav-number">4.2.1.</span> <span class="nav-text">Dataflow Through Databases</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#兼容性"><span class="nav-number">4.2.1.1.</span> <span class="nav-text">兼容性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Dataflow-Through-Services"><span class="nav-number">4.2.2.</span> <span class="nav-text">Dataflow Through Services</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#兼容性-1"><span class="nav-number">4.2.2.1.</span> <span class="nav-text">兼容性</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Message-Passing-Dataflow"><span class="nav-number">4.2.3.</span> <span class="nav-text">Message-Passing Dataflow</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#message-broker"><span class="nav-number">4.2.3.1.</span> <span class="nav-text">message broker</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分布式actor框架"><span class="nav-number">4.2.3.2.</span> <span class="nav-text">分布式actor框架</span></a></li></ol></li></ol></li></ol></li></div>
             
 
           </div>
@@ -891,7 +962,7 @@
         var disqus_config = function () {
           this.page.url = 'https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/';
           this.page.identifier = '2020/08/08/【读书笔记】设计数据密集型应用/';
-          this.page.title = '【读书笔记】设计数据密集型应用(1-3)';
+          this.page.title = '设计数据密集型应用之数据系统基础';
         };
         var d = document, s = d.createElement('script');
         s.src = 'https://erenming.disqus.com/embed.js';
