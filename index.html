@@ -259,6 +259,184 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/09/05/【读书笔记】设计数据密集型应用-第二部分/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Eren Ming">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eren with you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/09/05/【读书笔记】设计数据密集型应用-第二部分/" itemprop="url">【读书笔记】设计数据密集型应用-第二部分</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-09-05T17:24:59+08:00">
+                2020-09-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/09/05/【读书笔记】设计数据密集型应用-第二部分/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/09/05/【读书笔记】设计数据密集型应用-第二部分/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>分布式数据，replication and partition</p>
+<ul>
+<li>Replication: keeping a <strong>copy</strong> of the same data on sevral differrent nodes, or in different locations</li>
+<li>Partition: <strong>splittion</strong> a big databse into smaller subsets called partitions so that different partitions can be assigned to different nodes(called <em>sharding</em>)</li>
+</ul>
+<h1 id="第五章-复制"><a href="#第五章-复制" class="headerlink" title="第五章-复制"></a>第五章-复制</h1><p>复制的作用：</p>
+<ul>
+<li>数据物理上靠近用户</li>
+<li>允许部分节点故障而系统正常，提高可靠性</li>
+<li>水平扩展机器数可提高吞吐量</li>
+</ul>
+<h2 id="Leaders-and-Followers"><a href="#Leaders-and-Followers" class="headerlink" title="Leaders and Followers"></a>Leaders and Followers</h2><p>如何确保所有节点都获得数据？使用<em>leader-based replication</em>方案</p>
+<ul>
+<li>选择其中一个副本作为主节点，客户端的写请求必须通过leader</li>
+<li>其他副本作为从节点，leader收到请求并发送relication log给followers。followers获取到后再写数据</li>
+<li>读请求可通过任何节点读取</li>
+</ul>
+<p>MySQL、PostgreSQL，Kafka等均通过该方案实现</p>
+<h2 id="同步还是异步复制"><a href="#同步还是异步复制" class="headerlink" title="同步还是异步复制"></a>同步还是异步复制</h2><p>同步复制：主节点等待从节点写入数据完成</p>
+<p>异步复制：主节点不等待从节点写入数据完成，而直接返回</p>
+<p>优缺点：</p>
+<ul>
+<li>同步优点：能确保从节点的数据与主节点保持一致性</li>
+<li>同步缺点：主从节点之间由于各种原因，导致写操作阻塞。从而阻塞后续的写请求</li>
+</ul>
+<p>通常，主节点与一个从节点保持同步，与其他保持异步。而实际中，完全异步的架构也是很普遍的，这可能会导致数据丢失，可通过<em>共识</em>解决</p>
+<h2 id="设置新的Followers"><a href="#设置新的Followers" class="headerlink" title="设置新的Followers"></a>设置新的Followers</h2><p>简单地拷贝数据是不可行的，因为数据是在不断变化的。也许能锁磁盘来解决，但是显然会影响性能。</p>
+<ol>
+<li>主节点创建自身快照</li>
+<li>复制快照到从节点</li>
+<li>新的从节点请求从快照创建时间点之后的数据并写入</li>
+<li>follower处理完back log之后，我们为<em>caught up</em></li>
+</ol>
+<h2 id="处理节点宕机"><a href="#处理节点宕机" class="headerlink" title="处理节点宕机"></a>处理节点宕机</h2><h3 id="Follower-failure：Catch-up-recovery"><a href="#Follower-failure：Catch-up-recovery" class="headerlink" title="Follower failure：Catch-up recovery"></a>Follower failure：Catch-up recovery</h3><p>根据log，节点知道失败前的最后一个事务的具体时间点，follower恢复后只需向主节点请求改时间点之后的数据即可。</p>
+<h3 id="Leader-failure-Failure-故障切换"><a href="#Leader-failure-Failure-故障切换" class="headerlink" title="Leader failure: Failure(故障切换)"></a>Leader failure: Failure(故障切换)</h3><p>自动流程：</p>
+<ol>
+<li>确认leader失败。很简单，超时-心跳机制</li>
+<li><p>选择个一个新leader。通过其他节点或者控制器选举leader，通常来说是拥有数据最新的（减少数据丢失）</p>
+</li>
+<li><p>使用leader重新配置整个系统。系统需要保证原leader只能变成follower并认同新leader</p>
+</li>
+</ol>
+<p>潜在问题：</p>
+<ul>
+<li>原leader拥有未同步的数据，重新加入集群后，跟新leader的数据会有冲突。通过丢去未同步的数据处理，持久性未满足</li>
+<li>抛弃数据造成灾难，尤其是与其他系统协作时</li>
+<li>某些情况下，两个节点认为自身为leader，我们成为<em>split brain</em>(脑裂)</li>
+<li>判定leader失败的超时时间多少合适？网络、负载等等原因都会影响心跳时间</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1992,7 +2170,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-count">10</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
