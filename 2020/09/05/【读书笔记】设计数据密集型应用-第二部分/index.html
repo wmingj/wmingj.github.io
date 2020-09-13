@@ -86,10 +86,23 @@
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="分布式数据，replication and partition  Replication: keeping a copy of the same data on sevral differrent nodes, or in different locations Partition: splittion a big databse into smaller subsets called parti">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2020-09-06T14:55:15.718Z">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig5-3.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig5-4.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig5-5.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig5-8.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig5-12.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig5-13.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig6-2.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig6-3.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig6-4.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig6-5.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig6-6.png">
+<meta property="og:image" content="https://github.com/Vonng/ddia/raw/master/img/fig6-7.png">
+<meta property="og:updated_time" content="2020-09-13T12:57:09.862Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【读书笔记】设计数据密集型应用-第二部分">
 <meta name="twitter:description" content="分布式数据，replication and partition  Replication: keeping a copy of the same data on sevral differrent nodes, or in different locations Partition: splittion a big databse into smaller subsets called parti">
+<meta name="twitter:image" content="https://github.com/Vonng/ddia/raw/master/img/fig5-3.png">
 
 
 
@@ -350,7 +363,7 @@
 <li>允许部分节点故障而系统正常，提高可靠性</li>
 <li>水平扩展机器数可提高吞吐量</li>
 </ul>
-<h2 id="Leaders-and-Followers"><a href="#Leaders-and-Followers" class="headerlink" title="Leaders and Followers"></a>Leaders and Followers</h2><p>如何确保所有节点都获得数据？使用<em>leader-based replication</em>方案</p>
+<h2 id="Leaders-and-Followers-单Leader"><a href="#Leaders-and-Followers-单Leader" class="headerlink" title="Leaders and Followers(单Leader)"></a>Leaders and Followers(单Leader)</h2><p>如何确保所有节点都获得数据？使用<em>leader-based replication</em>方案</p>
 <ul>
 <li>选择其中一个副本作为主节点，客户端的写请求必须通过leader</li>
 <li>其他副本作为从节点，leader收到请求并发送relication log给followers。followers获取到后再写数据</li>
@@ -388,6 +401,188 @@
 <li>某些情况下，两个节点认为自身为leader，我们成为<em>split brain</em>(脑裂)</li>
 <li>判定leader失败的超时时间多少合适？网络、负载等等原因都会影响心跳时间</li>
 </ul>
+<h2 id="Implementation-of-Replication-Logs"><a href="#Implementation-of-Replication-Logs" class="headerlink" title="Implementation of Replication Logs"></a>Implementation of Replication Logs</h2><p>介绍Leader-based replication 是如何实现的</p>
+<h3 id="statement-based-replication"><a href="#statement-based-replication" class="headerlink" title="statement-based replication"></a>statement-based replication</h3><p>leader记录每条写请求(statement，语句)，并发送给followers。听起来很简单，但是缺点也多</p>
+<ul>
+<li>任何非确定性的语句都会有问题，例如NOW()函数</li>
+<li>语句如果存在顺序关系，例如<code>UPDATE</code>操作，也会存在问题（除非保证顺序）</li>
+<li>语句有副作用，例如触发器，存储过程等</li>
+</ul>
+<h3 id="Write-ahead-log-WAL-传输"><a href="#Write-ahead-log-WAL-传输" class="headerlink" title="Write-ahead log(WAL) 传输"></a>Write-ahead log(WAL) 传输</h3><p>诸如基于log-structure以及B-Tree的数据库，都会有有一个append-only log。</p>
+<p>leader将数据的log发送到各个followers，follower再通过它建立一个与leader一样的copy。广泛应用PostgreSQL等</p>
+<p>缺点：</p>
+<ul>
+<li>log记录的数据过于底层，例如包含哪些磁盘中的哪些字节改变。</li>
+<li>数据库版本升级时，版本之间并不兼容，需要停机升级</li>
+</ul>
+<h3 id="Logical-row-based-log-replication"><a href="#Logical-row-based-log-replication" class="headerlink" title="Logical(row-based)log replication"></a>Logical(row-based)log replication</h3><p>替代底层log，而使用逻辑上的log来表示，其通常是一系列的记录来代表写请求。例如插入，log则包含所有列的新值。</p>
+<p>由于其与底层存储解耦了，因此易于兼容不同版本，且能被外部系统解析使用。应用于MySQL中的binlog等</p>
+<h3 id="Trigger-based-replication"><a href="#Trigger-based-replication" class="headerlink" title="Trigger-based replication"></a>Trigger-based replication</h3><p>上述均为数据库底层实现，若需要更高的灵活性，则可使用trigger-based的方式。它让你注册一些用户代码，在数据变化时自动触发执行</p>
+<h2 id="Porblems-with-Replication-Lag"><a href="#Porblems-with-Replication-Lag" class="headerlink" title="Porblems with Replication Lag"></a>Porblems with Replication Lag</h2><p>relication lag：the delay between a write happening on the leader and being reflected on a follower(leader与follower之间的数据延迟)</p>
+<p>通常来说，followers的数据经常会落后于leader，这种状态通常很短。但是一旦lag过长，则会出大问题。如何解决？</p>
+<h3 id="Reading-Your-Owen-Writes"><a href="#Reading-Your-Owen-Writes" class="headerlink" title="Reading Your Owen Writes"></a>Reading Your Owen Writes</h3><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig5-3.png" alt="img"></p>
+<p>用户修改了，再次查询时可能还是老的。</p>
+<p>使用<em>read-after-write consistency</em> 、或称为<code>read-your-writes consistency</code>来保证一致性，即保证用户再次查询时能查到其更新的，这对其他用户不保证。</p>
+<p>方案：</p>
+<ul>
+<li>当获取某些刚修改的数据时，只通过leader查询</li>
+<li>常见情况下，可对数据标记，例如更新时间，若更新时间小于1分钟，则从leader中读取</li>
+<li>客户端记住最近写的时间戳，然后判读读取</li>
+</ul>
+<h3 id="单调读"><a href="#单调读" class="headerlink" title="单调读"></a>单调读</h3><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig5-4.png" alt="img"></p>
+<p>由于同步时间的不确定性，用户可能发现修改了的数据又复原了，出现时光倒流现象。</p>
+<p><em>monotonic reads</em>，使用单调读技术来确保这种情况不会发生。</p>
+<p>方案：确保每个用户总是从单个副本中读取</p>
+<h3 id="Consistent-Prefix-Reads"><a href="#Consistent-Prefix-Reads" class="headerlink" title="Consistent Prefix Reads"></a>Consistent Prefix Reads</h3><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig5-5.png" alt="img"></p>
+<p>本来带有顺序含义的语句，由于复制延迟，第三方观测下顺序异常导致的混乱。例如，聊天的对话顺序</p>
+<p>使用<em>consistent prefix reads</em>(一致性前缀读)来避免。</p>
+<p>方案：</p>
+<ul>
+<li>保证任何因果关系的写入都写入到同一个partition。</li>
+<li>显式跟踪因果依赖关系的算法。例如<em>happens-before</em>技术</li>
+</ul>
+<h2 id="Solution-for-Replication-Lag"><a href="#Solution-for-Replication-Lag" class="headerlink" title="Solution for Replication Lag"></a>Solution for Replication Lag</h2><p>使用最终一致性以及分布式事务等</p>
+<h2 id="Multi-Leader-Replication-多主复制"><a href="#Multi-Leader-Replication-多主复制" class="headerlink" title="Multi-Leader Replication(多主复制)"></a>Multi-Leader Replication(多主复制)</h2><p>单Leader缺点：所有写入必须经过它。</p>
+<p>多Leader缺点：同一数据可能会在不同数据中心被同时处理，需要解决因此带来的<strong>冲突</strong>。</p>
+<p>多leader下，每个leader都担任其他leader的follower</p>
+<h3 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h3><ul>
+<li>性能：多数据中心下，写请求被本地数据中心处理，随后与其他数据中心异步复制</li>
+<li>可用性：能有效容忍某个数据中心挂掉</li>
+<li><p>网络性能：数据中心间的网络往往很拥堵且不稳定，单leader无法应对，而多leader至少本地能处理用户请求</p>
+</li>
+<li><p>客户端离线操作：客户端(例如手机设备等)本机类比作为一个datacenter</p>
+</li>
+<li>协同编辑：多人协同编辑应用，每个设备都类比作为一个datacenter</li>
+</ul>
+<h3 id="处理写冲突"><a href="#处理写冲突" class="headerlink" title="处理写冲突"></a>处理写冲突</h3><h4 id="避免写冲突"><a href="#避免写冲突" class="headerlink" title="避免写冲突"></a>避免写冲突</h4><p>同一地区或者同一一批设备的写请求都通过同一leader写入。例如通过hash路由的方式等</p>
+<h4 id="收敛到一致的状态"><a href="#收敛到一致的状态" class="headerlink" title="收敛到一致的状态"></a>收敛到一致的状态</h4><p>通过一些方法将不同状态的数据收敛到同一状态。</p>
+<p>方案：</p>
+<ul>
+<li>使用LWW(last write wins)技术，即每次写入都绑定一个唯一ID（UUID，时间戳等），选择最大的ID并丢弃其他</li>
+<li>给副本绑定ID，选择ID大的副本里的数据</li>
+<li>通过某种方式合并，例如字母顺序最大者</li>
+<li>或者用数据结构保留冲突，提示用户自己解决</li>
+</ul>
+<h4 id="自定义冲突解决"><a href="#自定义冲突解决" class="headerlink" title="自定义冲突解决"></a>自定义冲突解决</h4><p>允许用户编写冲突解决逻辑，并在读、写操作是执行。</p>
+<ul>
+<li>写时：只要检测到冲突即会执行</li>
+<li>读时：检测到冲突，会保存所有冲突。用户读取时，提示用户解决，并回写结果。</li>
+</ul>
+<h3 id="拓扑结构"><a href="#拓扑结构" class="headerlink" title="拓扑结构"></a>拓扑结构</h3><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig5-8.png" alt="img"></p>
+<ul>
+<li>环形：节点收到来自前一个节点的写请求并传递给下一个节点</li>
+<li>星形：一个指定的节点传递给掐所有节点</li>
+<li>All-to-all：<ul>
+<li>优点：能避免环形以及星形的单点故障影响其他节点的问题</li>
+<li>缺点：节点间网络的速率不同，一些复制消息将超过其他消息</li>
+</ul>
+</li>
+</ul>
+<h2 id="Leaderless-Replication-无主复制"><a href="#Leaderless-Replication-无主复制" class="headerlink" title="Leaderless Replication(无主复制)"></a>Leaderless Replication(无主复制)</h2><p>无主复制中，写请求通常是直接发送到所有副本中，或者通过coordinator代表客户端写入。</p>
+<h4 id="单节点故障时写入"><a href="#单节点故障时写入" class="headerlink" title="单节点故障时写入"></a>单节点故障时写入</h4><p>无主复制中，故障切换是不存在的。节点故障时，只要剩余节点能承认写入即可。</p>
+<p>当原节点恢复，将会存在数据不一致的现象，如何解决？</p>
+<blockquote>
+<p>客户端接收所有副本的返回数据，并选择最新的。通常使用Version numbers来确定</p>
+</blockquote>
+<h4 id="Read-pair-and-anti-entropy"><a href="#Read-pair-and-anti-entropy" class="headerlink" title="Read pair and anti-entropy"></a>Read pair and anti-entropy</h4><h5 id="Read-repair"><a href="#Read-repair" class="headerlink" title="Read repair"></a>Read repair</h5><p>客户端读取并行所有节点的数据，能检测到stale responses，并回写新数据到老节点</p>
+<h5 id="Anti-entropy-process"><a href="#Anti-entropy-process" class="headerlink" title="Anti-entropy process"></a>Anti-entropy process</h5><p>后台进程不断地检测不同节点检测数据差异，并补齐。</p>
+<h3 id="Quorums-法定人数-for-reading-and-writing"><a href="#Quorums-法定人数-for-reading-and-writing" class="headerlink" title="Quorums(法定人数) for reading and writing"></a>Quorums(法定人数) for reading and writing</h3><p>定义：只要<code>w + r &gt; n</code>，则客户端总能获得最新的数据。遵守该规则的r与w称为<em>quorums read and write</em></p>
+<blockquote>
+<p>n: 副本数；r: 读请求时，至少得有r个节点能返回数据；w: 写请求至少要被w个节点确认</p>
+</blockquote>
+<h3 id="Quorums的局限性"><a href="#Quorums的局限性" class="headerlink" title="Quorums的局限性"></a>Quorums的局限性</h3><ul>
+<li>如果两个写入同时发生，不清楚哪一个先发生。</li>
+<li>如果写操作在某些副本上成功，而在其他节点上失败（例如，因为某些节点上的磁盘已满），在小于w个副本上写入成功</li>
+<li>如果携带新值的节点失败，需要读取其他带有旧值的副本。</li>
+</ul>
+<p>Dynamo风格可以忍受最终一致性，但是无法绝对保证。更强有力的保证通常需要<strong>事务</strong>或<strong>共识</strong></p>
+<h4 id="监控staleness-陈旧度"><a href="#监控staleness-陈旧度" class="headerlink" title="监控staleness(陈旧度)"></a>监控staleness(陈旧度)</h4><p>监视你的数据库是否返回最新的结果是很重要的，如果显著落后，应该提醒您，以便您可以调查原因（例如，网络中的问题或超载节点）。</p>
+<h3 id="Sloppy-Quorums-and-Hinted-Handoff"><a href="#Sloppy-Quorums-and-Hinted-Handoff" class="headerlink" title="Sloppy Quorums and Hinted Handoff"></a>Sloppy Quorums and Hinted Handoff</h3><p>写和读仍然需要w和r成功的响应, 只不过把把一些请求暂时寄宿在可达节点上，等不可达节点恢复后再传递到目标节点上</p>
+<h3 id="多数据中心"><a href="#多数据中心" class="headerlink" title="多数据中心"></a>多数据中心</h3><p>自然支持，quorums只需在一个数据中心满足即可。</p>
+<h3 id="检测并发写"><a href="#检测并发写" class="headerlink" title="检测并发写"></a>检测并发写</h3><p>Dynamo-stype允许客户端并发写同一key。存在事件以不同顺序到达不同的节点。</p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig5-12.png" alt="img"></p>
+<p>如果每个节点只是简单地覆盖对应key的值，则会出现不一致现象。因此需要解决冲突</p>
+<h4 id="Last-wirte-wins-discharding-current-wirtes"><a href="#Last-wirte-wins-discharding-current-wirtes" class="headerlink" title="Last wirte wins(discharding current wirtes)"></a>Last wirte wins(discharding current wirtes)</h4><p>保存”recent”值，并允许“older”值被覆盖或丢弃。使用一些标识来区分”rencent”以及”older”</p>
+<h4 id="The-“happens-before”-relationship-and-concurrency"><a href="#The-“happens-before”-relationship-and-concurrency" class="headerlink" title="The “happens-before” relationship and concurrency"></a>The “happens-before” relationship and concurrency</h4><p>只要有两个操作A和B，就有三种可能性：A在B之前发生，或者B在A之前发生(因果关系)，或者A和B并发。</p>
+<p>如果一个操作发生在另一个操作之前，则后面的操作应该覆盖较早的操作，但是如果这些操作是并发的，则存在需要解决的冲突。</p>
+<h4 id="捕获”happens-before”关系"><a href="#捕获”happens-before”关系" class="headerlink" title="捕获”happens-before”关系"></a>捕获”happens-before”关系</h4><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig5-13.png" alt="img"></p>
+<h4 id="合并同时写入的值"><a href="#合并同时写入的值" class="headerlink" title="合并同时写入的值"></a>合并同时写入的值</h4><p>如果多个操作并发发生，则客户端必须通过合并并发写入的值来擦屁股。</p>
+<h4 id="版本向量"><a href="#版本向量" class="headerlink" title="版本向量"></a>版本向量</h4><p>使用单个版本号(上图)来捕获操作之间的依赖关系，但是当多个副本并发接受写入时，这是不够的。</p>
+<p> 所有副本的版本号集合称为<strong>版本向量（version vector）</strong></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>单主复制是非常流行的，因为它很容易理解，不需要担心冲突解决。在出现故障节点，网络中断和延迟峰值的情况下，多领导者和无领导者复制可以更加稳健，但以更难以推理并仅提供非常弱的一致性保证为代价。</p>
+<p>多领导者和无领导者复制方法所固有的并发问题：因为他们允许多个写入并发发生冲突。我们研究了一个数据库可能使用的算法来确定一个操作是否发生在另一个操作之前，或者它们是否同时发生。</p>
+<h1 id="第六章-分区"><a href="#第六章-分区" class="headerlink" title="第六章-分区"></a>第六章-分区</h1><p>复制提高了数据容错性。</p>
+<p>但是当数据量大，且查询吞吐量大时，我就必须把数据拆开并分布到不同分区上(partitions or sharding)。这体现了可扩展性</p>
+<h3 id="分区与复制"><a href="#分区与复制" class="headerlink" title="分区与复制"></a>分区与复制</h3><p>分区与复制往往是同时存在的，同一个分区有多个副本，多个副本归属不同分区</p>
+<h3 id="Key-Value-类数据的分区"><a href="#Key-Value-类数据的分区" class="headerlink" title="Key-Value 类数据的分区"></a>Key-Value 类数据的分区</h3><p>偏斜(skewed): 分区不公平，导致部分分区拥有较多的数据和查询压力</p>
+<p>热点(hopt spot): 由于分区不公平，部分节点承受了过高的负载</p>
+<p>如何避免不公平的现象呢？</p>
+<h4 id="通过Key-Range分区"><a href="#通过Key-Range分区" class="headerlink" title="通过Key Range分区"></a>通过Key Range分区</h4><p>将连续的keys划分成多个段，并分配个每个分区。如下图的单词分区</p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig6-2.png" alt="img"></p>
+<p>为了避免skewed，需要针对数据实际分布来分区。例如单词始子母，书籍1只有A,B，而书籍12却有TUVWXYZ</p>
+<p>优点：可以让keys保持排序，这样范围查询将变得很容易</p>
+<p>缺点：特定的访问模式容易导致热点现象。</p>
+<blockquote>
+<p>比如时间戳作为key，按天分区，则当天的时序数据都会往同一分区写，造成热点。此时你可以选择数据源作为key</p>
+</blockquote>
+<h4 id="通过Hash-of-Key-分区"><a href="#通过Hash-of-Key-分区" class="headerlink" title="通过Hash of Key 分区"></a>通过Hash of Key 分区</h4><p>通过给定key的哈希值来决定分区。已知哈希值的范围后，再按分数区划分范围来指定分区。</p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig6-3.png" alt="img"></p>
+<p>有点：分区公平</p>
+<p>缺点：范围查询困难</p>
+<p>折中方案：使用<em>compound primary key</em>(组合主键)，即将多个列组合成一个key。其中key中的第一部分取用hash后分区，剩余部分做为排序所用的连接索引</p>
+<h3 id="负载倾斜与消除热点"><a href="#负载倾斜与消除热点" class="headerlink" title="负载倾斜与消除热点"></a>负载倾斜与消除热点</h3><p>尽管hash的方法能帮助减少热点，但并不能完全避免。比如微博明星出轨现象，对同一key的大量请求，同样会造成热点现象。</p>
+<p>这只能应用程序自己处理，例如在key前面或者后面append上随机数字。当然有利必有弊，这将导致其他低吞吐量的key产生不必要的性能损耗</p>
+<h3 id="分区以及二级索引"><a href="#分区以及二级索引" class="headerlink" title="分区以及二级索引"></a>分区以及二级索引</h3><h4 id="基于文档分区二级索引"><a href="#基于文档分区二级索引" class="headerlink" title="基于文档分区二级索引"></a>基于文档分区二级索引</h4><p>有利于写，不利于读</p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig6-4.png" alt="img"></p>
+<p>每个分区维护自身的二级索引，并覆盖自身分区内的所有文档数据。因此又称，本地索引(<em>local index</em>)</p>
+<p>缺点：</p>
+<ul>
+<li>索引往往会分布在多个分区里。在读取时，会造成<strong>分散/聚集（scatter/gather）</strong>现象，读取二级索引较为低效。</li>
+</ul>
+<h4 id="基于关键词-Term-分区二级索引"><a href="#基于关键词-Term-分区二级索引" class="headerlink" title="基于关键词(Term)分区二级索引"></a>基于关键词(Term)分区二级索引</h4><p>有利于读，不利于写</p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig6-5.png" alt="img"></p>
+<p><strong>关键词分区（term-partitioned）</strong>，因为我们寻找的关键词决定了索引的分区方式。是一种全局的分区方式，又称<strong>全局索引</strong></p>
+<p>优点：使读取更有效率：不需要<strong>分散/收集</strong>所有分区，客户端只需要向包含关键词的分区发出请求</p>
+<p>缺点：写入速度较慢且较为复杂，因为写入单个文档现在可能会影响索引的多个分区。而且，通常更新全局二级索引都是异步的，你写入后查询并不能立即生效</p>
+<h3 id="分区再平衡"><a href="#分区再平衡" class="headerlink" title="分区再平衡"></a>分区再平衡</h3><p>定义：更改都需要数据和请求从一个节点移动到另一个节点。 将负载从集群中的一个节点向另一个节点移动的过程，称为称为<strong>再平衡（reblancing）</strong></p>
+<p>最低要求：</p>
+<ul>
+<li>再平衡之后，负载（数据存储，读取和写入请求）应该在集群中的节点之间公平地共享。</li>
+<li>再平衡发生时，数据库应该继续接受读取和写入。</li>
+<li>节点之间只移动必须的数据，以便快速再平衡，并减少网络和磁盘I/O负载。</li>
+</ul>
+<h3 id="平衡策略"><a href="#平衡策略" class="headerlink" title="平衡策略"></a>平衡策略</h3><h4 id="反面教材：hash-mod-N"><a href="#反面教材：hash-mod-N" class="headerlink" title="反面教材：hash mod N"></a>反面教材：hash mod N</h4><p>为什么我们不使用<strong><em>mod</em></strong>（许多编程语言中的％运算符）？</p>
+<p>因为，如果节点数量N发生变化，大多数密钥将需要从一个节点移动到另一个节点，这过于昂贵了</p>
+<h4 id="固定数量的分区"><a href="#固定数量的分区" class="headerlink" title="固定数量的分区"></a>固定数量的分区</h4><p>创建比节点更多的分区，并为每个节点分配多个分区</p>
+<p>如果一个节点被添加到集群中，新节点可以从当前每个节点中<strong>窃取</strong>一些分区，直到分区再次公平分配。</p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig6-6.png" alt="img"></p>
+<p>优点：简单</p>
+<p>缺点： 如果数据集的总大小难以预估，选择正确的分区数是困难的。</p>
+<blockquote>
+<p>如果分区非常大，再平衡和从节点故障恢复变得昂贵。但是，如果分区太小，则会产生太多的开销。</p>
+</blockquote>
+<h4 id="动态分区"><a href="#动态分区" class="headerlink" title="动态分区"></a>动态分区</h4><p>当分区增长到超过配置的大小时，会被分成两个分区，每个分区约占一半的数据。与之相反，如果大量数据被删除并且分区缩小到某个阈值以下，则可以将其与相邻分区合并。此过程与B树底层发生的过程类似</p>
+<p>注意，数据集开始时很小，直到达到第一个分区的分割点，所有写入操作都必须由单个节点处理，而其他节点则处于空闲状态。使用<strong>预分割（pre-splitting）</strong>避免</p>
+<p>优点：分区数量适应总数据量</p>
+<h4 id="按节点比例分区"><a href="#按节点比例分区" class="headerlink" title="按节点比例分区"></a>按节点比例分区</h4><p>使分区数与节点数成正比，即每个节点具有固定数量的分区。</p>
+<p>当一个新节点加入集群时，它随机选择固定数量的现有分区进行拆分，然后获取每个分区的一半数据，另外一半保留。</p>
+<p>随机化可能会产生不公平的分区，可以通过增大分区数来平均化(Cassandra每个节点默认就256个分区)</p>
+<h3 id="运维：手动还是自动平衡"><a href="#运维：手动还是自动平衡" class="headerlink" title="运维：手动还是自动平衡"></a>运维：手动还是自动平衡</h3><p>全自动重新平衡可以很方便，但是自动化与自动故障检测相结合可能十分危险。例如误判过载的节点已经死亡</p>
+<h2 id="请求路由"><a href="#请求路由" class="headerlink" title="请求路由"></a>请求路由</h2><p>当客户想要发出请求时，如何知道要连接哪个节点？使用<strong>服务发现(service discovery)</strong> 技术</p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig6-7.png" alt="img"></p>
+<p>挑战：无论如何，所有参与者都同意路由规则，否则请求将被发送到错误的节点。</p>
+<p>方案一：</p>
+<p>许多分布式数据系统都依赖于一个独立的协调服务，比如ZooKeeper来跟踪集群元数据。</p>
+<ul>
+<li>每个节点在ZooKeeper中注册自己，ZooKeeper维护分区到节点的可靠映射</li>
+<li>只要分区分配发生的改变，或者集群中添加或删除了一个节点，ZooKeeper就会通知路由层使路由信息保持最新状态。</li>
+</ul>
+<p>方案二：</p>
+<p>在节点之间使用<strong>流言协议（gossip protocol）</strong> 来传播群集状态的变化。</p>
+<ul>
+<li>请求可以发送到任意节点，该节点会转发到包含所请求的分区的适当节点。如上图中的方法1</li>
+</ul>
+<h3 id="执行并行查询"><a href="#执行并行查询" class="headerlink" title="执行并行查询"></a>执行并行查询</h3><p><strong>大规模并行处理（MPP, Massively parallel processing）</strong>，MPP查询优化器将这个复杂的查询分解成许多执行阶段和分区，其中许多可以在数据库集群的不同节点上并行执行</p>
 
       
     </div>
@@ -578,7 +773,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第五章-复制"><span class="nav-number">1.</span> <span class="nav-text">第五章-复制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Leaders-and-Followers"><span class="nav-number">1.1.</span> <span class="nav-text">Leaders and Followers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步还是异步复制"><span class="nav-number">1.2.</span> <span class="nav-text">同步还是异步复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置新的Followers"><span class="nav-number">1.3.</span> <span class="nav-text">设置新的Followers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理节点宕机"><span class="nav-number">1.4.</span> <span class="nav-text">处理节点宕机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Follower-failure：Catch-up-recovery"><span class="nav-number">1.4.1.</span> <span class="nav-text">Follower failure：Catch-up recovery</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leader-failure-Failure-故障切换"><span class="nav-number">1.4.2.</span> <span class="nav-text">Leader failure: Failure(故障切换)</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第五章-复制"><span class="nav-number">1.</span> <span class="nav-text">第五章-复制</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Leaders-and-Followers-单Leader"><span class="nav-number">1.1.</span> <span class="nav-text">Leaders and Followers(单Leader)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#同步还是异步复制"><span class="nav-number">1.2.</span> <span class="nav-text">同步还是异步复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#设置新的Followers"><span class="nav-number">1.3.</span> <span class="nav-text">设置新的Followers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#处理节点宕机"><span class="nav-number">1.4.</span> <span class="nav-text">处理节点宕机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Follower-failure：Catch-up-recovery"><span class="nav-number">1.4.1.</span> <span class="nav-text">Follower failure：Catch-up recovery</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leader-failure-Failure-故障切换"><span class="nav-number">1.4.2.</span> <span class="nav-text">Leader failure: Failure(故障切换)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Implementation-of-Replication-Logs"><span class="nav-number">1.5.</span> <span class="nav-text">Implementation of Replication Logs</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#statement-based-replication"><span class="nav-number">1.5.1.</span> <span class="nav-text">statement-based replication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Write-ahead-log-WAL-传输"><span class="nav-number">1.5.2.</span> <span class="nav-text">Write-ahead log(WAL) 传输</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Logical-row-based-log-replication"><span class="nav-number">1.5.3.</span> <span class="nav-text">Logical(row-based)log replication</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Trigger-based-replication"><span class="nav-number">1.5.4.</span> <span class="nav-text">Trigger-based replication</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Porblems-with-Replication-Lag"><span class="nav-number">1.6.</span> <span class="nav-text">Porblems with Replication Lag</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Reading-Your-Owen-Writes"><span class="nav-number">1.6.1.</span> <span class="nav-text">Reading Your Owen Writes</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单调读"><span class="nav-number">1.6.2.</span> <span class="nav-text">单调读</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Consistent-Prefix-Reads"><span class="nav-number">1.6.3.</span> <span class="nav-text">Consistent Prefix Reads</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution-for-Replication-Lag"><span class="nav-number">1.7.</span> <span class="nav-text">Solution for Replication Lag</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Multi-Leader-Replication-多主复制"><span class="nav-number">1.8.</span> <span class="nav-text">Multi-Leader Replication(多主复制)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#应用场景"><span class="nav-number">1.8.1.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#处理写冲突"><span class="nav-number">1.8.2.</span> <span class="nav-text">处理写冲突</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#避免写冲突"><span class="nav-number">1.8.2.1.</span> <span class="nav-text">避免写冲突</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#收敛到一致的状态"><span class="nav-number">1.8.2.2.</span> <span class="nav-text">收敛到一致的状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#自定义冲突解决"><span class="nav-number">1.8.2.3.</span> <span class="nav-text">自定义冲突解决</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拓扑结构"><span class="nav-number">1.8.3.</span> <span class="nav-text">拓扑结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Leaderless-Replication-无主复制"><span class="nav-number">1.9.</span> <span class="nav-text">Leaderless Replication(无主复制)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#单节点故障时写入"><span class="nav-number">1.9.0.1.</span> <span class="nav-text">单节点故障时写入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Read-pair-and-anti-entropy"><span class="nav-number">1.9.0.2.</span> <span class="nav-text">Read pair and anti-entropy</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Read-repair"><span class="nav-number">1.9.0.2.1.</span> <span class="nav-text">Read repair</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Anti-entropy-process"><span class="nav-number">1.9.0.2.2.</span> <span class="nav-text">Anti-entropy process</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Quorums-法定人数-for-reading-and-writing"><span class="nav-number">1.9.1.</span> <span class="nav-text">Quorums(法定人数) for reading and writing</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Quorums的局限性"><span class="nav-number">1.9.2.</span> <span class="nav-text">Quorums的局限性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#监控staleness-陈旧度"><span class="nav-number">1.9.2.1.</span> <span class="nav-text">监控staleness(陈旧度)</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Sloppy-Quorums-and-Hinted-Handoff"><span class="nav-number">1.9.3.</span> <span class="nav-text">Sloppy Quorums and Hinted Handoff</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#多数据中心"><span class="nav-number">1.9.4.</span> <span class="nav-text">多数据中心</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#检测并发写"><span class="nav-number">1.9.5.</span> <span class="nav-text">检测并发写</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Last-wirte-wins-discharding-current-wirtes"><span class="nav-number">1.9.5.1.</span> <span class="nav-text">Last wirte wins(discharding current wirtes)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#The-“happens-before”-relationship-and-concurrency"><span class="nav-number">1.9.5.2.</span> <span class="nav-text">The “happens-before” relationship and concurrency</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#捕获”happens-before”关系"><span class="nav-number">1.9.5.3.</span> <span class="nav-text">捕获”happens-before”关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#合并同时写入的值"><span class="nav-number">1.9.5.4.</span> <span class="nav-text">合并同时写入的值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#版本向量"><span class="nav-number">1.9.5.5.</span> <span class="nav-text">版本向量</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">1.10.</span> <span class="nav-text">总结</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#第六章-分区"><span class="nav-number">2.</span> <span class="nav-text">第六章-分区</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分区与复制"><span class="nav-number">2.0.1.</span> <span class="nav-text">分区与复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Key-Value-类数据的分区"><span class="nav-number">2.0.2.</span> <span class="nav-text">Key-Value 类数据的分区</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#通过Key-Range分区"><span class="nav-number">2.0.2.1.</span> <span class="nav-text">通过Key Range分区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#通过Hash-of-Key-分区"><span class="nav-number">2.0.2.2.</span> <span class="nav-text">通过Hash of Key 分区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#负载倾斜与消除热点"><span class="nav-number">2.0.3.</span> <span class="nav-text">负载倾斜与消除热点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区以及二级索引"><span class="nav-number">2.0.4.</span> <span class="nav-text">分区以及二级索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#基于文档分区二级索引"><span class="nav-number">2.0.4.1.</span> <span class="nav-text">基于文档分区二级索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#基于关键词-Term-分区二级索引"><span class="nav-number">2.0.4.2.</span> <span class="nav-text">基于关键词(Term)分区二级索引</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分区再平衡"><span class="nav-number">2.0.5.</span> <span class="nav-text">分区再平衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#平衡策略"><span class="nav-number">2.0.6.</span> <span class="nav-text">平衡策略</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#反面教材：hash-mod-N"><span class="nav-number">2.0.6.1.</span> <span class="nav-text">反面教材：hash mod N</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#固定数量的分区"><span class="nav-number">2.0.6.2.</span> <span class="nav-text">固定数量的分区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#动态分区"><span class="nav-number">2.0.6.3.</span> <span class="nav-text">动态分区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#按节点比例分区"><span class="nav-number">2.0.6.4.</span> <span class="nav-text">按节点比例分区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运维：手动还是自动平衡"><span class="nav-number">2.0.7.</span> <span class="nav-text">运维：手动还是自动平衡</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#请求路由"><span class="nav-number">2.1.</span> <span class="nav-text">请求路由</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#执行并行查询"><span class="nav-number">2.1.1.</span> <span class="nav-text">执行并行查询</span></a></li></ol></li></div>
             
 
           </div>
