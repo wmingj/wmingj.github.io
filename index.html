@@ -755,6 +755,106 @@
 <li><strong><em>写偏差</em></strong>： 一个事务读取一些东西，根据它所看到的值作出决定，并将该决定写入数据库。但是，写入时，该决定的前提不再是真实的。只有可序列化的隔离才能防止这种异常。</li>
 <li><strong><em>幻读</em></strong>： 事务读取符合某些搜索条件的对象。另一个客户端进行写入，影响搜索结果。快照隔离可以防止直接的幻像读取，但是写入偏差上下文中的幻读需要特殊处理，例如索引范围锁定。</li>
 </ul>
+<h1 id="第八章-分布式系统的麻烦"><a href="#第八章-分布式系统的麻烦" class="headerlink" title="第八章-分布式系统的麻烦"></a>第八章-分布式系统的麻烦</h1><h2 id="故障与部分失效"><a href="#故障与部分失效" class="headerlink" title="故障与部分失效"></a>故障与部分失效</h2><p>当你在一台计算机上编写一个程序时，它通常会以一种相当可预测的方式运行：无论是工作还是不工作。因为计算机设计目的就是<strong>总是正确地计算</strong></p>
+<p><strong>部分失效（partial failure）</strong>： 部分正常工作，系统其它部分则被不可预料地破坏了。</p>
+<p><strong>不确定性的（nonderterministic）</strong>：如果你试图做任何涉及多个节点和网络的事情，它有时可能会工作，有时会出现不可预知的失败。</p>
+<h2 id="云计算与超级计算机"><a href="#云计算与超级计算机" class="headerlink" title="云计算与超级计算机"></a>云计算与超级计算机</h2><p>超级计算机：高性能计算（HPC）领域，计算密集型科学计算任务，如天气预报或分子动力学。（垂直扩展的极致），类似于单个计算机</p>
+<p>云计算：通常与多租户数据中心，连接IP网络的商品计算机（通常是以太网），弹性/按需资源分配以及计量计费等相关联。</p>
+<p>分布式系统更接近于云计算</p>
+<h2 id="不可靠的网络"><a href="#不可靠的网络" class="headerlink" title="不可靠的网络"></a>不可靠的网络</h2><p><strong>异步分组网络（asynchronous packet networks）</strong>，一个节点可以向另一个节点发送一个消息（一个数据包），但是网络不能保证它什么时候到达，或者是否到达。</p>
+<p>处理这个问题的通常方法是<strong>超时（Timeout）</strong>，在一段时间之后放弃等待，并且认为响应不会到达。</p>
+<h3 id="实际的网络错误"><a href="#实际的网络错误" class="headerlink" title="实际的网络错误"></a>实际的网络错误</h3><p>一句话，并非永远可靠。需要你做额外处理，假设。</p>
+<h3 id="检测故障"><a href="#检测故障" class="headerlink" title="检测故障"></a>检测故障</h3><p>系统需要自动检测故障节点。例如，负载平衡器需要停止向已死亡的节点转发请求。</p>
+<p>网络不定，加重判断难度：</p>
+<ul>
+<li>如果节点在处理请求时发生崩溃，则无法知道远程节点实际处理了多少数据</li>
+<li>节点操作系统上，添加脚本，可以通知其他节点有关该崩溃的信息</li>
+</ul>
+<p>总的来说，必须假设你根本就没有得到任何回应。可以重试几次，等待超时过期，并且如果在超时时间内没有收到响应，则最终声明节点已经死亡。</p>
+<h3 id="超时与无穷的延迟"><a href="#超时与无穷的延迟" class="headerlink" title="超时与无穷的延迟"></a>超时与无穷的延迟</h3><p>超时应该是多少？</p>
+<ul>
+<li>过多？意味着长时间等待，期间，用户可能不得不等待，或者看到错误信息。</li>
+<li>过短？错误地判断节点失效（例如节点只是暂时地高负载）的风险更高，而转移节点，这会给其他节点和网络带来额外的负担，从而更加恶化情况</li>
+</ul>
+<p>如何估算？2d+r？实际情况下，都无法保证，异步网络具有无限的延迟，服务器并不能保证它们可以在一定的最大时间内处理请求。</p>
+<h4 id="网络拥塞和排队"><a href="#网络拥塞和排队" class="headerlink" title="网络拥塞和排队"></a>网络拥塞和排队</h4><p>网络上数据包延迟的可变性通常是由于排队，例如</p>
+<ul>
+<li>CPU内核当前都处于繁忙状态，网络传入请求将被操作系统排队</li>
+<li>TCP执行<strong>流量控制</strong>，意味着在数据甚至进入网络之前，在发送者处需要进行额外的排队</li>
+</ul>
+<p>解决办法：</p>
+<ul>
+<li>通过实验方式选择超时：测量延长的网络往返时间和多台机器的分布，以确定延迟的预期可变性</li>
+<li>连续测量响应时间及其变化：根据观察到的响应时间分布自动调整超时时间</li>
+</ul>
+<h3 id="同步网络-vs-异步网络"><a href="#同步网络-vs-异步网络" class="headerlink" title="同步网络 vs 异步网络"></a>同步网络 vs 异步网络</h3><p>同步网络：即使数据经过多个路由器，也不会受到排队的影响，因为呼叫的16位空间已经在网络的下一跳中保留了下来（电话通信）</p>
+<p>存在的问题，利用率低，吞吐量低。</p>
+<p>异步网络：如TCP协议，是try best策略</p>
+<h2 id="不可靠的时钟"><a href="#不可靠的时钟" class="headerlink" title="不可靠的时钟"></a>不可靠的时钟</h2><p>通信不即时：消息通过网络从一台机器传送到另一台机器需要时间。</p>
+<p>时钟硬件设备也不一定稳定正确</p>
+<h3 id="单调钟与时钟"><a href="#单调钟与时钟" class="headerlink" title="单调钟与时钟"></a>单调钟与时钟</h3><h4 id="时钟："><a href="#时钟：" class="headerlink" title="时钟："></a>时钟：</h4><p>根据某个日历，返回当前日期和时间。如timestamp, date之类</p>
+<h4 id="单调钟："><a href="#单调钟：" class="headerlink" title="单调钟："></a>单调钟：</h4><p>单调钟适用于测量持续时间（时间间隔）。</p>
+<p>NTP协议检测到计算机的本地石英钟比NTP服务器要更快或更慢，可以调整单调钟向前走的频率</p>
+<p>在分布式系统中，使用单调钟测量<strong>经过时间（elapsed time）</strong></p>
+<h3 id="时钟同步与准确性"><a href="#时钟同步与准确性" class="headerlink" title="时钟同步与准确性"></a>时钟同步与准确性</h3><p> 单调钟不需要同步，但是时钟需要根据NTP服务器或其他外部时间源来设置才能有用。而外部来源不可靠</p>
+<p>石英钟不够精确：它会<strong>漂移（drifts）</strong>（运行速度快于或慢于预期）。且NTP同步也会由于各种因素而不稳定</p>
+<p>当然，如果你足够在乎这件事并投入大量资源，可以达到非常好的时钟精度</p>
+<h3 id="依赖同步时钟"><a href="#依赖同步时钟" class="headerlink" title="依赖同步时钟"></a>依赖同步时钟</h3><p>时钟的缺陷：一天可能不会有精确的86,400秒，<strong>时钟</strong>可能会前后跳跃，而一个节点上的时间可能与另一个节点上的时间完全不同。</p>
+<p>如果使用需要同步时钟的软件，必须仔细监控所有机器之间的时钟偏移，时钟偏离太远则宣布该节点死亡</p>
+<h4 id="有序事件的时间戳"><a href="#有序事件的时间戳" class="headerlink" title="有序事件的时间戳"></a>有序事件的时间戳</h4><p>依赖时钟，在多个节点上对事件进行排序，例如LWW策略？不可取，因为时钟不可靠。</p>
+<p>how？<strong>逻辑时钟（logic clock）</strong>，基于递增计数器而不是振荡石英晶体，对于排序事件来说是更安全的选择。例如tx_id</p>
+<h4 id="时钟读数存在置信区间"><a href="#时钟读数存在置信区间" class="headerlink" title="时钟读数存在置信区间"></a>时钟读数存在置信区间</h4><p>将时钟读数视为一个时间点是没有意义的——它更像是一段时间范围: </p>
+<blockquote>
+<p> 例如，一个系统可能以95％的置信度认为当前时间处于本分钟内的第10.3秒和10.5秒之间，它可能没法比这更精确了</p>
+</blockquote>
+<h4 id="全局快照的同步时钟"><a href="#全局快照的同步时钟" class="headerlink" title="全局快照的同步时钟"></a>全局快照的同步时钟</h4><p>分布式系统，由于需要协调，（跨所有分区）全局单调递增的事务ID会很难生成。</p>
+<p>可行： 为了确保事务时间戳反映因果关系，在提交读写事务之前，Spanner在提交读写事务时，会故意等待置信区间长度的时间</p>
+<h3 id="进程暂停"><a href="#进程暂停" class="headerlink" title="进程暂停"></a>进程暂停</h3><p><strong>租约（lease）</strong>：类似一个带超时的锁，当一个节点获得一个租约时，它知道它在某段时间内自己是领导者，直到租约到期。</p>
+<p> 如果节点发生故障，就会停止续期，所以当租约过期时，另一个节点可以接管。类似如下代码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">while(true)&#123;</span><br><span class="line">	request=getIncomingRequest();</span><br><span class="line">	// 确保租约还剩下至少10秒</span><br><span class="line">	if (lease.expiryTimeMillis-System.currentTimeMillis()&lt; 10000)&#123;</span><br><span class="line">		lease = lease.renew();</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	if(lease.isValid())&#123; // 期间可能会发生进程暂停</span><br><span class="line">    	process(request);</span><br><span class="line">	&#125;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一个线程可能会暂停很长时间？当然了，例如GC，虚拟机挂起，磁盘IO阻塞等等</p>
+<p>分布式系统没有共享内存，只有通过不可靠网络发送的消息，因此：</p>
+<blockquote>
+<p> 分布式系统中的节点，必须假定其执行可能在任意时刻暂停相当长的时间，即使是在一个函数的中间。在暂停期间，其它部分在继续运转，甚至可能因为该节点没有响应，而宣告暂停节点的死亡。最终暂停的节点可能会继续运行，在再次检查自己的时钟之前，甚至可能不会意识到自己进入了睡眠。</p>
+</blockquote>
+<h4 id="响应时间保证"><a href="#响应时间保证" class="headerlink" title="响应时间保证"></a>响应时间保证</h4><p><strong>硬实时（hard real-time）</strong>可行，例如飞机系统中。但是实现昂贵，例如在系统中提供<strong>实时保证</strong>需要各级软件栈的支持，且会降低延迟、吞吐等</p>
+<h4 id="限制垃圾收集的影响"><a href="#限制垃圾收集的影响" class="headerlink" title="限制垃圾收集的影响"></a>限制垃圾收集的影响</h4><p>只用垃圾收集器来处理短命对象（这些对象要快速收集），并定期在积累大量长寿对象（因此需要完整GC）之前重新启动进程</p>
+<h2 id="知识、真相与谎言"><a href="#知识、真相与谎言" class="headerlink" title="知识、真相与谎言"></a>知识、真相与谎言</h2><h3 id="真理由多数所定义"><a href="#真理由多数所定义" class="headerlink" title="真理由多数所定义"></a>真理由多数所定义</h3><p>节点自身并没问题，但是由于网络、GC等会被误判死亡。</p>
+<p>因此，分布式系统不能完全依赖单个节点。决策需要来自多个节点的最小投票数，以减少对于某个特定节点的依赖。</p>
+<h4 id="leader-and-lock"><a href="#leader-and-lock" class="headerlink" title="leader and lock"></a>leader and lock</h4><p><img src="https://github.com/Vonng/ddia/raw/master/img/fig8-4.png" alt="img"></p>
+<p><strong>图8-4 分布式锁的实现不正确：客户端1认为它仍然具有有效的租约，即使它已经过期，从而破坏了存储中的文件</strong></p>
+<p>即使一个节点认为它是“<strong>天选者（the choosen one）</strong>”（分区的负责人，锁的持有者，成功获取用户名的用户的请求处理程序），但这并不一定意味着有法定人数的节点同意</p>
+<h4 id="防护令牌"><a href="#防护令牌" class="headerlink" title="防护令牌"></a>防护令牌</h4><p>资源方需要确保一个被误认为自己是“天选者”的节点不能扰乱系统的其它部分，使用<strong>防护（fencing）</strong></p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig8-5.png" alt="img"></p>
+<p>假设每次锁定服务器授予锁或租约时，它还会返回一个<strong>防护令牌（fencing token）</strong>，这个数字在每次授予锁定时都会增加</p>
+<h3 id="拜占庭故障"><a href="#拜占庭故障" class="headerlink" title="拜占庭故障"></a>拜占庭故障</h3><p>如果节点可能声称其实际上没有收到特定的消息（欺骗行为）。这种行为被称为<strong>拜占庭故障（Byzantine fault）</strong>，<strong>在不信任的环境中达成共识的问题被称为拜占庭将军问题</strong></p>
+<p> 当一个系统在部分节点发生故障、不遵守协议、甚至恶意攻击、扰乱网络时仍然能继续正确工作，称之为<strong>拜占庭容错（Byzantine fault-tolerant）</strong>的</p>
+<p>例如web 服务的输入验证，数据清洗和输出转义等，即是容错行为。</p>
+<h3 id="系统模型与现实"><a href="#系统模型与现实" class="headerlink" title="系统模型与现实"></a>系统模型与现实</h3><p>时机模型。</p>
+<ul>
+<li><strong><em>同步模型</em></strong>：假设网络延迟，进程暂停和和时钟误差都是有界限的</li>
+<li><strong><em>部分同步模型</em></strong>：一个系统在大多数情况下像一个同步系统一样运行，但有时候会超出网络延迟，进程暂停和时钟漂移的界限。<strong>实际</strong></li>
+<li><strong><em>异步模型</em></strong>：一个算法不允许对时机做任何假设。场景很有限</li>
+</ul>
+<p>节点故障模型</p>
+<ul>
+<li><strong><em>崩溃-停止故障</em></strong>：假设一个节点只能以一种方式失效，即通过崩溃。意味着节点可能在任意时刻突然停止响应，此后该节点永远消失</li>
+<li><strong><em>崩溃-恢复故障</em></strong>：假设节点可能会在任何时候崩溃，但也许会在未知的时间之后再次开始响应。<strong>实际</strong></li>
+<li><strong><em>拜占庭（任意）故障</em></strong>： 节点可以做（绝对意义上的）任何事情，包括试图戏弄和欺骗其他节点</li>
+</ul>
+<h4 id="算法的正确性"><a href="#算法的正确性" class="headerlink" title="算法的正确性"></a>算法的正确性</h4><p>分布式算法的属性。</p>
+<ul>
+<li><strong><em>唯一性</em></strong>：  没有两个防护令牌请求返回相同的值。</li>
+<li><strong><em>单调序列</em></strong>：if request x returned token tx, and request y returned token ty, and x competed before y began, then tx &lt; ty</li>
+<li><strong><em>可用性</em></strong>:  请求防护令牌并且不会崩溃的节点，最终会收到响应。</li>
+</ul>
+<h4 id="安全性和活性"><a href="#安全性和活性" class="headerlink" title="安全性和活性"></a>安全性和活性</h4><p> 安全性通常被非正式地定义为，<strong>没有坏事发生</strong>，而活性通常就类似：<strong>最终好事发生</strong>。</p>
+<ul>
+<li>如果安全属性被违反，我们可以指向一个特定的时间点</li>
+<li>活性属性反过来：it may not hold the point in time. But always hope that it may be satisfied in the fueture</li>
+</ul>
+<p>对于分布式算法，在系统模型的所有可能情况下，要求<strong>始终</strong>保持安全属性是常见的。即使所有节点崩溃，或者整个网络出现故障，算法必须确保它不会返回错误的结果。</p>
+<p> 但是，对于活性属性，我们可以提出一些注意事项。例如部分同步模型的定义要求系统最终返回到同步状态——即任何网络中断的时间段只会持续一段有限的时间，然后进行修复。</p>
 
           
         
