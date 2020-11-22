@@ -1,5 +1,5 @@
+https://erenming.com/2020/11/22/【读书笔记】设计数据密集型应用-第三部分/
 https://erenming.com/2020/09/05/【读书笔记】设计数据密集型应用-第二部分/
 https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/
 https://erenming.com/2020/08/02/【踩坑日记】一次抓包排查实战/
 https://erenming.com/2020/06/27/record-a-goroutine-leak/
-https://erenming.com/2020/04/08/go-reflec-usage-guide/

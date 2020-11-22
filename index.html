@@ -259,6 +259,242 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/11/22/【读书笔记】设计数据密集型应用-第三部分/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Eren Ming">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Eren with you">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/11/22/【读书笔记】设计数据密集型应用-第三部分/" itemprop="url">【读书笔记】设计数据密集型应用-第三部分</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2020-11-22T13:27:58+08:00">
+                2020-11-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2020/11/22/【读书笔记】设计数据密集型应用-第三部分/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2020/11/22/【读书笔记】设计数据密集型应用-第三部分/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="第10章-批处理"><a href="#第10章-批处理" class="headerlink" title="第10章-批处理"></a>第10章-批处理</h1><p>系统分类：</p>
+<ul>
+<li>服务(在线系统)：服务等待客户端的请求或指令到达。会尽快地返回结果</li>
+<li>批处理系统(离线系统)：拥有大量的输入数据，通过跑一个job来处理它，并生成输出数据</li>
+<li>流处理系统(near-real-time system)：stream job operates on events <strong>shortly</strong> after they happen, whereas a batch job operates on a fixed set of input data</li>
+</ul>
+<h2 id="使用unix工具的批处理"><a href="#使用unix工具的批处理" class="headerlink" title="使用unix工具的批处理"></a>使用unix工具的批处理</h2><p>使用unix工具处理日志文件: </p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cat /var/log/nginx/access.log | #1</span><br><span class="line">	awk '&#123;print $7&#125;' | #2</span><br><span class="line">	sort             | #3</span><br><span class="line">	uniq -c          | #4</span><br><span class="line">	sort -r -n       | #5</span><br><span class="line">	head -n 5          #6</span><br></pre></td></tr></table></figure>
+<p>使用程序处理：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">counts = Hash.new(<span class="number">0</span>)         <span class="comment"># 1</span></span><br><span class="line">File.open(<span class="string">'/var/log/nginx/access.log'</span>) <span class="keyword">do</span> <span class="params">|file|</span> </span><br><span class="line">    file.each <span class="keyword">do</span> <span class="params">|line|</span></span><br><span class="line">        url = line.split[<span class="number">6</span>]  <span class="comment"># 2</span></span><br><span class="line">        counts[url] += <span class="number">1</span>     <span class="comment"># 3</span></span><br><span class="line">    <span class="keyword">end</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">top5 = counts.map&#123;<span class="params">|url, count|</span> [count, url] &#125;.sort.reverse[<span class="number">0</span>...<span class="number">5</span>] <span class="comment"># 4</span></span><br><span class="line">top5.each&#123;<span class="params">|count, url|</span> puts <span class="string">"<span class="subst">#&#123;count&#125;</span> <span class="subst">#&#123;url&#125;</span>"</span> &#125;                   <span class="comment"># 5</span></span><br></pre></td></tr></table></figure>
+<p>上述两者对比？</p>
+<ul>
+<li>当不同的URL数量较小时，程序处理较好。因为它读入内存的hash表</li>
+<li>当数据量非常大时。命令行更好，因为sort命令会通过溢出磁盘的技术适配大数据，且能利用磁盘顺序IO的性能优势</li>
+</ul>
+<h3 id="Unix哲学"><a href="#Unix哲学" class="headerlink" title="Unix哲学"></a>Unix哲学</h3><ol>
+<li>让程序只做好一件事。新功能新程序，而非添加功能</li>
+<li>每个程序的输出都能成为另外一个程序的输入。即程序只是数据的过滤器</li>
+<li>尽早地设计构建原型</li>
+<li>优先使用工具来减轻编程任务，即使是曲线救国的方式</li>
+</ol>
+<p>Unix 如何实现的组合性？</p>
+<h4 id="统一的接口"><a href="#统一的接口" class="headerlink" title="统一的接口"></a>统一的接口</h4><p>Unix中使用文件(fd)来表示，它只是一串有序的字节序列。</p>
+<p>(web中则使用URL作为接口)</p>
+<h4 id="分离逻辑与布线"><a href="#分离逻辑与布线" class="headerlink" title="分离逻辑与布线"></a>分离逻辑与布线</h4><p>用户可以以他们想要的方式链接输入与输出，而该程序不知道也不关心从哪里输入、后又输出到哪里</p>
+<h4 id="透明度和实验"><a href="#透明度和实验" class="headerlink" title="透明度和实验"></a>透明度和实验</h4><p>Unix 工具非常易于调试。</p>
+<p>Unix命令的输入文件通常被视为不可变。这样你可以随意尝试，而不会损坏原始数据</p>
+<p>可以在任何时候结束管道，这很便于调试。</p>
+<p>可以某个阶段的数据输出保存到文件中，并可以使用该文件作为下一阶段的输入。</p>
+<h2 id="MapReduce和分布式文件系统"><a href="#MapReduce和分布式文件系统" class="headerlink" title="MapReduce和分布式文件系统"></a>MapReduce和分布式文件系统</h2><p>MapReduce就像Unix工具一样，不过是分布在数千台机器上。</p>
+<p>MapReduce的job通过在分布式文件系统上写文件来作为类似Unix中的stdin和stdout</p>
+<h3 id="MapReduce任务执行"><a href="#MapReduce任务执行" class="headerlink" title="MapReduce任务执行"></a>MapReduce任务执行</h3><p>处理模式：</p>
+<ol>
+<li>读取一组input文件，并拆解成记录(records)。</li>
+<li>调用mapper函数，从每条记录中提取一对键值对。</li>
+<li>按照键来排序所有键值对(MapReduce默认执行)</li>
+<li>调用reduce函数编列排序后的键值对。</li>
+</ol>
+<h4 id="Mapper"><a href="#Mapper" class="headerlink" title="Mapper"></a>Mapper</h4><p>负责从input文件中提取键值对</p>
+<h4 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h4><p>MapReduce框架拉去由mapper生成的键值对，收集同一键的所有值，并在改值列表上迭代调用reducer</p>
+<h3 id="分布式执行"><a href="#分布式执行" class="headerlink" title="分布式执行"></a>分布式执行</h3><p>数据的分布由框架层负责，基本上采用一种就近原则：即会在存有input文件副本的节点上执行mapper，可以节省网络传输数据的开销。</p>
+<p>对于reducer，通过对键哈希以确保相同键的键值对会被传递到同一reducer。</p>
+<p>键值对必须排序，通常是按阶段排序。只要mapper读取完input文件，并写完排序后的output文件后，reducer就会开始获取output文件。</p>
+<p>reducer获取文件，合并且保留有序性，最后对记录处理。</p>
+<h3 id="MapReduce工作流"><a href="#MapReduce工作流" class="headerlink" title="MapReduce工作流"></a>MapReduce工作流</h3><p>如同Unix命令一样，单个MapReduce任务作用有限，通常是多个任务组合成工作流。</p>
+<p>MapReduce并不原生支持，而是用过input&amp;output文件（目录）来实现。且默认是前一个MapReduce任务完全结束后才能开始下一个</p>
+<h3 id="Reduce-Side-Join-and-Grouping"><a href="#Reduce-Side-Join-and-Grouping" class="headerlink" title="Reduce-Side Join and Grouping"></a>Reduce-Side Join and Grouping</h3><p>如何处理join以及group呢？（类似SQL中的）</p>
+<h4 id="join"><a href="#join" class="headerlink" title="join"></a>join</h4><p>例如user_info <-> user_activity_event表：</-></p>
+<p>通常是获取user_info的一个副本，并放置与user_activity_event表所在机器的文件系统上，最后再执行任务。</p>
+<p>Sort-meger join: 通过归并排序的方式，reducer将两个mapper的output合并</p>
+<p>将相关的数据放在一起</p>
+<h4 id="group-by"><a href="#group-by" class="headerlink" title="group by"></a>group by</h4><p>设置mapper，使得它生成的键值对是以目标分组键为键。随后分区和排序过程将所有相同键的记录传递到reducer。</p>
+<p>处理倾斜数据？</p>
+<p>由于存在热点数据的情况(如处理明星相关的分组)，会导致负载不均等问题。如何处理？</p>
+<ul>
+<li>预先跑一份样本数据来判断哪些键是热点键</li>
+<li>显示指定热点键</li>
+</ul>
+<p>然后使用随机话的策略来减轻热点数据的分区</p>
+<h3 id="Map-Side-Join"><a href="#Map-Side-Join" class="headerlink" title="Map-Side Join"></a>Map-Side Join</h3><h4 id="Brocadcast-hash-join"><a href="#Brocadcast-hash-join" class="headerlink" title="Brocadcast hash join"></a>Brocadcast hash join</h4><p>两个连接输入之一很小，所以它并没有分区，而且能被完全加载进一个哈希表中。因此，你可以为连接输入大端的每个分区启动一个Mapper，将输入小端的散列表加载到每个Mapper中，然后扫描大端，一次一条记录，并为每条记录查询散列表。</p>
+<h4 id="Partitioned-hash-joins"><a href="#Partitioned-hash-joins" class="headerlink" title="Partitioned hash joins"></a>Partitioned hash joins</h4><p> 如果两个连接输入以相同的方式分区（使用相同的键，相同的散列函数和相同数量的分区），则可以独立地对每个分区应用散列表方法。</p>
+<h2 id="批处理工作流的输出"><a href="#批处理工作流的输出" class="headerlink" title="批处理工作流的输出"></a>批处理工作流的输出</h2><ul>
+<li>建立索引：批处理处理文档并输出索引</li>
+<li>键值存储：批处理处理数据并输出键值对到数据库(或者写入文件，数据库程序再读文件)</li>
+</ul>
+<h3 id="批处理输出的哲学"><a href="#批处理输出的哲学" class="headerlink" title="批处理输出的哲学"></a>批处理输出的哲学</h3><p>任何先前的输出都被新的输出完全取代，且无任何副作用。</p>
+<h2 id="Hadoop和分布式数据库的对比"><a href="#Hadoop和分布式数据库的对比" class="headerlink" title="Hadoop和分布式数据库的对比"></a>Hadoop和分布式数据库的对比</h2><h4 id="存储多样性"><a href="#存储多样性" class="headerlink" title="存储多样性"></a>存储多样性</h4><p>Hadoop会以原始的形式手机数据，后续再处理数据模型的设计。而传统数据库必须提前设计好数据模型</p>
+<p>不加区分的数据存储转移了负担：数据集生成者不需要强制转换为标准格式，数据的解释称为消费者的问题（如文档数据库）</p>
+<h4 id="处理模型多样性"><a href="#处理模型多样性" class="headerlink" title="处理模型多样性"></a>处理模型多样性</h4><p>由于可以自定义编写各种处理函数，因此可以处理各种各样的数据模型</p>
+<h4 id="针对频繁故障的设计"><a href="#针对频繁故障的设计" class="headerlink" title="针对频繁故障的设计"></a>针对频繁故障的设计</h4><p>两种设计思路：处理故障和使用内存磁盘的方式。</p>
+<p>批处理是离线任务，故障敏感，因此不像MPP那样终止整个查询，而是以单个任务的粒度重试。</p>
+<p>而且总是积极地将数据写入磁盘，一方面是容错另一方面是弥补能存不足</p>
+<p>为何这样设计？是因为故障率往往会很高，不仅是硬件错误，更是软件问题（如k8s之类的优先级任务，应用不广）</p>
+<h2 id="MapReduce-之后"><a href="#MapReduce-之后" class="headerlink" title="MapReduce 之后"></a>MapReduce 之后</h2><h3 id="物化中间状态"><a href="#物化中间状态" class="headerlink" title="物化中间状态"></a>物化中间状态</h3><p>materialization（物化）：将中间状态写入到文件的过程</p>
+<p>MapReduce通常是全量物化，缺点？</p>
+<ul>
+<li>任务只能在前置任务都完成后才能执行</li>
+<li>mapper往往是多余的，例如简单地读取reducer生成的数据</li>
+<li>数据副本针对临时文件往往是多余的</li>
+</ul>
+<h3 id="工作流引擎"><a href="#工作流引擎" class="headerlink" title="工作流引擎"></a>工作流引擎</h3><p>将工作流显示地建模为数据从多个处理阶段通过，这样的系统成为数据流引擎(dataflow engines)</p>
+<p>与MapReduce的不同（优点）？</p>
+<ul>
+<li>没有所谓的mapper、reducer。而是将每个函数成为operators（算子），引擎听过各种选项来链接各个算子</li>
+<li>排序只在必要的地方执行</li>
+<li>没有不必要的mapper</li>
+<li>算子可以在数据就绪后就开始，而不是等待前置任务完全完成</li>
+</ul>
+<h4 id="容错"><a href="#容错" class="headerlink" title="容错"></a>容错</h4><p>通过将中间状态保存在文件系统上，故障时，通过其他节点的可用数据重新，若还不行则重新计算原始数据。</p>
+<p>如何实现该机制？</p>
+<ul>
+<li><p>例如SPARK使用RDD来跟踪数据是如何计算的（使用了哪些分析，用来哪些算子等）</p>
+</li>
+<li><p>必须知道计算是否是确定性的，即给出相同输入，是否输出相同输出。若不确定，则下游算子将无法处理矛盾。通常对于不确定的算子，一般是杀死下游算子，并重新计算</p>
+</li>
+<li>针对大数据量的，则可以物化中间态。减少开销</li>
+</ul>
+<h4 id="关于物化"><a href="#关于物化" class="headerlink" title="关于物化"></a>关于物化</h4><p>类比Unix，MapReduce是将每个命令的输出写入文件来实现。</p>
+<p>而如同flink之类的，则是基于管道思想，将算子的增量传递给其他算子，而无需等待输入完成。</p>
+<h3 id="图与迭代处理"><a href="#图与迭代处理" class="headerlink" title="图与迭代处理"></a>图与迭代处理</h3><p>针对图的数据模型，如何处理？</p>
+<h4 id="Pregel处理模型"><a href="#Pregel处理模型" class="headerlink" title="Pregel处理模型"></a>Pregel处理模型</h4><p>思想：一个顶点“发送消息“给另一个顶点，通常这些消息沿着图的边进行发送。</p>
+<p>每次迭代，为每个顶点调用一个函数，将所有发送给它的消息再传递给他。不断迭代直到图处理完毕(与图处理算法的递归闭包处理方式类似)</p>
+<h4 id="容错-1"><a href="#容错-1" class="headerlink" title="容错"></a>容错</h4><p>当开始下一个迭代时，前置的迭代必须完全结束，且所有消息都必须拷贝到所有其他顶点</p>
+<h2 id="高级API和语言"><a href="#高级API和语言" class="headerlink" title="高级API和语言"></a>高级API和语言</h2><h3 id="像声明式转变"><a href="#像声明式转变" class="headerlink" title="像声明式转变"></a>像声明式转变</h3><p>尝试性地加入声明式是可行的，应用只是简单地说明那些链接是必须的，查询优化器绝地如何最好地执行链接。</p>
+<p>引入声明式的部分，又保有原来的自定义算子的方式，将大大提高可用性。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>批处理：input数据是有界的，是一个已知的，固定大小的数据集合。</p>
+<p>而流处理则是无界的，即，你任然有一个任务，但是输入数据是无限的</p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/09/05/【读书笔记】设计数据密集型应用-第二部分/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -947,6 +1183,100 @@
 <li>可以使用全序广播实现线性一致的存储</li>
 <li>同时，也可以使用线性一致的性存储来实现全序广播</li>
 </ul>
+<h2 id="分布式事务与共识"><a href="#分布式事务与共识" class="headerlink" title="分布式事务与共识"></a>分布式事务与共识</h2><p>简单来说，就是让多个节点对某件事达成共识</p>
+<p>应用场景：</p>
+<ul>
+<li>选主：在单主数据库中，所有节点需要就哪个节点是领导者达成一致。否则脑裂情况下，数据会被破坏</li>
+<li>原子提交：必须让所有节点对事务的结果达成一致，要不成功提交、要么失败回滚</li>
+</ul>
+<h3 id="原子提交与二阶段提交（2PC）"><a href="#原子提交与二阶段提交（2PC）" class="headerlink" title="原子提交与二阶段提交（2PC）"></a>原子提交与二阶段提交（2PC）</h3><p> 原子性可以防止失败的事务搅乱数据库，避免数据库陷入半成品结果和半更新状态。尤其是多对象事务、以及二级索引等。</p>
+<h4 id="从单节点到分布式原子提交"><a href="#从单节点到分布式原子提交" class="headerlink" title="从单节点到分布式原子提交"></a>从单节点到分布式原子提交</h4><p>单节点上，原子性由数据引擎实现。而事务提交或终止的关键决定时刻是<em>磁盘写入完提交记录的时刻</em></p>
+<p>而多节点时，容易出现，提交在某些节点上成功，而在其他节点上失败。</p>
+<p>节点必须立刻提交，当它确信事务中的其他节点也将提交时。且事务提交必须是不可撤销的</p>
+<h4 id="两阶段提交简介"><a href="#两阶段提交简介" class="headerlink" title="两阶段提交简介"></a>两阶段提交简介</h4><p>2PC中的提交/中止过程分为两个阶段（因此而得名）</p>
+<p><img src="https://github.com/Vonng/ddia/raw/master/img/fig9-9.png" alt="img"></p>
+<p> 2PC使用一个新组件：<strong>协调者（coordinator）</strong>。协调者通常作为一个库嵌入到原生程序中。</p>
+<p>工作机理：</p>
+<ol>
+<li>应用开始在多个数据库节点上读写数据</li>
+<li>当应用准备提交时，协调者开始阶段 1 ：它发送一个<strong>准备（prepare）</strong>请求到每个节点，询问它们是否能够提交</li>
+<li>如果所有参与者都回答“是”，表示它们已经准备好提交，那么协调者在阶段 2 发出<strong>提交（commit）</strong>请求，然后提交真正发生。</li>
+<li>如果任意一个参与者回复了“否”，则协调者在阶段2 中向所有节点发送<strong>中止（abort）</strong>请求。</li>
+<li>最后，事务就提交了，这一事实会广播至所有的参与者中</li>
+</ol>
+<h4 id="系统承诺"><a href="#系统承诺" class="headerlink" title="系统承诺"></a>系统承诺</h4><p>细节：</p>
+<ul>
+<li>协调者必须把这个决定写到磁盘上的事务日志中，如果它随后就崩溃，恢复后也能知道自己所做的决定。这被称为<strong>提交点（commit point）</strong></li>
+<li>一旦协调者的决定落盘，提交或放弃请求会发送给所有参与者。如果这个请求失败或超时，协调者必须永远保持重试，直到成功为止。没有回头路</li>
+</ul>
+<p>该协议包含两个关键的“不归路”点：</p>
+<ol>
+<li>当参与者投票“是”时，它承诺它稍后肯定能够提交（尽管协调者可能仍然选择放弃）</li>
+<li>一旦协调者做出决定，这一决定是不可撤销的</li>
+</ol>
+<h4 id="协调者失效"><a href="#协调者失效" class="headerlink" title="协调者失效"></a>协调者失效</h4><p>完成2PC的唯一方法是等待协调者恢复</p>
+<h3 id="实践中的分布式事务"><a href="#实践中的分布式事务" class="headerlink" title="实践中的分布式事务"></a>实践中的分布式事务</h3><p>分类：</p>
+<ul>
+<li><strong><em>数据库内部的分布式事务</em></strong>：分布式数据库支持数据库节点之间的内部事务</li>
+<li><strong><em>异构分布式事务</em></strong>：参与者是两种或以上不同技术（例如来自不同提供商）</li>
+</ul>
+<h4 id="恰好一次的消息处理"><a href="#恰好一次的消息处理" class="headerlink" title="恰好一次的消息处理"></a>恰好一次的消息处理</h4><p>例如，消息队列中的一条消息可以被确认为已处理，当且仅当用于处理消息的数据库事务成功提交。这是通过在同一个事务中原子提交<strong>消息确认</strong>和<strong>数据库写入</strong>两个操作来实现的。</p>
+<h4 id="XA事务"><a href="#XA事务" class="headerlink" title="XA事务"></a>XA事务</h4><p>XA事务是跨异构技术实现两阶段提交的标准</p>
+<p> XA不是一个网络协议——它只是一个用来与事务协调者连接的C API（interface）</p>
+<p> 事务协调者需要实现XA API。标准没有指明应该如何实现，但实际上协调者通常只是一个库，被加载到发起事务的应用的同一个进程中（而不是单独的服务）。它在事务中个跟踪所有的参与者，并在要求它们<strong>准备</strong>之后收集参与者的响应（通过驱动回调），并使用本地磁盘上的日志记录每次事务的决定（提交/中止）。</p>
+<h4 id="怀疑时持有锁"><a href="#怀疑时持有锁" class="headerlink" title="怀疑时持有锁"></a>怀疑时持有锁</h4><p> 在事务提交或中止之前，数据库不能释放这些锁. 当这些锁被持有时，其他事务不能修改这些行</p>
+<h4 id="从协调者故障中恢复"><a href="#从协调者故障中恢复" class="headerlink" title="从协调者故障中恢复"></a>从协调者故障中恢复</h4><p> 唯一的出路是让管理员手动决定提交还是回滚事务。</p>
+<p> 许多XA的实现都有一个叫做<strong>启发式决策（heuristic decistions）<em>的紧急逃生舱口：允许参与者单方面决定放弃或提交一个存疑事务，而无需协调者做出最终决定</em></strong></p>
+<h4 id="分布式事务的限制"><a href="#分布式事务的限制" class="headerlink" title="分布式事务的限制"></a>分布式事务的限制</h4><p>事务协调者本身就是一种数据库（存储了事务的结果），因此需要像其他重要数据库一样小心处理</p>
+<h3 id="容错共识"><a href="#容错共识" class="headerlink" title="容错共识"></a>容错共识</h3><p>简单概括。</p>
+<ol>
+<li>一个或多个节点提议(propose)某些值</li>
+<li>共识算法决定（decides）采用其中的某个值</li>
+</ol>
+<p>共识算法的属性：</p>
+<ol>
+<li><strong><em>一致同意（Uniform agreement）</em></strong>： 没有两个节点的决定不同。</li>
+<li><strong><em>完整性（Integrity）</em></strong>：  没有节点决定两次。</li>
+<li><strong><em>有效性（Validity）</em></strong>： 如果一个节点决定了值 <code>v</code> ，则 <code>v</code> 由某个节点所提议。</li>
+<li><strong><em>终止（Termination）</em></strong>：由所有未崩溃的节点来最终决定值</li>
+</ol>
+<p><strong>一致同意</strong>和<strong>完整性</strong>属性定义了共识的核心思想：所有人都决定了相同的结果，一旦决定了，你就不能改变主意</p>
+<p><strong>终止</strong>实现了容错的思想，2PC不符合终止属性的要求。任何共识算法都需要至少占总体<strong>多数（majority）</strong>的节点正确工作，以确保终止属性</p>
+<p>共识算法假设不存在<strong>拜占庭式错误</strong></p>
+<h4 id="共识算法和全序广播"><a href="#共识算法和全序广播" class="headerlink" title="共识算法和全序广播"></a>共识算法和全序广播</h4><p>Instead of proposing and deciding on a single value, which staticfying the properties. decide on a sequence of values, which makes them total broadcast algorithmes</p>
+<h4 id="单领导者复制和共识"><a href="#单领导者复制和共识" class="headerlink" title="单领导者复制和共识"></a>单领导者复制和共识</h4><p>单主复制本质上就满足了全序广播，不过由于leader election存在，所以依然需要共识。</p>
+<p>如果主库是由运维人员手动选择和配置的，那么你实际上拥有一种<strong>独裁类型</strong>的“共识算法”</p>
+<h4 id="epoch-numbering-and-quorums"><a href="#epoch-numbering-and-quorums" class="headerlink" title="epoch numbering and quorums"></a>epoch numbering and quorums</h4><p>协议定义了一个<strong>时代编号</strong>（epoch number）</p>
+<p>每次当现任领导被认为挂掉的时候，节点间就会开始一场投票，以选出一个新领导。这次选举被赋予一个递增的时代编号，因此时代编号是全序且单调递增的。如果两个不同的时代的领导者之间出现冲突（也许是因为前任领导者实际上并未死亡），那么带有更高时代编号的领导说了算。</p>
+<p>在任何领导者被允许决定任何事情之前，必须先检查是否存在其他带有更高时代编号的领导者</p>
+<p>必须从<strong>法定人数（quorum）</strong>的节点中获取选票</p>
+<p>有两轮投票：第一次是为了选出一位领导者，第二次是对领导者的提议进行表决。关键的洞察在于，这两次投票的<strong>法定人群</strong>必须相互<strong>重叠（overlap）</strong>：如果一个提案的表决通过，则至少得有一个参与投票的节点也必须参加过最近的领导者选举</p>
+<h4 id="共识的局限性"><a href="#共识的局限性" class="headerlink" title="共识的局限性"></a>共识的局限性</h4><p>共识系统通常依靠超时来检测失效的节点</p>
+<p>共识系统总是需要严格多数来运转, 意味着你至少需要三个节点才能容忍单节点故障</p>
+<p> 共识系统通常依靠超时来检测失效的节点，频繁的领导者选举会导致糟糕的性能表现</p>
+<p> 有时共识算法对网络问题特别敏感，如果整个网络工作正常，但只有一条特定的网络连接一直不可靠，Raft可能会进入领导频繁二人转的局面</p>
+<h3 id="成员与协调服务"><a href="#成员与协调服务" class="headerlink" title="成员与协调服务"></a>成员与协调服务</h3><p>提供了功能：</p>
+<ul>
+<li><strong><em>线性一致性的原子操作</em></strong>：</li>
+<li><strong><em>操作的全序排序</em></strong>：防护令牌是每次锁被获取时单调增加的数字。 ZooKeeper通过全局排序操作来提供这个功能</li>
+<li><strong><em>失效检测</em></strong>：客户端在ZooKeeper服务器上维护一个长期会话，并通过心跳保活</li>
+<li><strong><em>变更通知</em></strong>：can watch for changes，通过订阅通知，客户端不用再通过频繁轮询的方式来找出变更</li>
+</ul>
+<h4 id="将工作分配给节点"><a href="#将工作分配给节点" class="headerlink" title="将工作分配给节点"></a>将工作分配给节点</h4><p>有效地协调资源，例如分配分区到节点上。</p>
+<p>ZooKeeper提供了一种将协调节点（共识，操作排序和故障检测）的一些工作“外包”到外部服务的方式。可以报zookeeper理解为协调工作的外包服务商</p>
+<h4 id="服务发现"><a href="#服务发现" class="headerlink" title="服务发现"></a>服务发现</h4><p>类似DNS，实际上DNS更好。</p>
+<p>选主场景需要，如果你的共识系统已经知道领导是谁，那么也可以使用这些信息来帮助其他服务发现领导是谁</p>
+<h4 id="成员服务"><a href="#成员服务" class="headerlink" title="成员服务"></a>成员服务</h4><p>成员服务确定哪些节点当前处于活动状态并且是群集的活动成员</p>
+<h2 id="本章小结"><a href="#本章小结" class="headerlink" title="本章小结"></a>本章小结</h2><p>如果你只有一个节点，或者你愿意将决策的权能分配给单个节点，所有这些事都很简单</p>
+<p>但如果该领导者失效，应对这种情况可以有三种方法</p>
+<ul>
+<li>等待领导者恢复，接受系统将在这段时间阻塞的事实。</li>
+<li>人工故障切换</li>
+<li>使用算法自动选择一个新的领导者。这种方法需要一种共识算法</li>
+</ul>
+<p>尽管单领导者数据库可以提供线性一致性，且无需对每个写操作都执行共识算法，但共识对于保持及变更领导权仍然是必须的</p>
+<p>像ZooKeeper这样的工具为应用提供了“外包”的共识、故障检测和成员服务。它们扮演了重要的角色，虽说使用不易，但总比自己去开发一个好</p>
+<p> 尽管如此，并不是所有系统都需要共识，例如无主和多主系统，系统中出现的冲突正是不同领导者之间没有达成共识的结果，但也这并没有关系：我们只是需要接受没有线性一致性的事实，并学会更好地与具有分支与合并版本历史的数据打交道。</p>
 
           
         
@@ -2545,146 +2875,13 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Eren Ming">
-      <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Eren with you">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/10/03/composinge-types-with-struct-embedding/" itemprop="url">用嵌套结构来实现类型组合</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-10-03T11:22:15+08:00">
-                2019-10-03
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-              <span class="post-comments-count">
-                <span class="post-meta-divider">|</span>
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-comment-o"></i>
-                </span>
-                <a href="/2019/10/03/composinge-types-with-struct-embedding/#comments" itemprop="discussionUrl">
-                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2019/10/03/composinge-types-with-struct-embedding/" itemprop="commentCount"></span>
-                </a>
-              </span>
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          <h2 id="什么是嵌套结构-Embedded-Struct"><a href="#什么是嵌套结构-Embedded-Struct" class="headerlink" title="什么是嵌套结构(Embedded Struct)"></a>什么是嵌套结构(Embedded Struct)</h2><p>我们将一个匿名结构体(即不指定标识名，此时作为嵌套字段)A嵌入另一个结构体B中，而后B可以直接访问A中定义的方法(这里编译器使用了一种称为”提升”(promotion)的技术)。<br>其他术语：</p>
-<ul>
-<li>嵌套字段(embledded field): 我们使用某个类型声明了一个字段且并未给该字段指定字段名，则该字段称为嵌套字段</li>
-<li>组合类型：一个类型由将多个类型组合而成
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/10/03/composinge-types-with-struct-embedding/#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
-        
-      
-    </li></ul></div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
           </div>
@@ -2728,7 +2925,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-count">11</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
