@@ -83,7 +83,7 @@
 <meta name="keywords" content="Golang,Linux">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【踩坑日记】一次goroutine泄露问题的排查定位">
-<meta property="og:url" content="https://erenming.com/2020/06/27/record-a-goroutine-leak/index.html">
+<meta property="og:url" content="http://yoursite.com/2020/06/27/record-a-goroutine-leak/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="问题的发现前段时间，我们一个基于libbeat开发的日志采集服务经常发生OOM的告警，OOM的排查大都比较简单，直接查看目标容器的内存变化情况即可。如图所示  从上图可以看出，内存随着时间呈线增长的趋势，然后在到达阈值之后瞬间降为0，实际上就是OOM了。 相信稍微有点经验的同学，应该都能大致断定这是个内存泄露的问题了。而Go程序的内存泄露大部分则都是goroutine泄露导致的。 画外音  这里，">
 <meta property="og:locale" content="zh-Hans">
@@ -123,7 +123,7 @@
 
 
 
-  <link rel="canonical" href="https://erenming.com/2020/06/27/record-a-goroutine-leak/">
+  <link rel="canonical" href="http://yoursite.com/2020/06/27/record-a-goroutine-leak/">
 
 
 
@@ -266,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/06/27/record-a-goroutine-leak/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/27/record-a-goroutine-leak/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -774,7 +774,7 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://erenming.com/2020/06/27/record-a-goroutine-leak/';
+          this.page.url = 'http://yoursite.com/2020/06/27/record-a-goroutine-leak/';
           this.page.identifier = '2020/06/27/record-a-goroutine-leak/';
           this.page.title = '【踩坑日记】一次goroutine泄露问题的排查定位';
         };

@@ -83,13 +83,13 @@
 <meta name="keywords" content="go,golang">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Go语言内存分配的原理与实现">
-<meta property="og:url" content="https://erenming.com/2021/05/24/memory-manage-in-go/index.html">
+<meta property="og:url" content="http://yoursite.com/2021/05/24/memory-manage-in-go/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:description" content="为什么需要内存分配器？总说周知，内存作为一种相对稀缺的资源，在操作系统中以虚拟内存的形式来作为一种内存抽象提供给进程，这里可以简单地把它看做一个连续的地址集合{0, 1, 2, ..., M}，由栈空间、堆空间、代码片、数据片等地址空间段组合而成，如下图所示(出自CS:APP3e, Bryant and O’Hallaron的第9章第9节)  这里我们重点关注Heap（堆），堆是一块动态的虚拟内存">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/image-20210525231530967.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/go-mem-heapArena.png">
-<meta property="og:updated_time" content="2021-06-15T10:54:26.404Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/erenming/image-pool/master/blog/go-mem-alloctor.png">
+<meta property="og:updated_time" content="2021-06-15T11:02:17.905Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Go语言内存分配的原理与实现">
 <meta name="twitter:description" content="为什么需要内存分配器？总说周知，内存作为一种相对稀缺的资源，在操作系统中以虚拟内存的形式来作为一种内存抽象提供给进程，这里可以简单地把它看做一个连续的地址集合{0, 1, 2, ..., M}，由栈空间、堆空间、代码片、数据片等地址空间段组合而成，如下图所示(出自CS:APP3e, Bryant and O’Hallaron的第9章第9节)  这里我们重点关注Heap（堆），堆是一块动态的虚拟内存">
@@ -123,7 +123,7 @@
 
 
 
-  <link rel="canonical" href="https://erenming.com/2021/05/24/memory-manage-in-go/">
+  <link rel="canonical" href="http://yoursite.com/2021/05/24/memory-manage-in-go/">
 
 
 
@@ -266,7 +266,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2021/05/24/memory-manage-in-go/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/05/24/memory-manage-in-go/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -364,7 +364,7 @@
 </ul>
 <p>那么，Go内存分配器具体是如何实现的呢？接下来，我将以自顶向下的方式，从宏观到微观，层层拨开她的神秘面纱。</p>
 <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><p>首先，介绍Go内存分配中相关的数据结构。其总体概览图如下所示：</p>
-<p><img src="https://raw.githubusercontent.com/erenming/image-pool/master/blog/go-mem-heapArena.png" alt="go-mem-heapArena"></p>
+<p><img src="https://raw.githubusercontent.com/erenming/image-pool/master/blog/go-mem-alloctor.png" alt="go-mem-alloctor"></p>
 <h3 id="heapArena"><a href="#heapArena" class="headerlink" title="heapArena"></a>heapArena</h3><p>在操作系统中，我们一般把堆看做是一块连续的虚拟内存空间。</p>
 <p>Go将其划分为数个相同大小的连续空间块，称之<code>arena</code>，其中，heapArena则作为arena空间的管理单元，其结构如下所示：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> heapArena <span class="keyword">struct</span> &#123;</span><br><span class="line">  bitmap [heapArenaBitmapBytes]<span class="keyword">byte</span></span><br><span class="line">  spans [pagesPerArena]*mspan</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -823,7 +823,7 @@
     
       <script type="text/javascript">
         var disqus_config = function () {
-          this.page.url = 'https://erenming.com/2021/05/24/memory-manage-in-go/';
+          this.page.url = 'http://yoursite.com/2021/05/24/memory-manage-in-go/';
           this.page.identifier = '2021/05/24/memory-manage-in-go/';
           this.page.title = 'Go语言内存分配的原理与实现';
         };

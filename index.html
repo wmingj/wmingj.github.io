@@ -81,7 +81,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Eren with you">
-<meta property="og:url" content="https://erenming.com/index.html">
+<meta property="og:url" content="http://yoursite.com/index.html">
 <meta property="og:site_name" content="Eren with you">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
@@ -115,7 +115,7 @@
 
 
 
-  <link rel="canonical" href="https://erenming.com/">
+  <link rel="canonical" href="http://yoursite.com/">
 
 
 
@@ -259,7 +259,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2021/05/24/memory-manage-in-go/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/05/24/memory-manage-in-go/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -361,7 +361,7 @@
 </ul>
 <p>那么，Go内存分配器具体是如何实现的呢？接下来，我将以自顶向下的方式，从宏观到微观，层层拨开她的神秘面纱。</p>
 <h1 id="数据结构"><a href="#数据结构" class="headerlink" title="数据结构"></a>数据结构</h1><p>首先，介绍Go内存分配中相关的数据结构。其总体概览图如下所示：</p>
-<p><img src="https://raw.githubusercontent.com/erenming/image-pool/master/blog/go-mem-heapArena.png" alt="go-mem-heapArena"></p>
+<p><img src="https://raw.githubusercontent.com/erenming/image-pool/master/blog/go-mem-alloctor.png" alt="go-mem-alloctor"></p>
 <h3 id="heapArena"><a href="#heapArena" class="headerlink" title="heapArena"></a>heapArena</h3><p>在操作系统中，我们一般把堆看做是一块连续的虚拟内存空间。</p>
 <p>Go将其划分为数个相同大小的连续空间块，称之<code>arena</code>，其中，heapArena则作为arena空间的管理单元，其结构如下所示：</p>
 <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> heapArena <span class="keyword">struct</span> &#123;</span><br><span class="line">  bitmap [heapArenaBitmapBytes]<span class="keyword">byte</span></span><br><span class="line">  spans [pagesPerArena]*mspan</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -499,7 +499,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2021/01/09/memory-optimize-best-practice-for-golang/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/01/09/memory-optimize-best-practice-for-golang/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -668,7 +668,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/11/22/【读书笔记】设计数据密集型应用-第三部分/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/11/22/【读书笔记】设计数据密集型应用-第三部分/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -927,7 +927,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/09/05/【读书笔记】设计数据密集型应用-第二部分/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/09/05/【读书笔记】设计数据密集型应用-第二部分/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -1757,7 +1757,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/08/08/【读书笔记】设计数据密集型应用/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/08/【读书笔记】设计数据密集型应用/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -2141,7 +2141,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/08/02/【踩坑日记】一次抓包排查实战/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/08/02/【踩坑日记】一次抓包排查实战/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -2325,7 +2325,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/06/27/record-a-goroutine-leak/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/06/27/record-a-goroutine-leak/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -2512,7 +2512,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/04/08/go-reflec-usage-guide/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/08/go-reflec-usage-guide/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -2689,7 +2689,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2020/02/01/map-in-go/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/02/01/map-in-go/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
@@ -2874,7 +2874,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://erenming.com/2019/12/20/understand-middleware/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/20/understand-middleware/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Eren Ming">
