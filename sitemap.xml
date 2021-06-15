@@ -2,16 +2,30 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://erenming.com/2021/01/09/memory-optimize-best-practice-for-golang/</loc>
+    <loc>https://erenming.com/2021/05/24/memory-manage-in-go/</loc>
     
-    <lastmod>2021-01-09T14:45:08.484Z</lastmod>
+    <lastmod>2021-06-15T10:54:26.404Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/</loc>
+    
+    <lastmod>2021-05-29T03:47:04.627Z</lastmod>
     
   </url>
   
   <url>
     <loc>https://erenming.com/2020/11/22/%E3%80%90%E8%AF%BB%E4%B9%A6%E7%AC%94%E8%AE%B0%E3%80%91%E8%AE%BE%E8%AE%A1%E6%95%B0%E6%8D%AE%E5%AF%86%E9%9B%86%E5%9E%8B%E5%BA%94%E7%94%A8-%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86/</loc>
     
-    <lastmod>2021-01-09T11:49:43.964Z</lastmod>
+    <lastmod>2021-02-17T13:43:59.909Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://erenming.com/2021/01/09/memory-optimize-best-practice-for-golang/</loc>
+    
+    <lastmod>2021-01-09T14:45:08.484Z</lastmod>
     
   </url>
   
@@ -68,13 +82,6 @@
     <loc>https://erenming.com/2019/12/11/string-in-golang/</loc>
     
     <lastmod>2020-05-05T04:41:06.242Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://erenming.com/2019/10/03/composinge-types-with-struct-embedding/</loc>
-    
-    <lastmod>2020-05-05T04:40:34.769Z</lastmod>
     
   </url>
   
