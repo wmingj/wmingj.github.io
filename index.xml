@@ -62,4 +62,15 @@ if _, err := jsonparser.ArrayEach(body, func(value []byte, dataType jsonparser.V
 B的值是根据负载因子(LoadFactor)以及存储的键值对数量，在创建或扩容时动态改变 buckets是一个指针，它指向一个bmap结构 桶结构体bmap type bmap struct { // tophash数组可以看做键值对的索引 tophash [bucketCnt]uint8 // 实际上编译器会动态添加下述属性 // keys [8]keytype // values [8]valuetype // padding uinptr // overflow uinptr } 虽然bmap结构体中只有一个tophash数组，但实际上，其后跟着8个key的槽位、8个value的槽位、padding以及一个overflow指针。如下图所示</description></item><item><title>用Golang实现并理解Web中间件</title><link>https://erenming.github.io/posts/understand-middleware/</link><pubDate>Fri, 20 Dec 2019 14:39:21 +0000</pubDate><guid>https://erenming.github.io/posts/understand-middleware/</guid><description>&lt;p>在编写web应用中，我们常常会遇到这样的需求，比如，我们需要上报每个API的运行时间到运维监控系统。这时候你可以像下述代码一样将统计的逻辑写到每个路由函数中。&lt;/p></description></item><item><title>Golang中的string实现</title><link>https://erenming.github.io/posts/string-in-golang/</link><pubDate>Wed, 11 Dec 2019 21:31:47 +0000</pubDate><guid>https://erenming.github.io/posts/string-in-golang/</guid><description>&lt;p>说到&lt;code>string&lt;/code>类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟&lt;/p></description></item><item><title>About</title><link>https://erenming.github.io/about/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://erenming.github.io/about/</guid><description>嗨，我的朋友！
 欢迎来到我的技术博客，我的名字叫姜小明（英文名是Jimmy Jiang)。我的座右铭是Keep is simple stupid，没错，就是大名鼎鼎的KISS原则。
 我是一名后端软件工程师，我使用Go、Python作为我的主要开发语言，目前主要从事云原生，可观测方向的工作。
-最后，欢迎与我联系，一起探讨技术:)</description></item></channel></rss>
+最后，欢迎与我联系，一起探讨技术:)</description></item><item><title>Readings</title><link>https://erenming.github.io/readings/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://erenming.github.io/readings/</guid><description>仅以记录我在读、已读、预读之书。
+《Programming Rust》：TODO，学习下最先进的Rust吧
+《Building Event Driven Microservice》：TODO
+《Dive into Refactoring》： TODO，重构方面的书
+《Queueing theory in Action》：TODO，排队理论，工作中队列的使用无处不在，需要学习下
+《知识变现》：TODO。技术人还是看看，学习下如何提升影响力
+《Real-Time Analytics Techniques to Analyze》：70%；介绍了流式系统的常见设计和考虑，还是不错的，对设计监控数据链路很有帮助
+《Kubernetes In Action》：100%；挺不错的一本书，Kubernetes的东西基本都涵盖了，其中的流程图有助于理解各组件的工作机制
+《Designing Data Intensive Applications》：200%；读了两遍，强烈推荐，尤其是第一部分和第二部分。读完之后, 能对现如今的各种分布式数据组件的有更深的理解，配合Mit-8.624食用更佳
+《Computer.Systems.A.Programmers.Perspective.3rd.Global.Edition.2015.7-csapp》：45%；主要看了CPU部分。以更为通俗易懂、诙谐的方式讲解操作系统，尤其是每章之后的教授问答环节。不过感觉还是作为教科书的目的编写的
+《GO专家编程》：30%；华为大佬编写，主要对Go语言各种实现原理进行讲解。对实现能有大概的理解，不过也没有太深入细节，可以面试前看看。
+《垃圾回收的算法与实现》：60%；介绍了各种GC算法和具体语言的实现，可以重点看看算法篇，对了解GC很有帮助，不过我当时还是看不太懂，可能需要再修炼修炼才能更好理解</description></item></channel></rss>
