@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Linux on Erenming's Blog</title><link>https://erenming.github.io/tags/linux/</link><description>Recent content in Linux on Erenming's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 02 Aug 2020 11:00:43 +0000</lastBuildDate><atom:link href="https://erenming.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml"/><item><title>一次抓包排查实战记录</title><link>https://erenming.github.io/posts/tcpdump-pricate-record/</link><pubDate>Sun, 02 Aug 2020 11:00:43 +0000</pubDate><guid>https://erenming.github.io/posts/tcpdump-pricate-record/</guid><description>问题的发现 周五，本是一个风清气爽，令人愉悦的日子。我本还在美滋滋地等待着下班，然而天有不测，有用户反应容器日志看不到了，根据经验我知道，日志采集&amp;amp;收集链路上很可能又发生了阻塞。
+登录目标容器所在机器找到日志采集容器，并娴熟地敲下docker logs --tail 200 -f &amp;lt;container-id&amp;gt;命令，发现确实阻塞了，阻塞原因是上报日志的请求500了，从而不断重试导致日志采集阻塞。
+随后，我找到收集端的容器，查看日志，发现确实有请求报500了，并且抛出了Unknown value type的错误，查看相关代码。
+业务代码：
+if _, err := jsonparser.ArrayEach(body, func(value []byte, dataType jsonparser.ValueType, offset int, err error) { ... }); err != nil { return err // 错误抛出点 } jsonparser包中代码：
+显然问题出在了对body的解析上，究竟是什么样的body导致了解析错误呢？接下来，就是tcpdump和wireshark上场的时候了。
+使用Tcpdump抓包 首先，我们通过tcpdump抓到相关的请求。由于日志采集端会不断重试，因此最简单的方法便是登录采集端所在机器，并敲下如下命令tcpdump -i tunl0 dst port 7777 -w td.out ，并等待10-20秒。
+熟悉tcpdump的小伙伴，对这条命令显然已经心领神会了。尽管如此，这里我还是稍微解释下。
+-i tunl0：-i 参数用来指定网卡，由于采集器并没有通过eth0。因此，实战中，有时发现命令正确缺抓不到包的情况时，不妨指定下别的网卡。网络错综复杂，不一定都会通过eth0网卡。 dst port 777： 指定了目标端口作为过滤参数，收集端程序的端口号是7777 -w td.out: 表明将抓包记录保存在td.out文件中，这是因为json body是用base64编码并使用gzip加密后传输的，因此我得使用wireshark来抽离出来。（主要还是wireshark太香了:)，界面友好，操作简单，功能强大） 接着，我用scp命令将td.out文件拷到本地。并使用wireshar打开它
+使用Wireshark分析 打开后，首先映入眼帘的则是上图内容，看起来很多？不要慌，由于我们排查的是http请求，在过滤栏里输入HTTP，过滤掉非HTTP协议的记录。
+我们可以很清楚地发现，所有的HTTP都是发往一个IP的，且长度都是59，显然这些请求都是日志采集端程序不断重试的请求。接下来，我们只需要将某个请求里的body提取出来查看即可。
+很幸运，wireshark提供了这种功能，如上图所示，我们成功提取出来body内容。为bnVsbA==，使用base64解码后为null。</description></item></channel></rss>
