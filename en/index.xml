@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Nothing Special</title>
+    <link>https://erenming.github.io/en/</link>
+    <description>Recent content on Nothing Special</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 29 May 2022 16:08:13 +0800</lastBuildDate><atom:link href="https://erenming.github.io/en/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Deploy blog with Hugo and GithubPages</title>
+      <link>https://erenming.github.io/en/posts/hugo-with-githubpages/</link>
+      <pubDate>Sun, 29 May 2022 16:08:13 +0800</pubDate>
+      
+      <guid>https://erenming.github.io/en/posts/hugo-with-githubpages/</guid>
+      <description>Record the procedure of generate static blog with Hugo, and deploy on githubPages automatically.
+Here is my goals:
+ blog-source as the source content repo, &amp;lt;your-name&amp;gt;.github.io as the actually githubPages repo Connect above two repos with Github Action, trigger content generation and deploy when code pushed in blog-source  The advantages is as follows:
+ Make the blog-soursum ce as private repo, and with &amp;lt;your-name&amp;gt;.github.io as your blog URL. Implement CICD with GitHub Action  I create a diagram to show this idea.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>https://erenming.github.io/en/about/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://erenming.github.io/en/about/</guid>
+      <description>Hi, my friend!
+Welcome to my tech blog Nothings Special, my name is erenming. And my motto is Keep it simple stupid. Yeah, it&amp;rsquo;s KISS the wellknown design principal!
+I&amp;rsquo;m a software engineer. I use Go, Python as my mainly develop language, and engaged with devops, monitor, cloud native.
+Finally, really welcome to contact with me, and discuss everything :P</description>
+    </item>
+    
+    
+    
+  </channel>
+</rss>

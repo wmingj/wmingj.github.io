@@ -1,29 +1,70 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on JimmyJiang's Blog</title><link>https://erenming.github.io/posts/</link><description>Recent content in Posts on JimmyJiang's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Sun, 29 May 2022 16:08:13 +0800</lastBuildDate><atom:link href="https://erenming.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>使用Hugo部署GithubPages</title><link>https://erenming.github.io/posts/hugo-with-githubpages/</link><pubDate>Sun, 29 May 2022 16:08:13 +0800</pubDate><guid>https://erenming.github.io/posts/hugo-with-githubpages/</guid><description>记录一下使用Hugo生成静态博客，并通过githubPages自动化部署的过程。
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Posts on Nothing Special</title>
+    <link>https://erenming.github.io/posts/</link>
+    <description>Recent content in Posts on Nothing Special</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sun, 29 May 2022 16:08:13 +0800</lastBuildDate><atom:link href="https://erenming.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用Hugo部署GithubPages</title>
+      <link>https://erenming.github.io/posts/hugo-with-githubpages/</link>
+      <pubDate>Sun, 29 May 2022 16:08:13 +0800</pubDate>
+      
+      <guid>https://erenming.github.io/posts/hugo-with-githubpages/</guid>
+      <description>记录一下使用Hugo生成静态博客，并通过githubPages自动化部署的过程。
 这里，我的目标是：
-使用blog-source作为原始的内容仓库，&amp;lt;your-name&amp;gt;.github.io作为实际的githubPages仓库 通过github Action将两者串联起来，原始内容提交变更时，自动触发内容生成并发布 这样的好处是，可以将blog-source作为私有仓库，并能直接以&amp;lt;your-name&amp;gt;.github.io作为URL。且通过github action实现CICD，解放双手实现自动化。这里我画了一张图，便于理解：
+ 使用blog-source作为原始的内容仓库，&amp;lt;your-name&amp;gt;.github.io作为实际的githubPages仓库 通过github Action将两者串联起来，原始内容提交变更时，自动触发内容生成并发布  这样的好处是，可以将blog-source作为私有仓库，并能直接以&amp;lt;your-name&amp;gt;.github.io作为URL。且通过github action实现CICD，解放双手实现自动化。这里我画了一张图，便于理解：
 Hugo 安装Hugo，然后初始化
-# macOS install hugo brew install hugo # create site project hugo new site blog-source 选择你中意的主题并安装
-cd blog-source git init # add paperMod as theme git submodule add https://github.com/adityatelange/hugo-PaperMod themes/paperMod 添加文章并启动demo
+# macOS install hugo brew install hugo  # create site project hugo new site blog-source 选择你中意的主题并安装
+cd blog-source git init  # add paperMod as theme git submodule add https://github.com/adityatelange/hugo-PaperMod themes/paperMod 添加文章并启动demo
 hugo new posts/my-first-post.md # start demo for preview hugo server -D 创建一个额外的仓库，这里我创建一个名为blog-source的仓库并作为刚才创建的blog-source的远端仓库
 cd blog-source git init git remote add origin &amp;lt;your-remove-git&amp;gt; GithubPages 创建一个githubPages仓库，名称必须是&amp;lt;your-name&amp;gt;.github.io。DOC
-Connection 创建sshKey: ssh-keygen -t rsa -b 4096 -C &amp;quot;$(git config user.</description></item><item><title>重启博客之路</title><link>https://erenming.github.io/posts/restart-my-blog/</link><pubDate>Thu, 26 May 2022 00:01:42 +0800</pubDate><guid>https://erenming.github.io/posts/restart-my-blog/</guid><description>不知为何，写博客总是断断续续，距离上次更新已过去快一年了，直至如今面试碰壁方才后悔莫及。
+Connection 创建sshKey: ssh-keygen -t rsa -b 4096 -C &amp;quot;$(git config user.</description>
+    </item>
+    
+    <item>
+      <title>重启博客之路</title>
+      <link>https://erenming.github.io/posts/restart-my-blog/</link>
+      <pubDate>Thu, 26 May 2022 00:01:42 +0800</pubDate>
+      
+      <guid>https://erenming.github.io/posts/restart-my-blog/</guid>
+      <description>不知为何，写博客总是断断续续，距离上次更新已过去快一年了，直至如今面试碰壁方才后悔莫及。
 事实上，写博客对于对于知识的小伙理解非常有好处，毕竟要让别人听得懂，首先自己得更懂才行嘛。因为，通常学习一项新知识，通常需要理论学习-实践-总结输出三个阶段，而我往往只完成了第一阶段便草草了事，无法对知识有更深入的理解。因此，我打算重启我的博客之路，持续学习持续输出。
 之前博客用过Hexo，也用过博客园等等，最近看到hugo的paperMod主题非常讨喜，因此打算彻底切换到hugo+paperMod，也算起个好头吧。之前的文章也会从博客园迁移到hugo上，不过后续两边也会尽量同步更新。
 然后，也打算支持中英文双语，主要是为了提升自己的英文水平，以便能和世界上的程序员更好地交流。不过目前主打还是中文，母语写起来还是方便点，英文会挑选文章进行编写翻译，同时英文文章也会同步发布在Medium上。
-此外，为了降低断更的概率、提高文章质量，我在这里给自己立一个flag，即每月至少更新一篇文章，文章长度适宜、做到通俗易懂、绝不模棱两可故作高深</description></item><item><title>浅析Go内存分配器的实现</title><link>https://erenming.github.io/posts/memory-allocator-in-go/</link><pubDate>Tue, 15 Jun 2021 21:08:09 +0800</pubDate><guid>https://erenming.github.io/posts/memory-allocator-in-go/</guid><description>为什么需要内存分配器？ 总说周知，内存作为一种相对稀缺的资源，在操作系统中以虚拟内存的形式来作为一种内存抽象提供给进程，这里可以简单地把它看做一个连续的地址集合{0, 1, 2, ..., M}，由栈空间、堆空间、代码片、数据片等地址空间段组合而成，如下图所示(出自CS:APP3e, Bryant and O&amp;rsquo;Hallaron的第9章第9节)
+此外，为了降低断更的概率、提高文章质量，我在这里给自己立一个flag，即每月至少更新一篇文章，文章长度适宜、做到通俗易懂、绝不模棱两可故作高深</description>
+    </item>
+    
+    <item>
+      <title>浅析Go内存分配器的实现</title>
+      <link>https://erenming.github.io/posts/memory-allocator-in-go/</link>
+      <pubDate>Tue, 15 Jun 2021 21:08:09 +0800</pubDate>
+      
+      <guid>https://erenming.github.io/posts/memory-allocator-in-go/</guid>
+      <description>为什么需要内存分配器？ 总说周知，内存作为一种相对稀缺的资源，在操作系统中以虚拟内存的形式来作为一种内存抽象提供给进程，这里可以简单地把它看做一个连续的地址集合{0, 1, 2, ..., M}，由栈空间、堆空间、代码片、数据片等地址空间段组合而成，如下图所示(出自CS:APP3e, Bryant and O&amp;rsquo;Hallaron的第9章第9节)
 这里我们重点关注Heap（堆），堆是一块动态的虚拟内存地址空间。在C语言中，我们通常使用malloc来申请内存以及使用free来释放内存，也许你想问，这样不就足够了吗？但是，这种手动的内存管理会带来很多问题，比如：
-给程序员带来额外的心智负担，必须得及时释放掉不再使用的内存空间，否则就很容易出现内存泄露 随着内存的不断申请与释放，会产生大量的内存碎片，这将大大降低内存的利用率 因此，正确高效地管理内存空间是非常有必要的，常见的技术实现有Sequential allocation, Free-List allocation等。那么，在Go中，内存是如何被管理的呢？
-注：此为Go1.13.6的实现逻辑，随版本更替某些细节会有些许不同
-实现原理 Go的内存分配器是基于TCMalloc设计的，因此我建议你先行查阅，这将有利于理解接下来的内容。
+ 给程序员带来额外的心智负担，必须得及时释放掉不再使用的内存空间，否则就很容易出现内存泄露 随着内存的不断申请与释放，会产生大量的内存碎片，这将大大降低内存的利用率  因此，正确高效地管理内存空间是非常有必要的，常见的技术实现有Sequential allocation, Free-List allocation等。那么，在Go中，内存是如何被管理的呢？
+ 注：此为Go1.13.6的实现逻辑，随版本更替某些细节会有些许不同
+ 实现原理 Go的内存分配器是基于TCMalloc设计的，因此我建议你先行查阅，这将有利于理解接下来的内容。
 大量工程经验证明，程序中的小对象占了绝大部分，且生命周期都较为短暂。因此，Go将内存划分为各种类别(Class)，并各自形成Free-List。相较于单一的Free-List分配器，分类后主要有以下优点：
-其一方面减少不必要的搜索时间，因为对象只需要在其所属类别的空闲链表中搜索即可
-另一方面减少了内存碎片化，同一类别的空闲链表，每个对象分配的空间都是一样大小(不足则补齐)，因此该链表除非无空闲空间，否则总能分配空间，避免了内存碎片
-那么，Go内存分配器具体是如何实现的呢？接下来，我将以自顶向下的方式，从宏观到微观，层层拨开她的神秘面纱。
+  其一方面减少不必要的搜索时间，因为对象只需要在其所属类别的空闲链表中搜索即可
+  另一方面减少了内存碎片化，同一类别的空闲链表，每个对象分配的空间都是一样大小(不足则补齐)，因此该链表除非无空闲空间，否则总能分配空间，避免了内存碎片
+  那么，Go内存分配器具体是如何实现的呢？接下来，我将以自顶向下的方式，从宏观到微观，层层拨开她的神秘面纱。
 数据结构 首先，介绍Go内存分配中相关的数据结构。其总体概览图如下所示：
 heapArena 在操作系统中，我们一般把堆看做是一块连续的虚拟内存空间。
 Go将其划分为数个相同大小的连续空间块，称之arena，其中，heapArena则作为arena空间的管理单元，其结构如下所示：
-type heapArena struct { bitmap [heapArenaBitmapBytes]byte spans [pagesPerArena]*mspan ... } bitmap: 表示arena区域中的哪些地址保存了对象，哪些地址保存了指针 spans: 表示arena区域中的哪些操作系统页(8K)属于哪些mspan mheap 然后，则是核心角色mheap了，它是Go内存管理中的核心数据结构，作为全局唯一变量，其结构如下所示：
-type mheap struct { free mTreap ... allspans []*mspan .</description></item><item><title>Golang内存优化实践指南</title><link>https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/</link><pubDate>Sat, 09 Jan 2021 19:52:52 +0000</pubDate><guid>https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/</guid><description>最近做了许多有关Go内存优化的工作，总结了一些定位、调优方面的套路和经验，于是，想通过这篇文章与大家分享讨论。
+type heapArena struct {  bitmap [heapArenaBitmapBytes]byte  spans [pagesPerArena]*mspan  ... }  bitmap: 表示arena区域中的哪些地址保存了对象，哪些地址保存了指针 spans: 表示arena区域中的哪些操作系统页(8K)属于哪些mspan  mheap 然后，则是核心角色mheap了，它是Go内存管理中的核心数据结构，作为全局唯一变量，其结构如下所示：
+type mheap struct { 	free mTreap  ...  allspans []*mspan  .</description>
+    </item>
+    
+    <item>
+      <title>Golang内存优化实践指南</title>
+      <link>https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/</link>
+      <pubDate>Sat, 09 Jan 2021 19:52:52 +0000</pubDate>
+      
+      <guid>https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/</guid>
+      <description>最近做了许多有关Go内存优化的工作，总结了一些定位、调优方面的套路和经验，于是，想通过这篇文章与大家分享讨论。
 发现问题 性能优化领域有一条总所周知的铁律，即：不要过早地优化。编写一个程序，首先应该保证其功能的正确性，以及诸如设计是否合理、需求等是否满足，过早地优化只会引入不必要的复杂度以及设计不合理等各种问题。
 那么何时才能开始优化呢？一句话，问题出现时。诸如程序出现频繁OOM，CPU使用率异常偏高等情况。如今，在这微服务盛行的时代，公司内部都会拥有一套或简单或复杂的监控系统，当系统给你发出相关告警时，你就要开始重视起来了。
 问题定位 1. 查看内存曲线 首先，当程序发生OOM时，首先应该查看程序的内存使用量曲线，可以通过现有监控系统查看，或者prometheus之类的开源工具。
@@ -31,7 +72,7 @@ type mheap struct { free mTreap ... allspans []*mspan .</description></item><ite
 2. 问题复现 这块是可选项，但是最好能保证复现。如果能在本地或debug环境复现问题，这将非常有利于我们反复进行测试和验证。
 3. 使用pprof定位 Go官方工具提供了pporf来专门用以性能问题定位，首先得在程序中开启pprof收集功能，这里假定问题程序已开启pprof。(对这块不够了解的同学，建议通过这两篇文章(1, 2)学习下pprof工具的基本用法)
 接下来，我们复现问题场景，并及时获取heap和groutine的采样信息。
-获取heap信息: curl http://loalhost:6060/debug/pprof/heap -o h1.out 获取groutine信息：curl http://loalhost:6060/debug/pprof/goroutine -o g1.out 这里你可能想问，这样就够了吗？
+ 获取heap信息: curl http://loalhost:6060/debug/pprof/heap -o h1.out 获取groutine信息：curl http://loalhost:6060/debug/pprof/goroutine -o g1.out  这里你可能想问，这样就够了吗？
 当然不是，只获取一份样本信息是不够的。内存使用量是不断变化的(通常是上升)，因此我们需要的也是期间heap、gourtine信息的变化信息，而非瞬时值。一般来说，我们需要一份正常情况下的样本信息，一份或多份内存升高期间的样本信息。
 数据收集完毕后，我们按照如下3个方面来排查定位。
 排查goroutine泄露 使用命令go tool pprof --base g1.out g2.out ，比较goroutine信息来判断是否有goroutine激增的情况。
@@ -45,18 +86,58 @@ type mheap struct { free mTreap ... allspans []*mspan .</description></item><ite
 问题优化 定位到问题根因后，接下来就是优化阶段了。这个阶段需要对Go本身足够熟悉，还得对问题程序的业务逻辑有所了解。
 我梳理了一些常见的优化手段，仅供参考。实际场景还是得实际分析。
 goroutine泄露 这种问题还是比较好修复的，需要显式地保证goroutine能正确退出，而非以一些自以为的假设来保证。例如，通过传递context.Context对象来显式退出
-go func(ctx context.</description></item><item><title>一次抓包排查实战记录</title><link>https://erenming.github.io/posts/tcpdump-pricate-record/</link><pubDate>Sun, 02 Aug 2020 11:00:43 +0000</pubDate><guid>https://erenming.github.io/posts/tcpdump-pricate-record/</guid><description>问题的发现 周五，本是一个风清气爽，令人愉悦的日子。我本还在美滋滋地等待着下班，然而天有不测，有用户反应容器日志看不到了，根据经验我知道，日志采集&amp;amp;收集链路上很可能又发生了阻塞。
+go func(ctx context.</description>
+    </item>
+    
+    <item>
+      <title>一次抓包排查实战记录</title>
+      <link>https://erenming.github.io/posts/tcpdump-pricate-record/</link>
+      <pubDate>Sun, 02 Aug 2020 11:00:43 +0000</pubDate>
+      
+      <guid>https://erenming.github.io/posts/tcpdump-pricate-record/</guid>
+      <description>问题的发现 周五，本是一个风清气爽，令人愉悦的日子。我本还在美滋滋地等待着下班，然而天有不测，有用户反应容器日志看不到了，根据经验我知道，日志采集&amp;amp;收集链路上很可能又发生了阻塞。
 登录目标容器所在机器找到日志采集容器，并娴熟地敲下docker logs --tail 200 -f &amp;lt;container-id&amp;gt;命令，发现确实阻塞了，阻塞原因是上报日志的请求500了，从而不断重试导致日志采集阻塞。
 随后，我找到收集端的容器，查看日志，发现确实有请求报500了，并且抛出了Unknown value type的错误，查看相关代码。
 业务代码：
-if _, err := jsonparser.ArrayEach(body, func(value []byte, dataType jsonparser.ValueType, offset int, err error) { ... }); err != nil { return err // 错误抛出点 } jsonparser包中代码：
+if _, err := jsonparser.ArrayEach(body, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {  ... }); err != nil {  return err // 错误抛出点 } jsonparser包中代码：
 显然问题出在了对body的解析上，究竟是什么样的body导致了解析错误呢？接下来，就是tcpdump和wireshark上场的时候了。
 使用Tcpdump抓包 首先，我们通过tcpdump抓到相关的请求。由于日志采集端会不断重试，因此最简单的方法便是登录采集端所在机器，并敲下如下命令tcpdump -i tunl0 dst port 7777 -w td.out ，并等待10-20秒。
 熟悉tcpdump的小伙伴，对这条命令显然已经心领神会了。尽管如此，这里我还是稍微解释下。
--i tunl0：-i 参数用来指定网卡，由于采集器并没有通过eth0。因此，实战中，有时发现命令正确缺抓不到包的情况时，不妨指定下别的网卡。网络错综复杂，不一定都会通过eth0网卡。 dst port 777： 指定了目标端口作为过滤参数，收集端程序的端口号是7777 -w td.out: 表明将抓包记录保存在td.out文件中，这是因为json body是用base64编码并使用gzip加密后传输的，因此我得使用wireshark来抽离出来。（主要还是wireshark太香了:)，界面友好，操作简单，功能强大） 接着，我用scp命令将td.out文件拷到本地。并使用wireshar打开它
+ -i tunl0：-i 参数用来指定网卡，由于采集器并没有通过eth0。因此，实战中，有时发现命令正确缺抓不到包的情况时，不妨指定下别的网卡。网络错综复杂，不一定都会通过eth0网卡。 dst port 777： 指定了目标端口作为过滤参数，收集端程序的端口号是7777 -w td.out: 表明将抓包记录保存在td.out文件中，这是因为json body是用base64编码并使用gzip加密后传输的，因此我得使用wireshark来抽离出来。（主要还是wireshark太香了:)，界面友好，操作简单，功能强大）  接着，我用scp命令将td.out文件拷到本地。并使用wireshar打开它
 使用Wireshark分析 打开后，首先映入眼帘的则是上图内容，看起来很多？不要慌，由于我们排查的是http请求，在过滤栏里输入HTTP，过滤掉非HTTP协议的记录。
 我们可以很清楚地发现，所有的HTTP都是发往一个IP的，且长度都是59，显然这些请求都是日志采集端程序不断重试的请求。接下来，我们只需要将某个请求里的body提取出来查看即可。
-很幸运，wireshark提供了这种功能，如上图所示，我们成功提取出来body内容。为bnVsbA==，使用base64解码后为null。</description></item><item><title>Golang中的map实现</title><link>https://erenming.github.io/posts/map-in-go/</link><pubDate>Sat, 01 Feb 2020 17:28:15 +0000</pubDate><guid>https://erenming.github.io/posts/map-in-go/</guid><description>总所周知，大多数语言中，字典的底层是哈希表，而且其算法也是十分清晰的。无论采用链表法还是开放寻址法，我们都能实现一个简单的哈希表结构。对于Go来说，它是具体如何实现哈希表的呢？以及，采取了哪些优化策略呢？
+很幸运，wireshark提供了这种功能，如上图所示，我们成功提取出来body内容。为bnVsbA==，使用base64解码后为null。</description>
+    </item>
+    
+    <item>
+      <title>Golang中的map实现</title>
+      <link>https://erenming.github.io/posts/map-in-go/</link>
+      <pubDate>Sat, 01 Feb 2020 17:28:15 +0000</pubDate>
+      
+      <guid>https://erenming.github.io/posts/map-in-go/</guid>
+      <description>总所周知，大多数语言中，字典的底层是哈希表，而且其算法也是十分清晰的。无论采用链表法还是开放寻址法，我们都能实现一个简单的哈希表结构。对于Go来说，它是具体如何实现哈希表的呢？以及，采取了哪些优化策略呢？
 内存模型 map在内存的总体结构如下图所示。
-头部结构体hmap type hmap struct { count int // 键值对个数 flags uint8 B uint8 // 2^B = 桶数量 noverflow uint16 // 溢出桶的个数 hash0 uint32 // hash seed buckets unsafe.Pointer // 哈希桶 oldbuckets unsafe.Pointer // 原哈希桶，扩容时为非空 nevacuate uintptr // 扩容进度，地址小于它的桶已被迁移了 extra *mapextra // optional fields } hmap即为map编译后的内存表示，这里需要注意的有两点。
-B的值是根据负载因子(LoadFactor)以及存储的键值对数量，在创建或扩容时动态改变 buckets是一个指针，它指向一个bmap结构 桶结构体bmap type bmap struct { // tophash数组可以看做键值对的索引 tophash [bucketCnt]uint8 // 实际上编译器会动态添加下述属性 // keys [8]keytype // values [8]valuetype // padding uinptr // overflow uinptr } 虽然bmap结构体中只有一个tophash数组，但实际上，其后跟着8个key的槽位、8个value的槽位、padding以及一个overflow指针。如下图所示</description></item><item><title>用Golang实现并理解Web中间件</title><link>https://erenming.github.io/posts/understand-middleware/</link><pubDate>Fri, 20 Dec 2019 14:39:21 +0000</pubDate><guid>https://erenming.github.io/posts/understand-middleware/</guid><description>&lt;p>在编写web应用中，我们常常会遇到这样的需求，比如，我们需要上报每个API的运行时间到运维监控系统。这时候你可以像下述代码一样将统计的逻辑写到每个路由函数中。&lt;/p></description></item><item><title>Golang中的string实现</title><link>https://erenming.github.io/posts/string-in-golang/</link><pubDate>Wed, 11 Dec 2019 21:31:47 +0000</pubDate><guid>https://erenming.github.io/posts/string-in-golang/</guid><description>&lt;p>说到&lt;code>string&lt;/code>类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟&lt;/p></description></item></channel></rss>
+头部结构体hmap type hmap struct { 	count int // 键值对个数 	flags uint8 	B uint8 // 2^B = 桶数量 	noverflow uint16 // 溢出桶的个数 	hash0 uint32 // hash seed  	buckets unsafe.Pointer // 哈希桶 	oldbuckets unsafe.Pointer // 原哈希桶，扩容时为非空 	nevacuate uintptr // 扩容进度，地址小于它的桶已被迁移了  	extra *mapextra // optional fields } hmap即为map编译后的内存表示，这里需要注意的有两点。
+ B的值是根据负载因子(LoadFactor)以及存储的键值对数量，在创建或扩容时动态改变 buckets是一个指针，它指向一个bmap结构  桶结构体bmap type bmap struct { 	// tophash数组可以看做键值对的索引 	tophash [bucketCnt]uint8 	// 实际上编译器会动态添加下述属性  // keys [8]keytype  // values [8]valuetype  // padding uinptr  // overflow uinptr } 虽然bmap结构体中只有一个tophash数组，但实际上，其后跟着8个key的槽位、8个value的槽位、padding以及一个overflow指针。如下图所示</description>
+    </item>
+    
+    <item>
+      <title>用Golang实现并理解Web中间件</title>
+      <link>https://erenming.github.io/posts/understand-middleware/</link>
+      <pubDate>Fri, 20 Dec 2019 14:39:21 +0000</pubDate>
+      
+      <guid>https://erenming.github.io/posts/understand-middleware/</guid>
+      <description>&lt;p&gt;在编写web应用中，我们常常会遇到这样的需求，比如，我们需要上报每个API的运行时间到运维监控系统。这时候你可以像下述代码一样将统计的逻辑写到每个路由函数中。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>Golang中的string实现</title>
+      <link>https://erenming.github.io/posts/string-in-golang/</link>
+      <pubDate>Wed, 11 Dec 2019 21:31:47 +0000</pubDate>
+      
+      <guid>https://erenming.github.io/posts/string-in-golang/</guid>
+      <description>&lt;p&gt;说到&lt;code&gt;string&lt;/code&gt;类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>

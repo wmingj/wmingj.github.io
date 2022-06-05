@@ -1,1 +1,19 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Golang on JimmyJiang's Blog</title><link>https://erenming.github.io/tags/golang/</link><description>Recent content in Golang on JimmyJiang's Blog</description><generator>Hugo -- gohugo.io</generator><language>zh</language><lastBuildDate>Wed, 11 Dec 2019 21:31:47 +0000</lastBuildDate><atom:link href="https://erenming.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml"/><item><title>Golang中的string实现</title><link>https://erenming.github.io/posts/string-in-golang/</link><pubDate>Wed, 11 Dec 2019 21:31:47 +0000</pubDate><guid>https://erenming.github.io/posts/string-in-golang/</guid><description>&lt;p>说到&lt;code>string&lt;/code>类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟&lt;/p></description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Golang on Nothing Special</title>
+    <link>https://erenming.github.io/tags/golang/</link>
+    <description>Recent content in Golang on Nothing Special</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 11 Dec 2019 21:31:47 +0000</lastBuildDate><atom:link href="https://erenming.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang中的string实现</title>
+      <link>https://erenming.github.io/posts/string-in-golang/</link>
+      <pubDate>Wed, 11 Dec 2019 21:31:47 +0000</pubDate>
+      
+      <guid>https://erenming.github.io/posts/string-in-golang/</guid>
+      <description>&lt;p&gt;说到&lt;code&gt;string&lt;/code&gt;类型，我们往往都能很熟练地对它进行各种处理，包括迭代、随机访问和匹配等等操作。然而在工作中，我发现迭代一个字符串产生的字符的类型与随机访问一个字符的类型却并不相同，为什么会这么奇怪呢？于是我决定一探究竟&lt;/p&gt;</description>
+    </item>
+    
+  </channel>
+</rss>
