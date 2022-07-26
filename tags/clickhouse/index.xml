@@ -15,7 +15,7 @@
       <description>问个问题，如何优化一条SQL语句？我们首先想到的肯定是建索引。对于ClickHouse也不例外，尤其是稀疏主键索引（类似传统数据库中的主键索引）对性能的影响非常大。在下文中，我将结合例子对稀疏主键索引进行详细解读。
  注：本文内容主要参考官方文档，如果有余力，强烈建议先行阅读
  数据准备 这里，我将就我比较熟悉的时序数据进行举例。首先通过如下SQL建表：
--- create dabase create database test; use test; -- create table CREATE TABLE cpu ( `hostname` String, `reginon` String, `datacenter` String, `timestamp` DateTime64(9,&amp;#39;Asia/Shanghai&amp;#39;) CODEC (DoubleDelta), `usage_user` Float64, `usage_system` Float64 ) ENGINE = MergeTree() PRIMARY KEY tuple(); optimize table cpu_ts final ; 并将本地的样本数据导入：
+-- create dabase create database test; use test; -- create table CREATE TABLE cpu ( `hostname` String, `reginon` String, `datacenter` String, `timestamp` DateTime64(9,&amp;#39;Asia/Shanghai&amp;#39;) CODEC (DoubleDelta), `usage_user` Float64, `usage_system` Float64 ) ENGINE = MergeTree() PRIMARY KEY tuple(); optimize table cpu final ; 并将本地的样本数据导入：
 cat example/output.csv |clickhouse-client -d test -q &amp;#39;INSERT into cpu FORMAT CSV&amp;#39;    output.csv是时序数据样本，时间间隔为1秒，包含了从2022-01-01 08:00:00到2022-01-15 07:59:59一共1209600条记录
   optimize table 会强制进行merge之类的操作，使其达到最终状态</description>
     </item>
