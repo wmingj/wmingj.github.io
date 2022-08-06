@@ -102,6 +102,8 @@
     <loc>https://erenming.github.io/posts/string-in-golang/</loc>
     <lastmod>2019-12-11T21:31:47+00:00</lastmod>
   </url><url>
+    <loc>https://erenming.github.io/readings/</loc>
+  </url><url>
     <loc>https://erenming.github.io/about/</loc>
     <xhtml:link
                 rel="alternate"
@@ -125,8 +127,6 @@
                 hreflang="zh"
                 href="https://erenming.github.io/archives/"
                 />
-  </url><url>
-    <loc>https://erenming.github.io/readings/</loc>
   </url><url>
     <loc>https://erenming.github.io/search/</loc>
     <xhtml:link
