@@ -242,7 +242,7 @@ if _, err := jsonparser.ArrayEach(body, func(value []byte, dataType jsonparser.V
       
       <guid>https://erenming.github.io/readings/</guid>
       <description>仅以记录我在读、已读、预读之书。
-在读 22.06-22.12  《知识变现》：技术人还是看看，学习下如何提升影响力 《Observability Engineering》：关于可观测领域比较全面的书了，从业者可重点关注第1、2、4章节 《stop reading news》：确实很有道理，这年头新闻量与日俱增，浪费时间且易过度焦虑 《深入理解Kafka：核心设计与实践原理 第二版》：工作中常用Kafka，讲得还不错，有理论有实操（60%） 《ClickHouse原理解析与应用实践》：主要看了实现原理部分，讲的还是比较通俗易懂的，值得一读（50%） 《Systems Performance: Enterprise and the Cloud》：性能之巅第二版，[真]大头书，重要读了概念部分，实操部分待日后实践的时候再细读(60%) 《Streaming Processing with Apache Flink》： 工作中有用到，深入学习下 《重构：第二版》：重构方面的经典书 《Building Event Driven Microservice》  预读  《Programming Rust》：学习下最先进的Rust吧 《Queueing theory in Action》：排队理论，工作中队列的使用无处不在，需要学习下  已读  《Real-Time Analytics Techniques to Analyze》：70%   介绍了流式系统的常见设计和考虑，还是不错的，对我设计监控数据链路有帮助
+在读 22.06-22.12  《知识变现》：技术人还是看看，学习下如何提升影响力 《Observability Engineering》：关于可观测领域比较全面的书了，从业者可重点关注第1、2、4章节 《stop reading news》：确实很有道理，这年头新闻量与日俱增，浪费时间且易过度焦虑 《深入理解Kafka：核心设计与实践原理 第二版》：工作中常用Kafka，讲得还不错，有理论有实操（60%） 《ClickHouse原理解析与应用实践》：主要看了实现原理部分，讲的还是比较通俗易懂的，值得一读（50%） 《Systems Performance: Enterprise and the Cloud》：性能之巅第二版，[真]大头书，重要读了概念部分，实操部分待日后实践的时候再细读(60%) 《Streaming Processing with Apache Flink》： 工作中用到了，深入学习下 《重构：第二版》：重构方面的经典书 《Building Event Driven Microservice》  预读  《Programming Rust》：学习下最先进的Rust吧 《Queueing theory in Action》：排队理论，工作中队列的使用无处不在，需要学习下  已读  《Real-Time Analytics Techniques to Analyze》：70%   介绍了流式系统的常见设计和考虑，还是不错的，对我设计监控数据链路有帮助
   《Kubernetes In Action》：100%   挺不错的一本书，Kubernetes的东西基本都涵盖了，其中的各种流程图有助于理解各组件的工作机制
   《Designing Data Intensive Applications》：200%   读了两遍，强烈推荐，尤其是第一部分和第二部分。读完之后, 能对现如今的各种分布式数据组件的有更深的理解，配合Mit-6.824食用更佳
   《Operating Systems: Three Easy Pieces》: 45%   主要看了CPU部分。以更为通俗易懂、诙谐的方式讲解操作系统，尤其是每章之后的教授问答环节。不过感觉还是作为教科书的目的编写的</description>
@@ -255,9 +255,10 @@ if _, err := jsonparser.ArrayEach(body, func(value []byte, dataType jsonparser.V
       
       <guid>https://erenming.github.io/about/</guid>
       <description>嗨，我的朋友！
-欢迎来到我的技术博客，我的名字叫姜小明（erenming)。我的座右铭是Keep it simple stupid，没错，就是大名鼎鼎的KISS原则。
-一名程序员，使用Go作为我的主要开发语言，目前专注于可观测性，云原生领域。
-最后，欢迎与我联系，一起探讨技术 :P</description>
+欢迎来到我的技术博客小屋，我是姜小明（erenming)。
+我的座右铭是Keep It Simple, Stupid，没错，就是大名鼎鼎的KISS原则啦！
+我是一名软件工程师，Go是我最喜欢的开发语言，我专注于可观测性，云原生领域
+最后，欢迎与我联系，聊啥都行 :P</description>
     </item>
     
     
