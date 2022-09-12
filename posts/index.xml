@@ -5,7 +5,25 @@
     <link>https://erenming.github.io/posts/</link>
     <description>Recent content in Posts on Nothing Special</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 22 Aug 2022 23:21:05 +0800</lastBuildDate><atom:link href="https://erenming.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sat, 10 Sep 2022 16:24:04 +0800</lastBuildDate><atom:link href="https://erenming.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>ClickHouse的分布式实现</title>
+      <link>https://erenming.github.io/posts/clickhouse-distrubuted-arch/</link>
+      <pubDate>Sat, 10 Sep 2022 16:24:04 +0800</pubDate>
+      
+      <guid>https://erenming.github.io/posts/clickhouse-distrubuted-arch/</guid>
+      <description>当我们需要在实际生产环境中使用ClickHouse时，高可用与可扩展是绕不开的话题，因此ClickHouse也提供了分布式的相关机制来应对这些问题。在下文中，我们将主要从副本机制、分片机制两个个方面来对齐进行介绍。
+副本机制 ClickHouse通过扩展MergeTree为ReplicatedMergeTree来创建副本表引擎（通过在MergeTree添加Replicated前缀来表示副本表引擎）。这里需要注意的是，副本表并非一种具体的表引擎，而是一种逻辑上的表引擎，实际数据的存取仍然通过MergeTree来完成。
+ 注意：这里，我们假定集群名为local，且包含两个节点chi-0和chi-1
+ 建表 ReplicatedMergeTree通过类似如下语句进行创建：
+CREATE TABLE table_name (  EventDate DateTime,  CounterID UInt32,  UserID UInt32,  ver UInt16 ) ENGINE = ReplicatedReplacingMergeTree(&amp;#39;/clickhouse/tables/{cluster}-{shard}/table_name&amp;#39;, &amp;#39;{replica}&amp;#39;, ver) PARTITION BY toYYYYMM(EventDate) ORDER BY (CounterID, EventDate, intHash32(UserID)) SAMPLE BY intHash32(UserID); 有两个参数需要重点说明一下，分别为zoo_path和replica_name参数：
+ zoo_path: 表示表所在的zk路径 replica_name: 表示副本名称，通常为主机名   ClickHouse会在zk中建立路径zoo_path，并在zoo_path的子目录/replicas下根据replica_name创建副本标识，因此可以看到replica_name参数的作用主要就是用来作为副本ID。
+ 我们这里假定首先在chi-0节点上执行了建表语句
+ 其首先创建一个副本实例，进行一些初始化的工作，在zk上创建相关节点 接着在/replicas节点下注册副本实例chi-0 启用监听任务，监听/log节点 参与leader节点选举(通过向/leader_election写入数据，谁先写入成功谁就是leader)  接着，我们在chi-1节点上执行建表语句：
+ 首先也是创建副本实例，进行初始化工作 接着在/replicas节点下注册副本实例chi-1 启用监听任务，监听/log节点 参与leader节点选举(此时由于chi-0节点上已经执行过建表流程了，因此chi-0为leader副本)   /log节点非常重要，用来记录各种操作LogEntry包括获取part，合并part，删除分区等等操作
+ 写入 接着，我们通过执行INSERT INTO语句向chi-0节点写入数据（当写入请求被发到从节点时，从节点会将其转发到主节点）。</description>
+    </item>
+    
     <item>
       <title>Clickhouse MergeTree解读</title>
       <link>https://erenming.github.io/posts/clickhouse-mergetree/</link>
