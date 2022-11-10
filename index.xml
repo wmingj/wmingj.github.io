@@ -5,7 +5,22 @@
     <link>https://erenming.github.io/</link>
     <description>Recent content on Nothing Special</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 10 Sep 2022 16:24:04 +0800</lastBuildDate><atom:link href="https://erenming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 04 Nov 2022 13:27:25 +0800</lastBuildDate><atom:link href="https://erenming.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>[刷题总结]二分搜索</title>
+      <link>https://erenming.github.io/posts/algorithm-binary-search/</link>
+      <pubDate>Fri, 04 Nov 2022 13:27:25 +0800</pubDate>
+      
+      <guid>https://erenming.github.io/posts/algorithm-binary-search/</guid>
+      <description>二分搜索算法，又称折半搜索，是一种通过寻找中点并不断减半搜索范围的算法，时间复杂度为O(logN)，其算法流程大致如下所述：
+ 首先，其必须作用于有序数组上，找到中点并与目标值进行比较 若目标值比中点小，则将搜索范围缩小为左半数组；反之则将搜索范围缩小为右半数组 重复1，2步骤，直到终点与目标值相等  二分搜索的算法流程看起来很简单，然而实际的题目可能会有各种变化和细节，因此写好一个二分搜索算法并不简单。
+在我看来，二分搜索的关键点在于问题的划分点以及子集的选择，而这两块也最容易产生变体：
+  有序性变体：目标序列并非严格有序，或者说有序性需要你自行构造
+  二分选择变体：左右子集的选择算法往往不尽相同
+  此外，我们需要特别注意细节，因此编写中应当尽量使用else if而非else，力求覆盖到每种case
+框架 func search(nums []int, target int) int {  lo, hi := 0, n-1  for less(lo, hi) {  mid := getmid(lo, hi)  if equalcase(mid, target) {  // 1. 先考虑相等情况  } else if lesscase(target, mid) {  // 2. 再考虑其他情况  } else if ...  } } 题目详解 33.</description>
+    </item>
+    
     <item>
       <title>ClickHouse的分布式实现</title>
       <link>https://erenming.github.io/posts/clickhouse-distrubuted-arch/</link>
@@ -260,7 +275,7 @@ if _, err := jsonparser.ArrayEach(body, func(value []byte, dataType jsonparser.V
       
       <guid>https://erenming.github.io/readings/</guid>
       <description>仅以记录我在读、已读、预读之书。
-在读 22.06-22.12  《知识变现》：技术人还是看看，学习下如何提升影响力 《Observability Engineering》：关于可观测领域比较全面的书了，从业者可重点关注第1、2、4章节 《stop reading news》：确实很有道理，这年头新闻量与日俱增，浪费时间且易过度焦虑 《深入理解Kafka：核心设计与实践原理 第二版》：工作中常用Kafka，讲得还不错，有理论有实操（60%） 《ClickHouse原理解析与应用实践》：主要看了实现原理部分，讲的还是比较通俗易懂的，值得一读（50%） 《Systems Performance: Enterprise and the Cloud》：性能之巅第二版，[真]大头书，重要读了概念部分，实操部分待日后实践的时候再细读(60%) 《Streaming Processing with Apache Flink》： 快速过了一遍，后续深度使用的时候再回头看看 《如何阅读一本》：完全颠覆了我的阅读观，从前阅读效率真的是太低了，强烈推荐！（100%） 《重构：第二版》：略读。最重要的点：小步重构、持续集成 《What is eBPF》：略读。eBPF的由来、使用以及应用常见简介 《为什么中国人勤劳却不富有》：略读。介绍了中国经济高速发展的原因及所面临的机遇与困难，用勤劳来对冲制度成本终究不是长久之计! 《100 Go Mistakes and How to Avoid Them》：查漏补缺下:)  预读  《Programming Rust》：打算学习下最先进的Rust 《Queueing theory in Action》：排队理论，工作中队列的使用无处不在，需要学习下  已读  《Real-Time Analytics Techniques to Analyze》：70%   介绍了流式系统的常见设计和考虑，还是不错的，对我设计监控数据链路有帮助
+在读 22.06-22.12  《知识变现》：技术人还是看看，学习下如何提升影响力 《Observability Engineering》：关于可观测领域比较全面的书了，从业者可重点关注第1、2、4章节 《stop reading news》：确实很有道理，这年头新闻量与日俱增，浪费时间且易过度焦虑 《深入理解Kafka：核心设计与实践原理 第二版》：工作中常用Kafka，讲得还不错，有理论有实操（60%） 《ClickHouse原理解析与应用实践》：主要看了实现原理部分，讲的还是比较通俗易懂的，值得一读（50%） 《Systems Performance: Enterprise and the Cloud》：性能之巅第二版，[真]大头书，重要读了概念部分，实操部分待日后实践的时候再细读(60%) 《Streaming Processing with Apache Flink》： 快速过了一遍，后续深度使用的时候再回头看看 《如何阅读一本》：完全颠覆了我的阅读观，从前阅读效率真的是太低了，强烈推荐！（100%） 《重构：第二版》：略读。最重要的点：小步重构、持续集成 《What is eBPF》：略读。eBPF的由来、使用以及应用常见简介 《为什么中国人勤劳却不富有》：略读。介绍了中国经济高速发展的原因及所面临的机遇与困难，用勤劳来对冲制度成本终究不是长久之计! 《100 Go Mistakes and How to Avoid Them》：想不到大道至简的Go也有这么多细节，其中至少有50%的内容刷新了我的认知，非常适合有一定Go使用经验的程序员进一步提升自己  预读  《Programming Rust》：打算学习下最先进的Rust 《Queueing theory in Action》：排队理论，工作中队列的使用无处不在，需要学习下  已读  《Real-Time Analytics Techniques to Analyze》：70%   介绍了流式系统的常见设计和考虑，还是不错的，对我设计监控数据链路有帮助
   《Kubernetes In Action》：100%   挺不错的一本书，Kubernetes的东西基本都涵盖了，其中的各种流程图有助于理解各组件的工作机制
   《Designing Data Intensive Applications》：200%   读了两遍，强烈推荐，尤其是第一部分和第二部分。读完之后, 能对现如今的各种分布式数据组件的有更深的理解，配合Mit-6.</description>
     </item>
