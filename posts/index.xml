@@ -18,7 +18,7 @@
   有序性变体：目标序列并非严格有序，或者说有序性需要你自行构造
   二分选择变体：左右子集的选择算法往往不尽相同
   此外，我们需要特别注意细节，因此编写中应当尽量使用else if而非else，力求覆盖到每种case
-框架 func search(nums []int, target int) int {  lo, hi := 0, n-1  for less(lo, hi) {  mid := getmid(lo, hi)  if equalcase(mid, target) {  // 1. 先考虑相等情况  } else if lesscase(target, mid) {  // 2. 再考虑其他情况  } else if ...  } } 题目详解 33.</description>
+解题框架 func search(nums []int, target int) int {  lo, hi := 0, n-1  for less(lo, hi) {  mid := getmid(lo, hi)  if equalcase(mid, target) {  // 1. 先考虑相等情况  } else if lesscase(target, mid) {  // 2. 再考虑其他情况  } else if ...  } } 题目详解 33.</description>
     </item>
     
     <item>
