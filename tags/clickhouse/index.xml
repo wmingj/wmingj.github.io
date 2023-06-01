@@ -5,11 +5,11 @@
     <link>https://erenming.github.io/tags/clickhouse/</link>
     <description>Recent content in Clickhouse on Nothing Special</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 10 Sep 2022 16:24:04 +0800</lastBuildDate><atom:link href="https://erenming.github.io/tags/clickhouse/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Mon, 10 Apr 2023 16:24:04 +0800</lastBuildDate><atom:link href="https://erenming.github.io/tags/clickhouse/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ClickHouse的分布式实现</title>
       <link>https://erenming.github.io/posts/clickhouse-distrubuted-arch/</link>
-      <pubDate>Sat, 10 Sep 2022 16:24:04 +0800</pubDate>
+      <pubDate>Mon, 10 Apr 2023 16:24:04 +0800</pubDate>
       
       <guid>https://erenming.github.io/posts/clickhouse-distrubuted-arch/</guid>
       <description>当我们需要在实际生产环境中使用ClickHouse时，高可用与可扩展是绕不开的话题，因此ClickHouse也提供了分布式的相关机制来应对这些问题。在下文中，我们将主要从副本机制、分片机制两个个方面来对齐进行介绍。
@@ -27,7 +27,7 @@ CREATE TABLE table_name (  EventDate DateTime,  CounterID UInt32,  UserID UInt32
     <item>
       <title>Clickhouse MergeTree解读</title>
       <link>https://erenming.github.io/posts/clickhouse-mergetree/</link>
-      <pubDate>Mon, 22 Aug 2022 23:21:05 +0800</pubDate>
+      <pubDate>Thu, 22 Dec 2022 23:21:05 +0800</pubDate>
       
       <guid>https://erenming.github.io/posts/clickhouse-mergetree/</guid>
       <description>在众多的ClickHouse表引擎中，当属MergeTree（合并树）最为常用也最为完备，适用于中绝大部分场景，因此搞懂MergeTree对与理解ClickHouse至关重要！
@@ -59,7 +59,7 @@ PrimaryKey主要是由{Column}.mrk，primary.idx和{Column}.bin三者协同实�
     <item>
       <title>ClickHouse跳数索引解读</title>
       <link>https://erenming.github.io/posts/clickhouse-skipping-index/</link>
-      <pubDate>Tue, 26 Jul 2022 23:20:05 +0800</pubDate>
+      <pubDate>Wed, 26 Oct 2022 23:20:05 +0800</pubDate>
       
       <guid>https://erenming.github.io/posts/clickhouse-skipping-index/</guid>
       <description>在ClickHouse稀疏索引原理解读文章中，我们通过设置合理的稀疏主键索引，极大地优化了通用场景下的查询性能。然而，我们也发现，当我们想通过别的列（标签）进行过滤时，由于未能命中稀疏索引，就变成了全表扫描。
@@ -74,7 +74,7 @@ Query id: e34e54e8-8c9f-4f5b-ba29-83f54a095167 ┌──────────
     <item>
       <title>ClickHouse稀疏索引原理解读</title>
       <link>https://erenming.github.io/posts/clickhouse-sparse-index/</link>
-      <pubDate>Mon, 13 Jun 2022 16:23:14 +0800</pubDate>
+      <pubDate>Sat, 13 Aug 2022 16:23:14 +0800</pubDate>
       
       <guid>https://erenming.github.io/posts/clickhouse-sparse-index/</guid>
       <description>问个问题，如何优化一条SQL语句？我们首先想到的肯定是建索引。对于ClickHouse也不例外，尤其是稀疏主键索引（类似传统数据库中的主键索引）对性能的影响非常大。在下文中，我将结合例子对稀疏主键索引进行详细解读。
