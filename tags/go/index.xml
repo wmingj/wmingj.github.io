@@ -4,35 +4,44 @@
     <title>Go on Nothing Special</title>
     <link>https://erenming.github.io/tags/go/</link>
     <description>Recent content in Go on Nothing Special</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 15 Jun 2021 21:08:09 +0800</lastBuildDate><atom:link href="https://erenming.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <generator>Hugo -- 0.128.0</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 12 Aug 2024 21:49:04 +0800</lastBuildDate>
+    <atom:link href="https://erenming.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>在Go种如何访问和修改私有对象</title>
+      <link>https://erenming.github.io/posts/get-set-private-object-in-go/</link>
+      <pubDate>Mon, 12 Aug 2024 21:49:04 +0800</pubDate>
+      <guid>https://erenming.github.io/posts/get-set-private-object-in-go/</guid>
+      <description>我们都知道，基本上所有主流编程语言都支持对变量、类型以及函数方法等设置私有或公开，从而帮助程序员设计出封装优秀的模块。然而，实际开发中，难免需要使用第三方包的私有函数或方法，或修改其中的私有变量、熟悉等。在可观测性数据采集器开发中，由于继承了很多采集插件，经常需要魔改其中的代码，因此我对Go语言中如何修改这些私有对象的方式做了一个总结，以供后续参考。
+方式方法 修改指针 指针本质上就是一个内存地址，这种方式下，我们通过对指针的计算（如果你有C/C++的经验，想必对指针运算一定有所耳闻），从而找到目标对象的内存地址，进而可以获取并修改指针所指向对象的值。
+Examples：
+// pa/a.go package pa type ExportedType struct { intField int stringField string flag bool } func (t *ExportedType) String() string { return fmt.Sprintf(&amp;#34;ExportedType{flag: %v}&amp;#34;, t.flag) } // main/main.go func main() { et := &amp;amp;pa.ExportedType{} fmt.Printf(&amp;#34;before edit: %s\n&amp;#34;, et) ptr := unsafe.Pointer(et) // line 1 flagPtr := unsafe.Pointer(uintptr(ptr) + unsafe.Sizeof(0) + unsafe.Sizeof(&amp;#34;&amp;#34;)) // line 2 flagField := (*bool)(flagPtr) // line 3 *flagField = true // line 4 fmt.</description>
+    </item>
     <item>
       <title>浅析Go内存分配器的实现</title>
       <link>https://erenming.github.io/posts/memory-allocator-in-go/</link>
       <pubDate>Tue, 15 Jun 2021 21:08:09 +0800</pubDate>
-      
       <guid>https://erenming.github.io/posts/memory-allocator-in-go/</guid>
       <description>为什么需要内存分配器？ 总说周知，内存作为一种相对稀缺的资源，在操作系统中以虚拟内存的形式来作为一种内存抽象提供给进程，这里可以简单地把它看做一个连续的地址集合{0, 1, 2, ..., M}，由栈空间、堆空间、代码片、数据片等地址空间段组合而成，如下图所示(出自CS:APP3e, Bryant and O&amp;rsquo;Hallaron的第9章第9节)
 这里我们重点关注Heap（堆），堆是一块动态的虚拟内存地址空间。在C语言中，我们通常使用malloc来申请内存以及使用free来释放内存，也许你想问，这样不就足够了吗？但是，这种手动的内存管理会带来很多问题，比如：
- 给程序员带来额外的心智负担，必须得及时释放掉不再使用的内存空间，否则就很容易出现内存泄露 随着内存的不断申请与释放，会产生大量的内存碎片，这将大大降低内存的利用率  因此，正确高效地管理内存空间是非常有必要的，常见的技术实现有Sequential allocation, Free-List allocation等。那么，在Go中，内存是如何被管理的呢？
- 注：此为Go1.13.6的实现逻辑，随版本更替某些细节会有些许不同
- 实现原理 Go的内存分配器是基于TCMalloc设计的，因此我建议你先行查阅，这将有利于理解接下来的内容。
+给程序员带来额外的心智负担，必须得及时释放掉不再使用的内存空间，否则就很容易出现内存泄露 随着内存的不断申请与释放，会产生大量的内存碎片，这将大大降低内存的利用率 因此，正确高效地管理内存空间是非常有必要的，常见的技术实现有Sequential allocation, Free-List allocation等。那么，在Go中，内存是如何被管理的呢？
+注：此为Go1.13.6的实现逻辑，随版本更替某些细节会有些许不同
+实现原理 Go的内存分配器是基于TCMalloc设计的，因此我建议你先行查阅，这将有利于理解接下来的内容。
 大量工程经验证明，程序中的小对象占了绝大部分，且生命周期都较为短暂。因此，Go将内存划分为各种类别(Class)，并各自形成Free-List。相较于单一的Free-List分配器，分类后主要有以下优点：
-  其一方面减少不必要的搜索时间，因为对象只需要在其所属类别的空闲链表中搜索即可
-  另一方面减少了内存碎片化，同一类别的空闲链表，每个对象分配的空间都是一样大小(不足则补齐)，因此该链表除非无空闲空间，否则总能分配空间，避免了内存碎片
-  那么，Go内存分配器具体是如何实现的呢？接下来，我将以自顶向下的方式，从宏观到微观，层层拨开她的神秘面纱。
+其一方面减少不必要的搜索时间，因为对象只需要在其所属类别的空闲链表中搜索即可
+另一方面减少了内存碎片化，同一类别的空闲链表，每个对象分配的空间都是一样大小(不足则补齐)，因此该链表除非无空闲空间，否则总能分配空间，避免了内存碎片
+那么，Go内存分配器具体是如何实现的呢？接下来，我将以自顶向下的方式，从宏观到微观，层层拨开她的神秘面纱。
 数据结构 首先，介绍Go内存分配中相关的数据结构。其总体概览图如下所示：
 heapArena 在操作系统中，我们一般把堆看做是一块连续的虚拟内存空间。
 Go将其划分为数个相同大小的连续空间块，称之arena，其中，heapArena则作为arena空间的管理单元，其结构如下所示：
-type heapArena struct {  bitmap [heapArenaBitmapBytes]byte  spans [pagesPerArena]*mspan  ... }  bitmap: 表示arena区域中的哪些地址保存了对象，哪些地址保存了指针 spans: 表示arena区域中的哪些操作系统页(8K)属于哪些mspan  mheap 然后，则是核心角色mheap了，它是Go内存管理中的核心数据结构，作为全局唯一变量，其结构如下所示：
-type mheap struct { 	free mTreap  ...  allspans []*mspan  .</description>
+type heapArena struct { bitmap [heapArenaBitmapBytes]byte spans [pagesPerArena]*mspan ... } bitmap: 表示arena区域中的哪些地址保存了对象，哪些地址保存了指针 spans: 表示arena区域中的哪些操作系统页(8K)属于哪些mspan mheap 然后，则是核心角色mheap了，它是Go内存管理中的核心数据结构，作为全局唯一变量，其结构如下所示：
+type mheap struct { free mTreap ... allspans []*mspan ... arenas [1 &amp;lt;&amp;lt; arenaL1Bits]*[1 &amp;lt;&amp;lt; arenaL2Bits]*heapArena ... central [numSpanClasses]struct { mcentral mcentral pad [cpu.CacheLinePadSize - unsafe.Sizeof(mcentral{})%cpu.CacheLinePadSize]byte } } free: 使用树堆的结构来保存各种类别的空闲mspan allspans: 用以记录了分配过了的mspan arenas: 表示其覆盖的所有arena区域，通过虚拟内存地址计算得到下标索引 central: 表示其覆盖的所有mcentral，一共134个，对应67个类别 mcentral 而mcentral充当mspan的中心管理员，负责管理某一类别的mspan，其结构如下：</description>
     </item>
-    
     <item>
       <title>Golang内存优化实践指南</title>
       <link>https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/</link>
       <pubDate>Sat, 09 Jan 2021 19:52:52 +0000</pubDate>
-      
       <guid>https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/</guid>
       <description>最近做了许多有关Go内存优化的工作，总结了一些定位、调优方面的套路和经验，于是，想通过这篇文章与大家分享讨论。
 发现问题 性能优化领域有一条总所周知的铁律，即：不要过早地优化。编写一个程序，首先应该保证其功能的正确性，以及诸如设计是否合理、需求等是否满足，过早地优化只会引入不必要的复杂度以及设计不合理等各种问题。
@@ -42,7 +51,7 @@ type mheap struct { 	free mTreap  ...  allspans []*mspan  .</description>
 2. 问题复现 这块是可选项，但是最好能保证复现。如果能在本地或debug环境复现问题，这将非常有利于我们反复进行测试和验证。
 3. 使用pprof定位 Go官方工具提供了pporf来专门用以性能问题定位，首先得在程序中开启pprof收集功能，这里假定问题程序已开启pprof。(对这块不够了解的同学，建议通过这两篇文章(1, 2)学习下pprof工具的基本用法)
 接下来，我们复现问题场景，并及时获取heap和groutine的采样信息。
- 获取heap信息: curl http://loalhost:6060/debug/pprof/heap -o h1.out 获取groutine信息：curl http://loalhost:6060/debug/pprof/goroutine -o g1.out  这里你可能想问，这样就够了吗？
+获取heap信息: curl http://loalhost:6060/debug/pprof/heap -o h1.out 获取groutine信息：curl http://loalhost:6060/debug/pprof/goroutine -o g1.out 这里你可能想问，这样就够了吗？
 当然不是，只获取一份样本信息是不够的。内存使用量是不断变化的(通常是上升)，因此我们需要的也是期间heap、gourtine信息的变化信息，而非瞬时值。一般来说，我们需要一份正常情况下的样本信息，一份或多份内存升高期间的样本信息。
 数据收集完毕后，我们按照如下3个方面来排查定位。
 排查goroutine泄露 使用命令go tool pprof --base g1.out g2.out ，比较goroutine信息来判断是否有goroutine激增的情况。
@@ -56,29 +65,24 @@ type mheap struct { 	free mTreap  ...  allspans []*mspan  .</description>
 问题优化 定位到问题根因后，接下来就是优化阶段了。这个阶段需要对Go本身足够熟悉，还得对问题程序的业务逻辑有所了解。
 我梳理了一些常见的优化手段，仅供参考。实际场景还是得实际分析。
 goroutine泄露 这种问题还是比较好修复的，需要显式地保证goroutine能正确退出，而非以一些自以为的假设来保证。例如，通过传递context.Context对象来显式退出
-go func(ctx context.</description>
+go func(ctx context.Context) { for { select { case &amp;lt;-ctx.</description>
     </item>
-    
     <item>
       <title>Golang中的map实现</title>
       <link>https://erenming.github.io/posts/map-in-go/</link>
       <pubDate>Sat, 01 Feb 2020 17:28:15 +0000</pubDate>
-      
       <guid>https://erenming.github.io/posts/map-in-go/</guid>
       <description>总所周知，大多数语言中，字典的底层是哈希表，而且其算法也是十分清晰的。无论采用链表法还是开放寻址法，我们都能实现一个简单的哈希表结构。对于Go来说，它是具体如何实现哈希表的呢？以及，采取了哪些优化策略呢？
 内存模型 map在内存的总体结构如下图所示。
-头部结构体hmap type hmap struct { 	count int // 键值对个数 	flags uint8 	B uint8 // 2^B = 桶数量 	noverflow uint16 // 溢出桶的个数 	hash0 uint32 // hash seed  	buckets unsafe.Pointer // 哈希桶 	oldbuckets unsafe.Pointer // 原哈希桶，扩容时为非空 	nevacuate uintptr // 扩容进度，地址小于它的桶已被迁移了  	extra *mapextra // optional fields } hmap即为map编译后的内存表示，这里需要注意的有两点。
- B的值是根据负载因子(LoadFactor)以及存储的键值对数量，在创建或扩容时动态改变 buckets是一个指针，它指向一个bmap结构  桶结构体bmap type bmap struct { 	// tophash数组可以看做键值对的索引 	tophash [bucketCnt]uint8 	// 实际上编译器会动态添加下述属性  // keys [8]keytype  // values [8]valuetype  // padding uinptr  // overflow uinptr } 虽然bmap结构体中只有一个tophash数组，但实际上，其后跟着8个key的槽位、8个value的槽位、padding以及一个overflow指针。如下图所示</description>
+头部结构体hmap type hmap struct { count int // 键值对个数 flags uint8 B uint8 // 2^B = 桶数量 noverflow uint16 // 溢出桶的个数 hash0 uint32 // hash seed buckets unsafe.Pointer // 哈希桶 oldbuckets unsafe.Pointer // 原哈希桶，扩容时为非空 nevacuate uintptr // 扩容进度，地址小于它的桶已被迁移了 extra *mapextra // optional fields } hmap即为map编译后的内存表示，这里需要注意的有两点。
+B的值是根据负载因子(LoadFactor)以及存储的键值对数量，在创建或扩容时动态改变 buckets是一个指针，它指向一个bmap结构 桶结构体bmap type bmap struct { // tophash数组可以看做键值对的索引 tophash [bucketCnt]uint8 // 实际上编译器会动态添加下述属性 // keys [8]keytype // values [8]valuetype // padding uinptr // overflow uinptr } 虽然bmap结构体中只有一个tophash数组，但实际上，其后跟着8个key的槽位、8个value的槽位、padding以及一个overflow指针。如下图所示</description>
     </item>
-    
     <item>
       <title>用Golang实现并理解Web中间件</title>
       <link>https://erenming.github.io/posts/understand-middleware/</link>
       <pubDate>Fri, 20 Dec 2019 14:39:21 +0000</pubDate>
-      
       <guid>https://erenming.github.io/posts/understand-middleware/</guid>
       <description>&lt;p&gt;在编写web应用中，我们常常会遇到这样的需求，比如，我们需要上报每个API的运行时间到运维监控系统。这时候你可以像下述代码一样将统计的逻辑写到每个路由函数中。&lt;/p&gt;</description>
     </item>
-    
   </channel>
 </rss>

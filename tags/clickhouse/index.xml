@@ -1,66 +1,70 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Clickhouse on Nothing Special</title>
+    <title>ClickHouse on Nothing Special</title>
     <link>https://erenming.github.io/tags/clickhouse/</link>
-    <description>Recent content in Clickhouse on Nothing Special</description>
-    <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 10 Apr 2023 16:24:04 +0800</lastBuildDate><atom:link href="https://erenming.github.io/tags/clickhouse/index.xml" rel="self" type="application/rss+xml" />
+    <description>Recent content in ClickHouse on Nothing Special</description>
+    <generator>Hugo -- 0.128.0</generator>
+    <language>zh</language>
+    <lastBuildDate>Mon, 10 Apr 2023 16:24:04 +0800</lastBuildDate>
+    <atom:link href="https://erenming.github.io/tags/clickhouse/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>ClickHouse的分布式实现</title>
       <link>https://erenming.github.io/posts/clickhouse-distrubuted-arch/</link>
       <pubDate>Mon, 10 Apr 2023 16:24:04 +0800</pubDate>
-      
       <guid>https://erenming.github.io/posts/clickhouse-distrubuted-arch/</guid>
       <description>当我们需要在实际生产环境中使用ClickHouse时，高可用与可扩展是绕不开的话题，因此ClickHouse也提供了分布式的相关机制来应对这些问题。在下文中，我们将主要从副本机制、分片机制两个个方面来对齐进行介绍。
 副本机制 ClickHouse通过扩展MergeTree为ReplicatedMergeTree来创建副本表引擎（通过在MergeTree添加Replicated前缀来表示副本表引擎）。这里需要注意的是，副本表并非一种具体的表引擎，而是一种逻辑上的表引擎，实际数据的存取仍然通过MergeTree来完成。
- 注意：这里，我们假定集群名为local，且包含两个节点chi-0和chi-1
- 建表 ReplicatedMergeTree通过类似如下语句进行创建：
-CREATE TABLE table_name (  EventDate DateTime,  CounterID UInt32,  UserID UInt32,  ver UInt16 ) ENGINE = ReplicatedReplacingMergeTree(&amp;#39;/clickhouse/tables/{cluster}-{shard}/table_name&amp;#39;, &amp;#39;{replica}&amp;#39;, ver) PARTITION BY toYYYYMM(EventDate) ORDER BY (CounterID, EventDate, intHash32(UserID)) SAMPLE BY intHash32(UserID); 有两个参数需要重点说明一下，分别为zoo_path和replica_name参数：
- zoo_path: 表示表所在的zk路径 replica_name: 表示副本名称，通常为主机名   ClickHouse会在zk中建立路径zoo_path，并在zoo_path的子目录/replicas下根据replica_name创建副本标识，因此可以看到replica_name参数的作用主要就是用来作为副本ID。
- 我们这里假定首先在chi-0节点上执行了建表语句
- 其首先创建一个副本实例，进行一些初始化的工作，在zk上创建相关节点 接着在/replicas节点下注册副本实例chi-0 启用监听任务，监听/log节点 参与leader节点选举(通过向/leader_election写入数据，谁先写入成功谁就是leader)  接着，我们在chi-1节点上执行建表语句：
- 首先也是创建副本实例，进行初始化工作 接着在/replicas节点下注册副本实例chi-1 启用监听任务，监听/log节点 参与leader节点选举(此时由于chi-0节点上已经执行过建表流程了，因此chi-0为leader副本)   /log节点非常重要，用来记录各种操作LogEntry包括获取part，合并part，删除分区等等操作
- 写入 接着，我们通过执行INSERT INTO语句向chi-0节点写入数据（当写入请求被发到从节点时，从节点会将其转发到主节点）。</description>
+注意：这里，我们假定集群名为local，且包含两个节点chi-0和chi-1
+建表 ReplicatedMergeTree通过类似如下语句进行创建：
+CREATE TABLE table_name ( EventDate DateTime, CounterID UInt32, UserID UInt32, ver UInt16 ) ENGINE = ReplicatedReplacingMergeTree(&amp;#39;/clickhouse/tables/{cluster}-{shard}/table_name&amp;#39;, &amp;#39;{replica}&amp;#39;, ver) PARTITION BY toYYYYMM(EventDate) ORDER BY (CounterID, EventDate, intHash32(UserID)) SAMPLE BY intHash32(UserID); 有两个参数需要重点说明一下，分别为zoo_path和replica_name参数：
+zoo_path: 表示表所在的zk路径 replica_name: 表示副本名称，通常为主机名 ClickHouse会在zk中建立路径zoo_path，并在zoo_path的子目录/replicas下根据replica_name创建副本标识，因此可以看到replica_name参数的作用主要就是用来作为副本ID。
+我们这里假定首先在chi-0节点上执行了建表语句
+其首先创建一个副本实例，进行一些初始化的工作，在zk上创建相关节点 接着在/replicas节点下注册副本实例chi-0 启用监听任务，监听/log节点 参与leader节点选举(通过向/leader_election写入数据，谁先写入成功谁就是leader) 接着，我们在chi-1节点上执行建表语句：
+首先也是创建副本实例，进行初始化工作 接着在/replicas节点下注册副本实例chi-1 启用监听任务，监听/log节点 参与leader节点选举(此时由于chi-0节点上已经执行过建表流程了，因此chi-0为leader副本) /log节点非常重要，用来记录各种操作LogEntry包括获取part，合并part，删除分区等等操作
+写入 接着，我们通过执行INSERT INTO语句向chi-0节点写入数据（当写入请求被发到从节点时，从节点会将其转发到主节点）。
+此时，会首先在本地完成分区数据的写入，然后向/blocks节点写入该分区的block_id
+block是ClickHouse中的最小数据单元，这里在/blocks节点中写入block_id主要是为了后续数据的去重
+接着向/log节点推送日志，日志信息如下所示：
+format version: 4 create_time: 2022-09-04 14:30:58 source replica: chi-0 block_id: 20220904_5211346952104599192_1472622755444261990 get 20220904_269677_269677_0 part_type: Compact .</description>
     </item>
-    
     <item>
       <title>Clickhouse MergeTree解读</title>
       <link>https://erenming.github.io/posts/clickhouse-mergetree/</link>
       <pubDate>Thu, 22 Dec 2022 23:21:05 +0800</pubDate>
-      
       <guid>https://erenming.github.io/posts/clickhouse-mergetree/</guid>
       <description>在众多的ClickHouse表引擎中，当属MergeTree（合并树）最为常用也最为完备，适用于中绝大部分场景，因此搞懂MergeTree对与理解ClickHouse至关重要！
 在本文中，我将通过主要从数据模型、数据写入、数据读取3个方面来阐述MergeTree的实现
- 本文需要读者具备一定的ClickHouse使用经验，譬如建表、写入、查询等
- 数据模型 在MergeTree引擎底层实现中，从上至下主要有以下3种数据模型组成：Part、Block、PrimaryKey
+本文需要读者具备一定的ClickHouse使用经验，譬如建表、写入、查询等
+数据模型 在MergeTree引擎底层实现中，从上至下主要有以下3种数据模型组成：Part、Block、PrimaryKey
 Part 这里需要注意的时，Part不是Partition，对于一张表来说：
- Part是用来存储一组行对应于，在磁盘上对应于一个数据目录，目录里有列数据、索引等信息 Partition则是一种虚拟的概念，在磁盘上没有具体的表示，不过可以说某个Partition包含多个Part  在建表的DDL中，我们可通过PARTITION BY参数来配置分区规则，ClickHouse会根据分区规则生成不同分区ID，从而在写入时将数据落盘到对应分区中。一但有数据写入，ClickHouse则根据分区ID创建对应的Part目录。
+Part是用来存储一组行对应于，在磁盘上对应于一个数据目录，目录里有列数据、索引等信息 Partition则是一种虚拟的概念，在磁盘上没有具体的表示，不过可以说某个Partition包含多个Part 在建表的DDL中，我们可通过PARTITION BY参数来配置分区规则，ClickHouse会根据分区规则生成不同分区ID，从而在写入时将数据落盘到对应分区中。一但有数据写入，ClickHouse则根据分区ID创建对应的Part目录。
 其中目录的命名规则为{PartiionID}_{MinBlockNum}_{MaxBlockNum}_{Level}：
- PartiionID：即为分区ID MinBlockNum：表示最小数据块编号，后续解释 MaxBlockNum：表示最大数据块编号，后续解释 Level：表示该Part被合并过的次数，对于每个新建Part目录而言，其初始值为0，每合并一次则累积加1  目录中的文件主要包括如下部分：
- 数据相关：{Column}.mrk、{Column}.mrk2、{Column}.bin、primary.idx(mrk, mrk2应该是版本不同) 二级索引相关：skp_idx_{Column}.idx、skp_idx_{Column}.mrk  此外，每个Part在逻辑上被划分为多个粒度（粒度大小由index_granularity或index_granularity_bytes控制）；而在物理上，列数据则被划分为多个数据块。
+PartiionID：即为分区ID MinBlockNum：表示最小数据块编号，后续解释 MaxBlockNum：表示最大数据块编号，后续解释 Level：表示该Part被合并过的次数，对于每个新建Part目录而言，其初始值为0，每合并一次则累积加1 目录中的文件主要包括如下部分：
+数据相关：{Column}.mrk、{Column}.mrk2、{Column}.bin、primary.idx(mrk, mrk2应该是版本不同) 二级索引相关：skp_idx_{Column}.idx、skp_idx_{Column}.mrk 此外，每个Part在逻辑上被划分为多个粒度（粒度大小由index_granularity或index_granularity_bytes控制）；而在物理上，列数据则被划分为多个数据块。
 Block Block即为数据块，在内存中由三元组(列数据，列类型，列名)组成。是ClickHouse中的最小数据处理单元，例如，在查询过程中，数据是一个块接着一个块被处理的。
 而在磁盘上，其则通过排序、压缩序列化后生成压缩数据块并存储于{Column}.bin中，其中表示如下所示：
 其中，头信息(Header)部分包含3种信息：
- CompressionMethod：Uint8，压缩方法，如LZ4, ZSTD CompressedSize：UInt32，压缩后的字节大小 UncompressedSize：UInt32，压缩前的字节大小  其中每个数据块的大小都会被控制在64K-1MB的范围内（由min_compress_block_size和max_compress_block_size指定）。
+CompressionMethod：Uint8，压缩方法，如LZ4, ZSTD CompressedSize：UInt32，压缩后的字节大小 UncompressedSize：UInt32，压缩前的字节大小 其中每个数据块的大小都会被控制在64K-1MB的范围内（由min_compress_block_size和max_compress_block_size指定）。
 这里我们为什么要将{Column}.bin划分成多个数据块呢？其目的主要包括：
- 数据压缩后虽然可以显著减少数据大小，但是解压缩会带来性能损耗，因此需要控制被压缩数据的大小，以求性能与压缩率之间的平衡（这条我也不太理解，还请评论区大佬指教:)） 当读取数据时，需要将数据加载到内存中再解压，通过压缩数据块，我们可以不用加载整个.bin文件，从而进一步降低读取范围  PrimaryKey 主键索引(Primary Key)是一张表不可或缺的一部分，你可以不指定，但是这会导致每次查询都是全表扫描从而几乎不可用。
+数据压缩后虽然可以显著减少数据大小，但是解压缩会带来性能损耗，因此需要控制被压缩数据的大小，以求性能与压缩率之间的平衡（这条我也不太理解，还请评论区大佬指教:)） 当读取数据时，需要将数据加载到内存中再解压，通过压缩数据块，我们可以不用加载整个.bin文件，从而进一步降低读取范围 PrimaryKey 主键索引(Primary Key)是一张表不可或缺的一部分，你可以不指定，但是这会导致每次查询都是全表扫描从而几乎不可用。
 PrimaryKey主要是由{Column}.mrk，primary.idx和{Column}.bin三者协同实现，其中：
- primary.idx：保存主键与标记的映射关系 {Column}.mrk：保存标记与数据块偏移量的映射关系 {Column}.bin：保存数据块   具体实现可以参考我之前的文章
- 数据写入 ClickHouse的数据写入流程是比较简单直接的，整体流程如下图所示：
+primary.idx：保存主键与标记的映射关系 {Column}.mrk：保存标记与数据块偏移量的映射关系 {Column}.bin：保存数据块 具体实现可以参考我之前的文章
+数据写入 ClickHouse的数据写入流程是比较简单直接的，整体流程如下图所示：
 每收到写入请求，ClickHouse就会生成一个新的Part目录，接着按index_granularity定义的粒度将数据划分，并依次进行处理，生成primary.idx文件，针对每一行生成.mrk和.bin文件。
 合并 写入结束后，ClickHouse的后台线程会周期性地选择一些Part进行合并，合并后数据依然有序。
 在上文中，我们提到的MinBlockNum此时会取各个part中的MinBlockNum最小值，而MaxBlockNum则会取各个part中的MinBlockNum最小值。例如201403_1_1_0和201403_2_2_0合并后，生成的新part目录为201403_1_2_1。
 查询 查询的过程本质上可以看做是不断缩小数据扫描的过程，流程如下图所示：
 当ClickHouse收到查询请求时，其会首先尝试定位到具体的分区，然后扫描所有的part，然后通过part目录中的一级、二级索引定位到标记，再通过标记找到压缩数据块，并将其加载到内存中进行处理。
-此外，为了提升查询性能，ClickHouse还是用了vectorized query execution和以及少量runtime code generation技术，从CPU层面提升性能（这块内容比较多，这里就不详解了，后续我将尝试再写一篇博客来介绍）。</description>
+此外，为了提升查询性能，ClickHouse还是用了vectorized query execution和以及少量runtime code generation技术，从CPU层面提升性能（这块内容比较多，这里就不详解了，后续我将尝试再写一篇博客来介绍）。
+总结 本文，我们首先从数据模型层面自顶向下分别介绍了分区、Part、Block、PrimaryKey，它们构建起了MergeTree的总体框架。然后，我们分别介绍了数据写入与数据查询流程，将数据模型串联起来，并详细介绍了它们之间是如何相互协同的。
+总体看来，MergeTree实现上还是比较简单易懂的，希望本文能对你有所帮助
+参考 https://stackoverflow.com/questions/60142967/how-to-understand-part-and-partition-of-clickhouse https://clickhouse.com/docs/en/intro/ 《ClickHouse原理解析与应用实践》 </description>
     </item>
-    
     <item>
       <title>ClickHouse跳数索引解读</title>
       <link>https://erenming.github.io/posts/clickhouse-skipping-index/</link>
       <pubDate>Wed, 26 Oct 2022 23:20:05 +0800</pubDate>
-      
       <guid>https://erenming.github.io/posts/clickhouse-skipping-index/</guid>
       <description>在ClickHouse稀疏索引原理解读文章中，我们通过设置合理的稀疏主键索引，极大地优化了通用场景下的查询性能。然而，我们也发现，当我们想通过别的列（标签）进行过滤时，由于未能命中稀疏索引，就变成了全表扫描。
 例如，对于cpu_ts表，当我们要通过别的维度，例如hostname，进行查询分析时，ClickHouse会对hostname列的所有值进行全表扫描，再根据WHERE中的条件对值进行过滤。
@@ -70,20 +74,19 @@ PrimaryKey主要是由{Column}.mrk，primary.idx和{Column}.bin三者协同实�
 select ts, avg(usage_user) from cpu_ts where hostname = &amp;#39;fa9c19a5-39eb-4bea-97df-5a6b82e5e947&amp;#39; group by toStartOfMinute(timestamp) as ts order by ts; 结果如下：
 Query id: e34e54e8-8c9f-4f5b-ba29-83f54a095167 ┌──────────────────ts─┬───avg(usage_user)─┐ │ 2022-01-15 07:24:00 │ 77.7843137254902 │ │ 2022-01-15 07:25:00 │ 75.23333333333333 │ │ 2022-01-15 07:26:00 │ 73.96666666666667 │ │ 2022-01-15 07:27:00 │ 79.7 │ │ 2022-01-15 07:28:00 │ 77.68333333333334 │ │ 2022-01-15 07:29:00 │ 73.03333333333333 │ │ 2022-01-15 07:30:00 │ 72.21666666666667 │ │ 2022-01-15 07:31:00 │ 75.</description>
     </item>
-    
     <item>
       <title>ClickHouse稀疏索引原理解读</title>
       <link>https://erenming.github.io/posts/clickhouse-sparse-index/</link>
       <pubDate>Sat, 13 Aug 2022 16:23:14 +0800</pubDate>
-      
       <guid>https://erenming.github.io/posts/clickhouse-sparse-index/</guid>
       <description>问个问题，如何优化一条SQL语句？我们首先想到的肯定是建索引。对于ClickHouse也不例外，尤其是稀疏主键索引（类似传统数据库中的主键索引）对性能的影响非常大。在下文中，我将结合例子对稀疏主键索引进行详细解读。
- 注：本文内容主要参考官方文档，如果有余力，强烈建议先行阅读
- 数据准备 这里，我将就我比较熟悉的时序数据进行举例。首先通过如下SQL建表：
+注：本文内容主要参考官方文档，如果有余力，强烈建议先行阅读
+数据准备 这里，我将就我比较熟悉的时序数据进行举例。首先通过如下SQL建表：
 -- create dabase create database test; use test; -- create table CREATE TABLE cpu ( `hostname` String, `reginon` String, `datacenter` String, `timestamp` DateTime64(9,&amp;#39;Asia/Shanghai&amp;#39;) CODEC (DoubleDelta), `usage_user` Float64, `usage_system` Float64 ) ENGINE = MergeTree() PRIMARY KEY tuple(); optimize table cpu final ; 并将本地的样本数据导入：
-cat example/output.csv |clickhouse-client -d test -q &amp;#39;INSERT into cpu FORMAT CSV&amp;#39;    output.csv是时序数据样本，时间间隔为1秒，包含了从2022-01-01 08:00:00到2022-01-15 07:59:59一共1209600条记录
-  optimize table 会强制进行merge之类的操作，使其达到最终状态</description>
+cat example/output.csv |clickhouse-client -d test -q &amp;#39;INSERT into cpu FORMAT CSV&amp;#39; output.csv是时序数据样本，时间间隔为1秒，包含了从2022-01-01 08:00:00到2022-01-15 07:59:59一共1209600条记录
+optimize table 会强制进行merge之类的操作，使其达到最终状态
+查询某段时间范围内的CPU使用率 SQL如下:
+select ts, avg(usage_user) from cpu where timestamp &amp;gt; &amp;#39;2022-01-15 06:59:59.</description>
     </item>
-    
   </channel>
 </rss>
