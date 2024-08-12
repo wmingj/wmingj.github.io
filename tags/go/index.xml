@@ -9,7 +9,7 @@
     <lastBuildDate>Mon, 12 Aug 2024 21:49:04 +0800</lastBuildDate>
     <atom:link href="https://erenming.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>在Go种如何访问和修改私有对象</title>
+      <title>在Go中如何访问和修改私有对象</title>
       <link>https://erenming.github.io/posts/get-set-private-object-in-go/</link>
       <pubDate>Mon, 12 Aug 2024 21:49:04 +0800</pubDate>
       <guid>https://erenming.github.io/posts/get-set-private-object-in-go/</guid>
