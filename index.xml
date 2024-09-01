@@ -264,10 +264,10 @@ B的值是根据负载因子(LoadFactor)以及存储的键值对数量，在创�
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://erenming.github.io/about/</guid>
       <description>嗨，我的朋友！
-欢迎来到我的技术博客！
+欢迎来到姜闻名的技术博客！
 我的座右铭是Keep It Simple, Stupid！
 我是一名软件工程师，Go是我最喜欢的开发语言，专注于 Observability, Cloud Native and Backend
-最后，欢迎与我联系，聊啥都行 :P</description>
+最后，欢迎与我联系 :P</description>
     </item>
   </channel>
 </rss>
