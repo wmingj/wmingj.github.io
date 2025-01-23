@@ -72,7 +72,7 @@ type mheap struct { free mTreap ... allspans []*mspan ... arenas [1 &lt;&lt; are
 我梳理了一些常见的优化手段，仅供参考。实际场景还是得实际分析。
 goroutine泄露 这种问题还是比较好修复的，需要显式地保证goroutine能正确退出，而非以一些自以为的假设来保证。例如，通过传递context.Context对象来显式退出
 go func(ctx context.Context) { for { select { case &lt;-ctx....</p></div><footer class=entry-footer><span title='2021-01-09 19:52:52 +0000 UTC'>一月 9, 2021</span>&nbsp;·&nbsp;1 分钟&nbsp;·&nbsp;erenming</footer><a class=entry-link aria-label="post link to Golang内存优化实践指南" href=https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/></a></article><footer class=page-footer><nav class=pagination><a class=prev href=https://erenming.github.io/posts/>«&nbsp;上一页&nbsp;
-</a><a class=next href=https://erenming.github.io/posts/page/3/>下一页&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><span>&copy; 2024 <a href=https://erenming.github.io/>Nothing Special</a></span> ·
+</a><a class=next href=https://erenming.github.io/posts/page/3/>下一页&nbsp;&nbsp;»</a></nav></footer></main><footer class=footer><span>&copy; 2025 <a href=https://erenming.github.io/>Nothing Special</a></span> ·
 <span>Powered by
 <a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
         <a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
