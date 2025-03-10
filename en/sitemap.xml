@@ -2,91 +2,91 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://erenming.github.io/en/posts/hugo-with-githubpages/</loc>
+    <loc>https://wmingj.github.io/en/posts/hugo-with-githubpages/</loc>
     <lastmod>2022-05-29T16:08:13+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://erenming.github.io/posts/hugo-with-githubpages/"
+                href="https://wmingj.github.io/posts/hugo-with-githubpages/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://erenming.github.io/en/posts/hugo-with-githubpages/"
+                href="https://wmingj.github.io/en/posts/hugo-with-githubpages/"
                 />
   </url><url>
-    <loc>https://erenming.github.io/en/</loc>
+    <loc>https://wmingj.github.io/en/posts/</loc>
     <lastmod>2022-05-29T16:08:13+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://erenming.github.io/"
+                href="https://wmingj.github.io/posts/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://erenming.github.io/en/"
+                href="https://wmingj.github.io/en/posts/"
                 />
   </url><url>
-    <loc>https://erenming.github.io/en/posts/</loc>
+    <loc>https://wmingj.github.io/en/</loc>
     <lastmod>2022-05-29T16:08:13+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://erenming.github.io/posts/"
+                href="https://wmingj.github.io/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://erenming.github.io/en/posts/"
+                href="https://wmingj.github.io/en/"
                 />
   </url><url>
-    <loc>https://erenming.github.io/en/about/</loc>
+    <loc>https://wmingj.github.io/en/about/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://erenming.github.io/about/"
+                href="https://wmingj.github.io/about/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://erenming.github.io/en/about/"
+                href="https://wmingj.github.io/en/about/"
                 />
   </url><url>
-    <loc>https://erenming.github.io/en/archives/</loc>
+    <loc>https://wmingj.github.io/en/archives/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://erenming.github.io/archives/"
+                href="https://wmingj.github.io/archives/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://erenming.github.io/en/archives/"
+                href="https://wmingj.github.io/en/archives/"
                 />
   </url><url>
-    <loc>https://erenming.github.io/en/search/</loc>
+    <loc>https://wmingj.github.io/en/search/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://erenming.github.io/search/"
+                href="https://wmingj.github.io/search/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://erenming.github.io/en/search/"
+                href="https://wmingj.github.io/en/search/"
                 />
   </url><url>
-    <loc>https://erenming.github.io/en/tags/</loc>
+    <loc>https://wmingj.github.io/en/tags/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh"
-                href="https://erenming.github.io/tags/"
+                href="https://wmingj.github.io/tags/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://erenming.github.io/en/tags/"
+                href="https://wmingj.github.io/en/tags/"
                 />
   </url>
 </urlset>

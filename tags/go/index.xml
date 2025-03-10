@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Go on Nothing Special</title>
-    <link>https://erenming.github.io/tags/go/</link>
-    <description>Recent content in Go on Nothing Special</description>
+    <title>Go on Wenming&#39;s Blog</title>
+    <link>https://wmingj.github.io/tags/go/</link>
+    <description>Recent content in Go on Wenming&#39;s Blog</description>
     <generator>Hugo -- 0.128.0</generator>
     <language>zh</language>
     <lastBuildDate>Mon, 12 Aug 2024 21:49:04 +0800</lastBuildDate>
-    <atom:link href="https://erenming.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://wmingj.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>在Go中如何访问和修改私有对象</title>
-      <link>https://erenming.github.io/posts/get-set-private-object-in-go/</link>
+      <link>https://wmingj.github.io/posts/get-set-private-object-in-go/</link>
       <pubDate>Mon, 12 Aug 2024 21:49:04 +0800</pubDate>
-      <guid>https://erenming.github.io/posts/get-set-private-object-in-go/</guid>
+      <guid>https://wmingj.github.io/posts/get-set-private-object-in-go/</guid>
       <description>我们都知道，基本上所有主流编程语言都支持对变量、类型以及函数方法等设置私有或公开，从而帮助程序员设计出封装优秀的模块。然而，实际开发中，难免需要使用第三方包的私有函数或方法，或修改其中的私有变量、熟悉等。在可观测性数据采集器开发中，由于集成了很多采集插件，经常需要魔改其中的代码，因此我对Go语言中如何修改这些私有对象的方式做了一个总结，以供后续参考。
 方式方法 修改指针 指针本质上就是一个内存地址，这种方式下，我们通过对指针的计算（如果你有C/C++的经验，想必对指针运算一定有所耳闻），从而找到目标对象的内存地址，进而可以获取并修改指针所指向对象的值。
 Examples：
@@ -20,9 +20,9 @@ Examples：
     </item>
     <item>
       <title>浅析Go内存分配器的实现</title>
-      <link>https://erenming.github.io/posts/memory-allocator-in-go/</link>
+      <link>https://wmingj.github.io/posts/memory-allocator-in-go/</link>
       <pubDate>Tue, 15 Jun 2021 21:08:09 +0800</pubDate>
-      <guid>https://erenming.github.io/posts/memory-allocator-in-go/</guid>
+      <guid>https://wmingj.github.io/posts/memory-allocator-in-go/</guid>
       <description>为什么需要内存分配器？ 总说周知，内存作为一种相对稀缺的资源，在操作系统中以虚拟内存的形式来作为一种内存抽象提供给进程，这里可以简单地把它看做一个连续的地址集合{0, 1, 2, ..., M}，由栈空间、堆空间、代码片、数据片等地址空间段组合而成，如下图所示(出自CS:APP3e, Bryant and O&amp;rsquo;Hallaron的第9章第9节)
 这里我们重点关注Heap（堆），堆是一块动态的虚拟内存地址空间。在C语言中，我们通常使用malloc来申请内存以及使用free来释放内存，也许你想问，这样不就足够了吗？但是，这种手动的内存管理会带来很多问题，比如：
 给程序员带来额外的心智负担，必须得及时释放掉不再使用的内存空间，否则就很容易出现内存泄露 随着内存的不断申请与释放，会产生大量的内存碎片，这将大大降低内存的利用率 因此，正确高效地管理内存空间是非常有必要的，常见的技术实现有Sequential allocation, Free-List allocation等。那么，在Go中，内存是如何被管理的呢？
@@ -40,9 +40,9 @@ type mheap struct { free mTreap ... allspans []*mspan ... arenas [1 &amp;lt;&amp
     </item>
     <item>
       <title>Golang内存优化实践指南</title>
-      <link>https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/</link>
+      <link>https://wmingj.github.io/posts/memory-optimize-best-practice-for-golang/</link>
       <pubDate>Sat, 09 Jan 2021 19:52:52 +0000</pubDate>
-      <guid>https://erenming.github.io/posts/memory-optimize-best-practice-for-golang/</guid>
+      <guid>https://wmingj.github.io/posts/memory-optimize-best-practice-for-golang/</guid>
       <description>最近做了许多有关Go内存优化的工作，总结了一些定位、调优方面的套路和经验，于是，想通过这篇文章与大家分享讨论。
 发现问题 性能优化领域有一条总所周知的铁律，即：不要过早地优化。编写一个程序，首先应该保证其功能的正确性，以及诸如设计是否合理、需求等是否满足，过早地优化只会引入不必要的复杂度以及设计不合理等各种问题。
 那么何时才能开始优化呢？一句话，问题出现时。诸如程序出现频繁OOM，CPU使用率异常偏高等情况。如今，在这微服务盛行的时代，公司内部都会拥有一套或简单或复杂的监控系统，当系统给你发出相关告警时，你就要开始重视起来了。
@@ -69,9 +69,9 @@ go func(ctx context.Context) { for { select { case &amp;lt;-ctx.</description>
     </item>
     <item>
       <title>Golang中的map实现</title>
-      <link>https://erenming.github.io/posts/map-in-go/</link>
+      <link>https://wmingj.github.io/posts/map-in-go/</link>
       <pubDate>Sat, 01 Feb 2020 17:28:15 +0000</pubDate>
-      <guid>https://erenming.github.io/posts/map-in-go/</guid>
+      <guid>https://wmingj.github.io/posts/map-in-go/</guid>
       <description>总所周知，大多数语言中，字典的底层是哈希表，而且其算法也是十分清晰的。无论采用链表法还是开放寻址法，我们都能实现一个简单的哈希表结构。对于Go来说，它是具体如何实现哈希表的呢？以及，采取了哪些优化策略呢？
 内存模型 map在内存的总体结构如下图所示。
 头部结构体hmap type hmap struct { count int // 键值对个数 flags uint8 B uint8 // 2^B = 桶数量 noverflow uint16 // 溢出桶的个数 hash0 uint32 // hash seed buckets unsafe.Pointer // 哈希桶 oldbuckets unsafe.Pointer // 原哈希桶，扩容时为非空 nevacuate uintptr // 扩容进度，地址小于它的桶已被迁移了 extra *mapextra // optional fields } hmap即为map编译后的内存表示，这里需要注意的有两点。
@@ -79,9 +79,9 @@ B的值是根据负载因子(LoadFactor)以及存储的键值对数量，在创�
     </item>
     <item>
       <title>用Golang实现并理解Web中间件</title>
-      <link>https://erenming.github.io/posts/understand-middleware/</link>
+      <link>https://wmingj.github.io/posts/understand-middleware/</link>
       <pubDate>Fri, 20 Dec 2019 14:39:21 +0000</pubDate>
-      <guid>https://erenming.github.io/posts/understand-middleware/</guid>
+      <guid>https://wmingj.github.io/posts/understand-middleware/</guid>
       <description>&lt;p&gt;在编写web应用中，我们常常会遇到这样的需求，比如，我们需要上报每个API的运行时间到运维监控系统。这时候你可以像下述代码一样将统计的逻辑写到每个路由函数中。&lt;/p&gt;</description>
     </item>
   </channel>

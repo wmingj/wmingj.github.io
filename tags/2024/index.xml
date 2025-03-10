@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>2024 on Nothing Special</title>
-    <link>https://erenming.github.io/tags/2024/</link>
-    <description>Recent content in 2024 on Nothing Special</description>
+    <title>2024 on Wenming&#39;s Blog</title>
+    <link>https://wmingj.github.io/tags/2024/</link>
+    <description>Recent content in 2024 on Wenming&#39;s Blog</description>
     <generator>Hugo -- 0.128.0</generator>
     <language>zh</language>
     <lastBuildDate>Mon, 12 Aug 2024 21:49:04 +0800</lastBuildDate>
-    <atom:link href="https://erenming.github.io/tags/2024/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://wmingj.github.io/tags/2024/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>在Go中如何访问和修改私有对象</title>
-      <link>https://erenming.github.io/posts/get-set-private-object-in-go/</link>
+      <link>https://wmingj.github.io/posts/get-set-private-object-in-go/</link>
       <pubDate>Mon, 12 Aug 2024 21:49:04 +0800</pubDate>
-      <guid>https://erenming.github.io/posts/get-set-private-object-in-go/</guid>
+      <guid>https://wmingj.github.io/posts/get-set-private-object-in-go/</guid>
       <description>我们都知道，基本上所有主流编程语言都支持对变量、类型以及函数方法等设置私有或公开，从而帮助程序员设计出封装优秀的模块。然而，实际开发中，难免需要使用第三方包的私有函数或方法，或修改其中的私有变量、熟悉等。在可观测性数据采集器开发中，由于集成了很多采集插件，经常需要魔改其中的代码，因此我对Go语言中如何修改这些私有对象的方式做了一个总结，以供后续参考。
 方式方法 修改指针 指针本质上就是一个内存地址，这种方式下，我们通过对指针的计算（如果你有C/C++的经验，想必对指针运算一定有所耳闻），从而找到目标对象的内存地址，进而可以获取并修改指针所指向对象的值。
 Examples：

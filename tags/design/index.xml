@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Design on Nothing Special</title>
-    <link>https://erenming.github.io/tags/design/</link>
-    <description>Recent content in Design on Nothing Special</description>
+    <title>Design on Wenming&#39;s Blog</title>
+    <link>https://wmingj.github.io/tags/design/</link>
+    <description>Recent content in Design on Wenming&#39;s Blog</description>
     <generator>Hugo -- 0.128.0</generator>
     <language>zh</language>
     <lastBuildDate>Mon, 11 Jul 2022 23:51:39 +0800</lastBuildDate>
-    <atom:link href="https://erenming.github.io/tags/design/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://wmingj.github.io/tags/design/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>聊一聊可观测性</title>
-      <link>https://erenming.github.io/posts/what-is-observability/</link>
+      <link>https://wmingj.github.io/posts/what-is-observability/</link>
       <pubDate>Mon, 11 Jul 2022 23:51:39 +0800</pubDate>
-      <guid>https://erenming.github.io/posts/what-is-observability/</guid>
+      <guid>https://wmingj.github.io/posts/what-is-observability/</guid>
       <description>不知为何，可观测性这个词突然就火起来，各个大厂都甚至纷纷成立可观测团队了。那么可观测性究竟是个啥呢？它凭什么能火起来呢？它与传统监控有什么区别呢，是否又是新瓶装旧酒？
 说实话，虽然我很久之前就听说过可观测性这个词，不过一直持怀疑态度，认为不过是炒概念。直到最近，读了《Observability Engineering》这本书，让我打开新视界，可观测性并非空穴来风，其确实有它的价值，而且相当大。
 什么是可观测性 可观测性(Observability)这个单词最开始是出现于数学领域，表示度量一个系统内部状态由其外部输出的信息中推断出来的程度。Wikipedia上的定义有点抽象，举个汽车的例子：

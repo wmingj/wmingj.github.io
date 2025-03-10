@@ -1,60 +1,60 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
-    <title>Tags on Nothing Special</title>
-    <link>https://erenming.github.io/tags/</link>
-    <description>Recent content in Tags on Nothing Special</description>
+    <title>Tags on Wenming&#39;s Blog</title>
+    <link>https://wmingj.github.io/tags/</link>
+    <description>Recent content in Tags on Wenming&#39;s Blog</description>
     <generator>Hugo -- 0.128.0</generator>
     <language>zh</language>
     <lastBuildDate>Mon, 12 Aug 2024 21:49:04 +0800</lastBuildDate>
-    <atom:link href="https://erenming.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://wmingj.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>2024</title>
-      <link>https://erenming.github.io/tags/2024/</link>
+      <link>https://wmingj.github.io/tags/2024/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://erenming.github.io/tags/2024/</guid>
+      <guid>https://wmingj.github.io/tags/2024/</guid>
       <description></description>
     </item>
     <item>
       <title>Go</title>
-      <link>https://erenming.github.io/tags/go/</link>
+      <link>https://wmingj.github.io/tags/go/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://erenming.github.io/tags/go/</guid>
+      <guid>https://wmingj.github.io/tags/go/</guid>
       <description></description>
     </item>
     <item>
       <title>ClickHouse</title>
-      <link>https://erenming.github.io/tags/clickhouse/</link>
+      <link>https://wmingj.github.io/tags/clickhouse/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://erenming.github.io/tags/clickhouse/</guid>
+      <guid>https://wmingj.github.io/tags/clickhouse/</guid>
       <description></description>
     </item>
     <item>
       <title>Design</title>
-      <link>https://erenming.github.io/tags/design/</link>
+      <link>https://wmingj.github.io/tags/design/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://erenming.github.io/tags/design/</guid>
+      <guid>https://wmingj.github.io/tags/design/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux</title>
-      <link>https://erenming.github.io/tags/linux/</link>
+      <link>https://wmingj.github.io/tags/linux/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://erenming.github.io/tags/linux/</guid>
+      <guid>https://wmingj.github.io/tags/linux/</guid>
       <description></description>
     </item>
     <item>
       <title>Backend</title>
-      <link>https://erenming.github.io/tags/backend/</link>
+      <link>https://wmingj.github.io/tags/backend/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://erenming.github.io/tags/backend/</guid>
+      <guid>https://wmingj.github.io/tags/backend/</guid>
       <description></description>
     </item>
     <item>
       <title>Golang</title>
-      <link>https://erenming.github.io/tags/golang/</link>
+      <link>https://wmingj.github.io/tags/golang/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://erenming.github.io/tags/golang/</guid>
+      <guid>https://wmingj.github.io/tags/golang/</guid>
       <description></description>
     </item>
   </channel>
