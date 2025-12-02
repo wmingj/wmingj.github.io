@@ -6,8 +6,37 @@
     <description>Recent content in Posts on Wenming&#39;s Blog</description>
     <generator>Hugo -- 0.128.0</generator>
     <language>zh</language>
-    <lastBuildDate>Mon, 12 Aug 2024 21:49:04 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 12 Oct 2025 20:00:30 +0000</lastBuildDate>
     <atom:link href="https://wmingj.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>关于自适应并发控制算法的落地实践总结</title>
+      <link>https://wmingj.github.io/posts/adaptive-concurrency/</link>
+      <pubDate>Sun, 12 Oct 2025 20:00:30 +0000</pubDate>
+      <guid>https://wmingj.github.io/posts/adaptive-concurrency/</guid>
+      <description>1. 背景 (Background) 在可观测性系统中，数据流量通常呈现出极度的不均匀性。例如，白天业务高峰期的流量往往远超夜间，或者在进行全链路压测时，流量会瞬间激增至平时的数倍。这种流量的剧烈波动给固定并发模型带来了两难困境：
+低负载场景：当流量较小时，若并发限制设置过低，无法充分利用后端的处理能力，导致数据发送延迟和资源浪费。 高负载场景：当流量爆发时，若并发限制设置过高，瞬间涌入的请求会导致后端服务压力过大，甚至引发雪崩效应（Crash）。 鉴于此，为了实现数据高效且稳定的传输，我们在发送端（采集端）引入了自适应并发控制算法。该机制能够根据实时网络状况和后端响应反馈，动态调整最大并发请求数（Limit），从而在保护后端系统稳定性的同时，最大化数据吞吐量。
+1. 架构设计 (Architecture) 在原有的发送逻辑之上，引入了一个独立的 Limiter（限流）层。其核心工作流程如下：
+准入控制：采用类似经典限流器的模式。每次执行 send 操作前，请求必须阻塞等待，直到成功获取令牌（Permit）；操作结束后释放令牌。 指标反馈：Sender 端在请求完成后，必须返回两个关键指标：RTT (往返时延) 和 didDrop (是否被丢弃/限流)。 动态调整：Limiter 根据反馈的 RTT 和丢包情况，实时动态调整并发限制数（Limit）。 ⚠️ 注意： 现有架构通过预先建立“并发池”来实现异步发送。若并发池容量小于 Limiter 计算出的 Limit 值，会导致实际 Inflight（在途）请求数受限于池大小，从而无法达到最大吞吐量。 因此，当开启自适应并发功能时，系统将忽略 queue_concurrency 配置项，完全交由 Limiter 接管并发控制。
+2. 核心算法 (Core Algorithms) 2.1 Vegas 算法 该算法起源于 TCP Vegas。其核心思想是：只要服务内部队列（或线程池）未满，请求的处理延迟通常保持稳定；一旦延迟增加，说明队列开始积压。
+理论基础：Little&amp;rsquo;s Law 基于排队论中的重要公式 Little&amp;rsquo;s Law：
+$$ L = \lambda W $$
+其中：
+$L$：队列长度 (Queue Size) $\lambda$：请求到达速率 (Arrival Rate) $W$：等待时间 (此处指 RTT) 利用此公式，我们可以通过 RTT 估算对端服务内部的队列积压情况，进而判断服务端压力并动态调节 Limit。</description>
+    </item>
+    <item>
+      <title>Go 性能优化实战：从并行瓶颈到高效流水线</title>
+      <link>https://wmingj.github.io/posts/optimize-transfomer-parallism/</link>
+      <pubDate>Mon, 23 Jun 2025 23:52:52 +0000</pubDate>
+      <guid>https://wmingj.github.io/posts/optimize-transfomer-parallism/</guid>
+      <description>🛠️ 课前小贴士：Go Tool Trace 快捷键 在进行性能分析前，掌握 go tool trace 的视图操作非常重要。以下是常用的快捷键：
+缩放视图：w (放大), d (缩小) 或按住 Alt + 鼠标滚轮。 移动视图：a (左移), s (右移)。 问题背景 场景描述 在 Agent 数据采集任务中，我们采用经典的 Pipeline 架构：Readers -&amp;gt; Transformers -&amp;gt; Senders。
+其中 Transformer（数据转换）环节支持并行计算。
+遇到问题 尽管启用了并行计算，但在高负载场景下，观察到 Agent 的 CPU 使用率始终处于低位（上限仅达到 150%），未能跑满多核 CPU 的性能。
+深度分析与诊断 为了定位 CPU 上不去的原因，我们使用了 Profile 和 Trace 工具进行分析：
+诊断数据 Profile 分析：
+chanrecv (通道接收) 和 chansend (通道发送) 的 CPU 占用率显著偏高（约占 10%）。这说明大量 CPU 时间消耗在调度通信上，而非实际计算上。 Goroutine 分析：
+系统在运行时产生了数万个 Goroutine。过多的 Goroutine 导致了巨大的调度开销。 Trace 分析（关键证据）：</description>
+    </item>
     <item>
       <title>在Go中如何访问和修改私有对象</title>
       <link>https://wmingj.github.io/posts/get-set-private-object-in-go/</link>
@@ -144,17 +173,6 @@ cd blog-source git init # add paperMod as theme git submodule add https://github
 hugo new posts/my-first-post.md # start demo for preview hugo server -D 创建一个额外的仓库，这里我创建一个名为blog-source的仓库并作为刚才创建的blog-source的远端仓库
 cd blog-source git init git remote add origin &amp;lt;your-remove-git&amp;gt; GithubPages 创建一个githubPages仓库，名称必须是&amp;lt;your-name&amp;gt;.github.io。DOC
 Connection 创建sshKey: ssh-keygen -t rsa -b 4096 -C &amp;quot;$(git config user.</description>
-    </item>
-    <item>
-      <title>重启博客之路</title>
-      <link>https://wmingj.github.io/posts/restart-my-blog/</link>
-      <pubDate>Thu, 26 May 2022 00:01:42 +0800</pubDate>
-      <guid>https://wmingj.github.io/posts/restart-my-blog/</guid>
-      <description>不知为何，写博客总是断断续续，距离上次更新已过去快一年了，直至如今面试碰壁方才后悔莫及。
-事实上，写博客对于对于知识的小伙理解非常有好处，毕竟要让别人听得懂，首先自己得更懂才行嘛。因为，通常学习一项新知识，通常需要理论学习-实践-总结输出三个阶段，而我往往只完成了第一阶段便草草了事，无法对知识有更深入的理解。因此，我打算重启我的博客之路，持续学习持续输出。
-之前博客用过Hexo，也用过博客园等等，最近看到hugo的paperMod主题非常讨喜，因此打算彻底切换到hugo+paperMod，也算起个好头吧。之前的文章也会从博客园迁移到hugo上，不过后续两边也会尽量同步更新。
-然后，也打算支持中英文双语，主要是为了提升自己的英文水平，以便能和世界上的程序员更好地交流。不过目前主打还是中文，母语写起来还是方便点，英文会挑选文章进行编写翻译，同时英文文章也会同步发布在Medium上。
-此外，为了降低断更的概率、提高文章质量，我在这里给自己立一个flag，即每月至少更新一篇文章，文章长度适宜、做到通俗易懂、绝不模棱两可故作高深</description>
     </item>
     <item>
       <title>浅析Go内存分配器的实现</title>
